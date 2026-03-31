@@ -1,0 +1,94 @@
+import 'package:opinion_easy/view/auth/forgot_view.dart';
+import 'package:opinion_easy/view/auth/login_view.dart';
+import 'package:opinion_easy/view/auth/set_mpin_view.dart';
+import 'package:opinion_easy/view/auth/register_view.dart';
+import 'package:opinion_easy/view/auth/verify_number_view.dart';
+import 'package:opinion_easy/view/bottom_nav.dart';
+import 'package:opinion_easy/view/deactivated_view.dart';
+import 'package:opinion_easy/view/home/home_view.dart';
+import 'package:opinion_easy/view/home/notification_view.dart';
+import 'package:opinion_easy/view/home/sub_categ_view.dart';
+import 'package:opinion_easy/view/home/thank_you_view.dart';
+import 'package:opinion_easy/view/profile/profile_content/about_us_view.dart';
+import 'package:opinion_easy/view/profile/profile_content/bank_details_view.dart';
+import 'package:opinion_easy/view/profile/profile_content/edit_profile.dart';
+import 'package:opinion_easy/view/profile/profile_content/faq_view.dart';
+import 'package:opinion_easy/view/profile/profile_content/help_view.dart';
+import 'package:opinion_easy/view/profile/profile_content/history_view.dart';
+import 'package:opinion_easy/view/profile/profile_content/monthly_top_performer_view.dart';
+import 'package:opinion_easy/view/profile/profile_content/privacy_policy.dart';
+import 'package:opinion_easy/view/profile/profile_content/refer_and_earn.dart';
+import 'package:opinion_easy/view/profile/profile_content/terms_and_condition.dart';
+import 'package:opinion_easy/view/leaderboard/yearly_top_performer_view.dart';
+import 'package:opinion_easy/view/splash_view.dart';
+import 'package:get/get.dart';
+
+import '../In_app_update.dart';
+import '../view/home/Sub_categ_Widgets/cricket_widget_view.dart';
+import '../view/home/Sub_categ_Widgets/pages/cricket_schedule_detail.dart';
+import '../view/home/Sub_categ_Widgets/pages/live_cricket_detail.dart';
+
+var pagePath = [
+  GetPage(
+    name: '/',
+    page: () => InAppUpdateWrapper(child: SplashView()),
+  ),
+  GetPage(name: '/login', page: () => LoginView()),
+  GetPage(name: '/register', page: () => RegisterView()),
+  GetPage(name: '/bottom-nav', page: () => BottomNav()),
+  GetPage(name: '/home', page: () => HomeView()),
+  GetPage(name: '/forgot', page: () => ForgotMPINView()),
+  GetPage(name: '/verify-number', page: () => VerifyNumberView()),
+  GetPage(name: '/set-mpin', page: () => SetMPINView()),
+  GetPage(name: '/edit-profile', page: () => EditProfileView()),
+  GetPage(name: '/privacy-policy', page: () => PrivacyPolicyView()),
+  GetPage(name: '/about-us', page: () => AboutUsView()),
+  GetPage(name: '/help', page: () => HelpView()),
+  GetPage(name: '/terms-and-conditions', page: () => TermsAndConditionsView()),
+  GetPage(name: '/faq-view', page: () => FAQView()),
+  GetPage(name: '/refer-earn', page: () => ReferAndEarnView()),
+  GetPage(name: '/notification', page: () => NotificationView()),
+  GetPage(name: '/history', page: () => HistoryView()),
+  GetPage(name: '/bank', page: () => BankDetailsView()),
+  GetPage(name: '/deactivated', page: () => DeactivatedView()),
+  GetPage(name: '/thank-you', page: () => ThankYouView()),
+  GetPage(name: '/sub-categ', page: () => SubCategView()),
+  GetPage(
+    name: '/monthly-top-performer',
+    page: () => MonthlyTopPerformerView(),
+  ),
+  //GetPage(name: '/yearly-top-performer', page: () => YearlyTopPerformerView()),
+  GetPage(name: '/cricket', page: () => const CricketView()),
+
+  // Live Match Detail - with teamId as query parameter
+  GetPage(
+    name: '/live-match/:matchId',
+    page: () {
+      final matchId = Get.parameters['matchId'] ?? '';
+      return NewMatchDetailView(matchId: matchId);
+    },
+    transition: Transition.cupertino,
+  ),
+
+  // Schedule Detail - for upcoming matches
+  GetPage(
+    name: '/schedule/:matchId',
+    page: () {
+      final matchId = Get.parameters['matchId'] ?? '';
+      return NewScheduleDetailView(matchId: matchId);
+    },
+    transition: Transition.cupertino,
+  ),
+
+  // Tournament Matches - placeholder for future implementation
+  GetPage(
+    name: '/tournament/:tournamentName',
+    page: () {
+      final tournamentName = Get.parameters['tournamentName'] ?? '';
+      // TODO: Create a TournamentMatchesView that accepts tournamentName
+      // For now, returning to cricket view
+      return const CricketView();
+    },
+    transition: Transition.cupertino,
+  ),
+];

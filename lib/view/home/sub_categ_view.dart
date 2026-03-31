@@ -1,0 +1,200 @@
+import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
+import 'package:opinion_easy/view/home/widgets/sub_category_card_widget.dart';
+import 'package:opinion_easy/view/home/widgets/watch_live_card_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:opinion_easy/controller/category_controller.dart';
+import 'package:opinion_easy/controller/question_controller.dart';
+import 'package:opinion_easy/core/admob/admob.dart';
+import 'package:opinion_easy/core/admob/ad_preload_service.dart';
+import 'package:opinion_easy/core/admob/dark_ad_widget.dart';
+import 'package:opinion_easy/controller/sub_categ_controller.dart';
+import 'package:opinion_easy/core/utils/app_constants.dart';
+import 'package:opinion_easy/core/utils/widgets/app_shimmer.dart';
+import 'Sub_categ_Widgets/cricket_widget_view.dart';
+import 'Sub_categ_Widgets/stock_market_live_view.dart';
+
+class SubCategView extends StatefulWidget {
+  const SubCategView({super.key});
+
+  @override
+  State<SubCategView> createState() => _SubCategViewState();
+}
+
+class _SubCategViewState extends State<SubCategView> {
+  final CategoryController categoryController = Get.find<CategoryController>();
+  final SubCategController subCategController = Get.find<SubCategController>();
+  final QuestionController questionController = Get.put(QuestionController());
+  final AdPreloadService _preload = Get.find<AdPreloadService>();
+
+  late final AdsController middleNativeAdsController;
+  late final AdsController endNativeAdsController;
+
+  bool _showMiddleShimmer = true;
+  bool _showEndShimmer = true;
+
+  @override
+  void initState() {
+    super.initState();
+    middleNativeAdsController = _preload.subCategMiddle;
+    endNativeAdsController = _preload.subCategEnd;
+
+    _preload.refreshSubCategAds();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      subCategController.fetchSubCateg(
+        categoryController.categId,
+        categoryController.categName.toString(),
+      );
+    });
+
+    Future.delayed(const Duration(seconds: 10), () {
+      if (mounted && !middleNativeAdsController.isNativeLoaded.value) {
+        setState(() => _showMiddleShimmer = false);
+      }
+    });
+    Future.delayed(const Duration(seconds: 10), () {
+      if (mounted && !endNativeAdsController.isNativeLoaded.value) {
+        setState(() => _showEndShimmer = false);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColor.scaffold,
+      appBar: AppBar(
+        backgroundColor: AppColor.card,
+        elevation: 0,
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18),
+          color: AppColor.white,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Obx(
+          () => Text(categoryController.categName.value, style: AppText.h3),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(height: 1, color: AppColor.borderFaint),
+        ),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          child: Obx(() {
+            final subCateg = subCategController.subCategList;
+
+            final bool isSports = categoryController.categId == 1;
+            final bool isStock = categoryController.categId == 3;
+
+            if (subCategController.isLoading.value) {
+              return AppShimmer.subCategoryList();
+            }
+
+            if (subCateg.isEmpty && !isStock && !isSports) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: AppDeco.circleBorder,
+                      child: const Icon(
+                        Icons.category_outlined,
+                        size: 40,
+                        color: AppColor.white,
+                      ),
+                    ),
+                    VS(16),
+                    Text('No subcategories available', style: AppText.caption),
+                  ],
+                ),
+              );
+            }
+            final List<Widget> children = [];
+
+            // final liveCard = _buildLiveCard(
+            //   isSportsCategory: isSports,
+            //   isStockMarketCategory: isStock,
+            // );
+
+            // if (liveCard != null) {
+            //   children.add(liveCard);
+            //   if (subCateg.isNotEmpty) children.add(VS(16));
+            // }
+
+            for (int i = 0; i < subCateg.length; i++) {
+              children.add(
+                SubCategoryCard(
+                  subCategory: subCateg[i],
+                  index: i,
+                  questionController: questionController,
+                ),
+              );
+
+              if (i == 1) {
+                children.add(VS(16));
+                children.add(
+                  DarkNativeAdWidget(
+                    key: const ValueKey('subcateg_middle_ad'),
+                    isLoaded: middleNativeAdsController.isNativeLoaded,
+                    nativeAd: middleNativeAdsController.nativeAd,
+                    showShimmer: _showMiddleShimmer,
+                  ),
+                );
+                if (i < subCateg.length - 1) children.add(VS(16));
+              } else if (i < subCateg.length - 1) {
+                children.add(VS(16));
+              }
+            }
+
+            if (subCateg.isNotEmpty) {
+              children.add(VS(16));
+              children.add(
+                DarkNativeAdWidget(
+                  key: const ValueKey('subcateg_end_ad'),
+                  isLoaded: endNativeAdsController.isNativeLoaded,
+                  nativeAd: endNativeAdsController.nativeAd,
+                  showShimmer: _showEndShimmer,
+                ),
+              );
+            }
+
+            return ListView(children: children);
+          }),
+        ),
+      ),
+    );
+  }
+
+  // Widget? _buildLiveCard({
+  //   required bool isSportsCategory,
+  //   required bool isStockMarketCategory,
+  // }) {
+  //   if (isSportsCategory) {
+  //     return WatchLiveCard(
+  //       title: 'View Live Score',
+  //       subTitle: 'All cricket match',
+  //       onTap: () => Get.to(() => const CricketView()),
+  //       icon: Icons.sports_cricket_rounded,
+  //       gradientColors: subCategController.cricketGradient,
+  //       liveColor: AppColor.red,
+  //     );
+  //   }
+  //   if (isStockMarketCategory) {
+  //     return WatchLiveCard(
+  //       title: 'Show Live Stock',
+  //       subTitle: 'Check Real-time Market Data',
+  //       onTap: () => Get.to(() => const StockMarketLiveView()),
+  //       icon: Icons.bar_chart_rounded,
+  //       gradientColors: subCategController.stockMarketGradient,
+  //       liveColor: AppColor.green,
+  //     );
+  //   }
+  //   return null;
+  // }
+}

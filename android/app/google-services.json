@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "102808375831",
+    "project_id": "opinion-easy-ce901",
+    "storage_bucket": "opinion-easy-ce901.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:102808375831:android:869048568afe70e5160252",
+        "android_client_info": {
+          "package_name": "com.vishesh.opinioneasy2026"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKMDE6TVuksw2g0nvf_-reqLXRO3wvT2A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

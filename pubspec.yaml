@@ -1,0 +1,66 @@
+name: opinion_easy
+description: "A new Flutter project."
+
+publish_to: "none"
+
+version: 1.0.0+2
+
+#environment:
+#  sdk: ^3.9.2
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  get: ^4.7.3
+  pinput: ^6.0.2
+  flutter_svg: ^2.2.3
+  carousel_slider: ^5.1.2
+  image_picker: ^1.2.1
+  http: ^1.6.0
+  shared_preferences: ^2.5.4
+  cached_network_image: ^3.4.1
+  shimmer: ^3.0.0
+  intl: ^0.20.2
+  url_launcher: ^6.3.2
+  firebase_core: ^4.2.0
+  firebase_messaging: ^16.0.3
+  flutter_local_notifications: ^19.5.0
+  google_mobile_ads: ^7.0.0
+  in_app_update: ^4.2.5
+  firebase_analytics: ^12.1.0
+  share_plus: ^12.0.1
+  google_fonts: ^8.0.2
+  device_preview: ^1.3.1
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/icons/
+
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/to/font-from-package
