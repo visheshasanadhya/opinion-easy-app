@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:opinion_easy/data/model/banner_model.dart';
 import 'package:opinion_easy/data/service/banner_service.dart';
 import 'package:get/get.dart';
@@ -24,9 +23,10 @@ class BannerController extends GetxController {
         banners.assignAll(response);
       } else {
         banners.clear();
+        Get.snackbar('Oops', 'No banners found');
       }
     } catch (e) {
-      debugPrint("Banner fetch error: $e");
+      Get.snackbar('Oops', e.toString());
     } finally {
       isLoading.value = false;
     }

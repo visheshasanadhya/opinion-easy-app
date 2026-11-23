@@ -121,6 +121,7 @@ class _HomeViewState extends State<HomeView> {
                       sliver: SliverList(
                         delegate: SliverChildListDelegate([
                           _buildBanners(sw),
+                          VS(28),
                           _buildCategories(),
                           VS(24),
                         ]),
@@ -278,25 +279,43 @@ class _HomeViewState extends State<HomeView> {
   Widget _buildBanners(double sw) {
     return Obx(() {
       if (bannerController.isLoading.value) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 28),
-          child: AppShimmer.banner(height: sw * 0.46),
-        );
+        return AppShimmer.banner(height: sw * 0.46);
       }
 
       if (bannerController.banners.isEmpty) {
-        return const SizedBox.shrink();
+        return Container(
+          height: sw * 0.46,
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          decoration: BoxDecoration(
+            color: AppColor.cardAlt,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: AppColor.borderFaint),
+          ),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.campaign_outlined,
+                  color: AppColor.textGrey,
+                  size: 40,
+                ),
+                VS(10),
+                Text("Double Points Today!", style: AppText.caption),
+              ],
+            ),
+          ),
+        );
       }
 
       final banners = bannerController.banners;
 
-      Widget content;
       if (banners.length == 1) {
         final banner = banners.first;
         final hasLink = banner.link != null &&
             banner.link!.isNotEmpty &&
             banner.link != 'null';
-        content = GestureDetector(
+        return GestureDetector(
           onTap: hasLink ? () => _handleBannerTap(banner) : null,
           child: Container(
             height: sw * 0.46,
@@ -325,84 +344,79 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
         );
-      } else {
-        content = Column(
-          children: [
-            CarouselSlider.builder(
-              itemCount: banners.length,
-              itemBuilder: (context, index, _) {
-                final banner = banners[index];
-                final hasLink = banner.link != null &&
-                    banner.link!.isNotEmpty &&
-                    banner.link != 'null';
-                return GestureDetector(
-                  onTap: hasLink ? () => _handleBannerTap(banner) : null,
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 6),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColor.borderFaint),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: CachedNetworkImage(
-                        imageUrl: banner.image ?? '',
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        placeholder: (_, __) =>
-                            AppShimmer.box(height: sw * 0.46, radius: 0),
-                        errorWidget: (_, __, ___) => Container(
-                          color: AppColor.cardAlt,
-                          child: const Icon(
-                            Icons.broken_image_rounded,
-                            color: AppColor.textDisabled,
-                            size: 40,
-                          ),
+      }
+
+      return Column(
+        children: [
+          CarouselSlider.builder(
+            itemCount: banners.length,
+            itemBuilder: (context, index, _) {
+              final banner = banners[index];
+              final hasLink = banner.link != null &&
+                  banner.link!.isNotEmpty &&
+                  banner.link != 'null';
+              return GestureDetector(
+                onTap: hasLink ? () => _handleBannerTap(banner) : null,
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 6),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: AppColor.borderFaint),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: CachedNetworkImage(
+                      imageUrl: banner.image ?? '',
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      placeholder: (_, __) =>
+                          AppShimmer.box(height: sw * 0.46, radius: 0),
+                      errorWidget: (_, __, ___) => Container(
+                        color: AppColor.cardAlt,
+                        child: const Icon(
+                          Icons.broken_image_rounded,
+                          color: AppColor.textDisabled,
+                          size: 40,
                         ),
                       ),
                     ),
                   ),
-                );
-              },
-              options: CarouselOptions(
-                height: sw * 0.46,
-                autoPlay: true,
-                enlargeCenterPage: true,
-                viewportFraction: 0.92,
-                autoPlayInterval: const Duration(seconds: 4),
-                autoPlayAnimationDuration: const Duration(milliseconds: 700),
-                autoPlayCurve: Curves.fastOutSlowIn,
-                onPageChanged: (index, _) => _currentBanner.value = index,
-              ),
+                ),
+              );
+            },
+            options: CarouselOptions(
+              height: sw * 0.46,
+              autoPlay: true,
+              enlargeCenterPage: true,
+              viewportFraction: 0.92,
+              autoPlayInterval: const Duration(seconds: 4),
+              autoPlayAnimationDuration: const Duration(milliseconds: 700),
+              autoPlayCurve: Curves.fastOutSlowIn,
+              onPageChanged: (index, _) => _currentBanner.value = index,
             ),
-            VS(14),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                banners.length,
-                (index) => Obx(
-                  () => AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    margin: const EdgeInsets.symmetric(horizontal: 3),
-                    width: _currentBanner.value == index ? 24 : 6,
-                    height: 6,
-                    decoration: BoxDecoration(
-                      color: _currentBanner.value == index
-                          ? AppColor.white
-                          : AppColor.cardLight,
-                      borderRadius: BorderRadius.circular(3),
-                    ),
+          ),
+          VS(14),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              banners.length,
+              (index) => Obx(
+                () => AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  width: _currentBanner.value == index ? 24 : 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: _currentBanner.value == index
+                        ? AppColor.white
+                        : AppColor.cardLight,
+                    borderRadius: BorderRadius.circular(3),
                   ),
                 ),
               ),
             ),
-          ],
-        );
-      }
-
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 28),
-        child: content,
+          ),
+        ],
       );
     });
   }
