@@ -50,6 +50,9 @@ android {
     }
 
     buildTypes {
+        getByName("debug") {
+            signingConfig = signingConfigs.getByName("release")
+        }
         release {
             isMinifyEnabled = true      // Removes unused code
             isShrinkResources = true   // Removes unused images/layouts

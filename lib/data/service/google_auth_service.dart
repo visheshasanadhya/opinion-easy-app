@@ -18,15 +18,25 @@ class GoogleAuthService {
   /// Step 1: Flutter triggers Google Sign-In popup → gets account
   static Future<Map<String, String>?> getGoogleTokens() async {
     try {
+      debugPrint("🚀 [GoogleAuthService] Initiating Google Sign-In...");
       await _googleSignIn.signOut(); // Always show account picker
       final account = await _googleSignIn.signIn();
-      if (account == null) return null; // User cancelled
+      if (account == null) {
+        debugPrint("⚠️ [GoogleAuthService] User cancelled Google account picker");
+        return null;
+      }
 
+      debugPrint("✅ [GoogleAuthService] Account picked: ${account.email}");
       final auth = await account.authentication;
       final idToken = auth.idToken;
       final accessToken = auth.accessToken;
 
-      if (idToken == null) return null;
+      debugPrint("🔑 [GoogleAuthService] idToken received: ${idToken != null ? 'YES (${idToken.substring(0, 15)}...)' : 'NULL'}");
+      debugPrint("🔑 [GoogleAuthService] accessToken received: ${accessToken != null ? 'YES' : 'NULL'}");
+
+      if (idToken == null) {
+        throw Exception("Google did not return an idToken. Please ensure the Web Client ID is configured correctly.");
+      }
 
       return {
         'id_token': idToken,
@@ -35,7 +45,9 @@ class GoogleAuthService {
         'name': account.displayName ?? '',
         'photo': account.photoUrl ?? '',
       };
-    } catch (e) {
+    } catch (e, stack) {
+      debugPrint("❌ [GoogleAuthService] getGoogleTokens exception: $e");
+      debugPrint("❌ [GoogleAuthService] StackTrace: $stack");
       rethrow;
     }
   }
@@ -46,6 +58,7 @@ class GoogleAuthService {
     String accessToken,
   ) async {
     final url = Uri.parse(ApiEndpoints.googleLogin);
+    debugPrint("🌐 [GoogleAuthService] Sending token to backend: $url");
     final response = await http.post(
       url,
       headers: {
@@ -57,6 +70,8 @@ class GoogleAuthService {
         'access_token': accessToken,
       }),
     );
+    debugPrint("🌐 [GoogleAuthService] Response status: ${response.statusCode}");
+    debugPrint("🌐 [GoogleAuthService] Response body: ${response.body}");
     return jsonDecode(response.body);
   }
 

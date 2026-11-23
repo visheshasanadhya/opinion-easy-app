@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:opinion_easy/data/service/google_auth_service.dart';
@@ -14,6 +15,7 @@ class GoogleAuthController extends GetxController {
       final tokens = await GoogleAuthService.getGoogleTokens();
       if (tokens == null) {
         // User cancelled — no snackbar needed
+        debugPrint("ℹ️ [GoogleAuth] Sign-in cancelled by user");
         return false;
       }
 
@@ -31,37 +33,38 @@ class GoogleAuthController extends GetxController {
         final prefs = await SharedPreferences.getInstance();
 
         // Save API token for future authenticated calls
-        await prefs.setString('token', response['data']['token']);
+        if (response['data'] != null && response['data']['token'] != null) {
+          await prefs.setString('token', response['data']['token']);
+        }
 
         // Optionally save user info locally
-        await prefs.setString(
-          'user_name',
-          response['data']['user']['name'] ?? '',
-        );
-        await prefs.setString(
-          'user_email',
-          response['data']['user']['email'] ?? '',
-        );
-        await prefs.setString(
-          'user_photo',
-          response['data']['user']['photo'] ?? '',
-        );
+        if (response['data']?['user'] != null) {
+          final user = response['data']['user'];
+          await prefs.setString('user_name', user['name'] ?? '');
+          await prefs.setString('user_email', user['email'] ?? '');
+          await prefs.setString('user_photo', user['photo'] ?? '');
+        }
         await prefs.setBool('is_google_user', true);
 
         return true;
       } else {
+        final msg = response['message'] ?? 'Google sign-in failed';
+        debugPrint("⚠️ [GoogleAuth] Backend rejected: $msg");
         Get.snackbar(
           'Oops',
-          response['message'] ?? 'Google sign-in failed',
+          msg,
           snackPosition: SnackPosition.BOTTOM,
         );
         return false;
       }
-    } catch (e) {
+    } catch (e, stack) {
+      debugPrint("🔴 [GoogleAuth] Error: $e");
+      debugPrint("🔴 [GoogleAuth] Stack: $stack");
       Get.snackbar(
-        'Error',
-        'Something went wrong. Please try again.',
+        'Google Sign-In Failed',
+        e.toString(),
         snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 5),
       );
       return false;
     } finally {
