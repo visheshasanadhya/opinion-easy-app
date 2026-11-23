@@ -119,6 +119,76 @@ class RegisterView extends StatelessWidget {
                   Text("Earning Reward and Gift", style: AppText.caption),
                   VS(32),
 
+                  // ── Google Sign-In button (Primary) ─────────────
+                  Obx(
+                    () => SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: ElevatedButton(
+                        onPressed: googleAuthController.isLoading.value
+                            ? null
+                            : () async {
+                                bool success = await googleAuthController
+                                    .loginWithGoogle();
+                                if (success) {
+                                  Get.offAllNamed('/bottom-nav');
+                                }
+                              },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColor.white,
+                          foregroundColor: AppColor.black,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(AppDeco.radiusSm),
+                          ),
+                        ),
+                        child: googleAuthController.isLoading.value
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: AppColor.black,
+                                ),
+                              )
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/icons/google_logo.png',
+                                    height: 22,
+                                    width: 22,
+                                  ),
+                                  HS(12),
+                                  Text(
+                                    "Sign Up with Google",
+                                    style: AppText.bodyMd.copyWith(
+                                      color: AppColor.black,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                      ),
+                    ),
+                  ),
+
+                  VS(24),
+
+                  // ── OR divider ───────────────────────────────
+                  Row(
+                    children: [
+                      Expanded(child: Divider(color: AppColor.borderLight)),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text("OR REGISTER WITH PHONE", style: AppText.captionSm),
+                      ),
+                      Expanded(child: Divider(color: AppColor.borderLight)),
+                    ],
+                  ),
+                  VS(20),
+
                   // ── Name ──────────────────────────────
                   _label("Name"),
                   TextFormField(
@@ -194,66 +264,6 @@ class RegisterView extends StatelessWidget {
                           _otpSheet(context);
                         }
                       },
-                    ),
-                  ),
-                  VS(16),
-                  Row(
-                    children: [
-                      Expanded(child: Divider(color: AppColor.borderLight)),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Text("OR", style: AppText.captionSm),
-                      ),
-                      Expanded(child: Divider(color: AppColor.borderLight)),
-                    ],
-                  ),
-                  VS(16),
-
-                  Obx(
-                    () => SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: OutlinedButton(
-                        onPressed: googleAuthController.isLoading.value
-                            ? null
-                            : () async {
-                                bool success = await googleAuthController
-                                    .loginWithGoogle();
-                                if (success) {
-                                  Get.offAllNamed('/bottom-nav');
-                                }
-                              },
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: AppColor.borderLight),
-                          backgroundColor: AppColor.cardAlt,
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(AppDeco.radiusSm),
-                          ),
-                        ),
-                        child: googleAuthController.isLoading.value
-                            ? SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: AppColor.white,
-                                ),
-                              )
-                            : Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    'assets/icons/google_logo.png',
-                                    height: 20,
-                                    width: 20,
-                                  ),
-                                  HS(10),
-                                  Text("Sign up with Google",
-                                      style: AppText.bodyMd),
-                                ],
-                              ),
-                      ),
                     ),
                   ),
 

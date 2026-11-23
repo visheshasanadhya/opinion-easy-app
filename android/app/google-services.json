@@ -14,19 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "102808375831-0odkjks64ebc111nd2kl08mrb8p8sfjd.apps.googleusercontent.com",
+          "client_id": "102808375831-f3425v6unoi2r4qblh2nud2ku951aith.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.vishesh.opinioneasy2026",
-            "certificate_hash": "7410d1497278545e0bb1abebf630c5c963652f0c"
-          }
-        },
-        {
-          "client_id": "102808375831-6tc5h3us6mbtuua6grjan4ft4mvtp8e6.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.vishesh.opinioneasy2026",
-            "certificate_hash": "e88a4040a9b8b052147d23823fa4430ceddd0d92"
+            "certificate_hash": "95c613b414add07d851096f253bf3067072962f6"
           }
         },
         {
