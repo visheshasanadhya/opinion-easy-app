@@ -6,9 +6,13 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:pinput/pinput.dart';
+import 'package:opinion_easy/controller/auth_controller/google_auth_controller.dart';
 
 class LoginView extends StatelessWidget {
   final LoginController loginController = Get.put(LoginController());
+  final GoogleAuthController googleAuthController =
+      Get.put(GoogleAuthController());
+
   LoginView({super.key});
 
   // ── Shared input decoration ────────────────────────────────
@@ -138,6 +142,72 @@ class LoginView extends StatelessWidget {
                   }
                 },
               ),
+
+              // ── OR divider ─────────────────────────────── ADD FROM HERE
+              VS(16),
+              Row(
+                children: [
+                  Expanded(child: Divider(color: AppColor.borderLight)),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Text("OR", style: AppText.captionSm),
+                  ),
+                  Expanded(child: Divider(color: AppColor.borderLight)),
+                ],
+              ),
+              VS(16),
+
+              // ── Google Sign-In button ──────────────────────
+              Obx(
+                () => SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: OutlinedButton(
+                    onPressed: googleAuthController.isLoading.value
+                        ? null
+                        : () async {
+                            bool success =
+                                await googleAuthController.loginWithGoogle();
+                            if (success) {
+                              Get.offAllNamed('/bottom-nav');
+                            }
+                          },
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: AppColor.borderLight),
+                      backgroundColor: AppColor.cardAlt,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppDeco.radiusSm),
+                      ),
+                    ),
+                    child: googleAuthController.isLoading.value
+                        ? SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColor.white,
+                            ),
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/icons/google_logo.png',
+                                height: 20,
+                                width: 20,
+                              ),
+                              HS(10),
+                              Text(
+                                "Continue with Google",
+                                style: AppText.bodyMd,
+                              ),
+                            ],
+                          ),
+                  ),
+                ),
+              ),
+              // ── ADD TILL HERE ──────────────────────────────
+
               VS(20),
 
               InkWell(

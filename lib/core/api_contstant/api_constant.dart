@@ -1,9 +1,11 @@
 class ApiEndpoints {
-  //  static String baseUrl = "https://admin.dailyopinion.in/api/customer";
-  static String baseUrl = "https://opinioneasy.com/api/customer";
+  // static String baseUrl = "https://opinioneasy.com/api/customer";
+  //static String baseUrl = "https://3.26.41.94/api/customer";
+  static String baseUrl = "http://3.26.41.94/api/customer";
   static String signUp = "$baseUrl/signup";
   static String login = "$baseUrl/login";
   static String forgotMPIN = "$baseUrl/forgot-mpin";
+  static String googleLogin = "$baseUrl/google-login";
   static String profile = "$baseUrl/profile";
   static String updateProfile = "$baseUrl/profile";
   static String categories = "$baseUrl/categories";

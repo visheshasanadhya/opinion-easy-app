@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, use_build_context_synchronously
+import 'package:opinion_easy/controller/auth_controller/google_auth_controller.dart';
 import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +11,8 @@ import 'package:opinion_easy/controller/auth_controller/register_controller.dart
 
 class RegisterView extends StatelessWidget {
   final RegisterController registerController = Get.put(RegisterController());
+  final GoogleAuthController googleAuthController =
+      Get.put(GoogleAuthController());
 
   RegisterView({super.key});
 
@@ -193,6 +196,67 @@ class RegisterView extends StatelessWidget {
                       },
                     ),
                   ),
+                  VS(16),
+                  Row(
+                    children: [
+                      Expanded(child: Divider(color: AppColor.borderLight)),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text("OR", style: AppText.captionSm),
+                      ),
+                      Expanded(child: Divider(color: AppColor.borderLight)),
+                    ],
+                  ),
+                  VS(16),
+
+                  Obx(
+                    () => SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: OutlinedButton(
+                        onPressed: googleAuthController.isLoading.value
+                            ? null
+                            : () async {
+                                bool success = await googleAuthController
+                                    .loginWithGoogle();
+                                if (success) {
+                                  Get.offAllNamed('/bottom-nav');
+                                }
+                              },
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: AppColor.borderLight),
+                          backgroundColor: AppColor.cardAlt,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(AppDeco.radiusSm),
+                          ),
+                        ),
+                        child: googleAuthController.isLoading.value
+                            ? SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: AppColor.white,
+                                ),
+                              )
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/icons/google_logo.png',
+                                    height: 20,
+                                    width: 20,
+                                  ),
+                                  HS(10),
+                                  Text("Sign up with Google",
+                                      style: AppText.bodyMd),
+                                ],
+                              ),
+                      ),
+                    ),
+                  ),
+
                   VS(20),
 
                   InkWell(

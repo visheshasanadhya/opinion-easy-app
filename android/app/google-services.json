@@ -12,7 +12,28 @@
           "package_name": "com.vishesh.opinioneasy2026"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "102808375831-0odkjks64ebc111nd2kl08mrb8p8sfjd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vishesh.opinioneasy2026",
+            "certificate_hash": "7410d1497278545e0bb1abebf630c5c963652f0c"
+          }
+        },
+        {
+          "client_id": "102808375831-6tc5h3us6mbtuua6grjan4ft4mvtp8e6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vishesh.opinioneasy2026",
+            "certificate_hash": "e88a4040a9b8b052147d23823fa4430ceddd0d92"
+          }
+        },
+        {
+          "client_id": "102808375831-b7ve29jo39satgklqmon7cdrt4f8euo8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCKMDE6TVuksw2g0nvf_-reqLXRO3wvT2A"
@@ -20,9 +41,22 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "102808375831-b7ve29jo39satgklqmon7cdrt4f8euo8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "102808375831-c7p91d4e58rkgsq8ipcp33203bfcjffj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.bmdu.dailyopinion.app"
+              }
+            }
+          ]
         }
-      }
+      },
+      "admob_app_id": "ca-app-pub-2884539585662970~7479919514"
     }
   ],
   "configuration_version": "1"

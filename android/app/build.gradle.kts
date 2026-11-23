@@ -72,3 +72,18 @@ dependencies {
 flutter {
     source = "../.."
 }
+
+tasks.register("copyOpinionEasyApk") {
+    doLast {
+        val flutterApkDir = file("${project.layout.buildDirectory.get()}/outputs/flutter-apk")
+        val releaseApk = File(flutterApkDir, "app-release.apk")
+        if (releaseApk.exists()) {
+            releaseApk.copyTo(File(flutterApkDir, "Opinion easy.apk"), overwrite = true)
+            println("✅ Created: ${File(flutterApkDir, "Opinion easy.apk").path}")
+        }
+    }
+}
+
+tasks.matching { it.name == "assembleRelease" }.configureEach {
+    finalizedBy("copyOpinionEasyApk")
+}
