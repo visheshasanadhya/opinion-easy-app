@@ -1,8 +1,5 @@
-import 'package:opinion_easy/view/auth/forgot_view.dart';
 import 'package:opinion_easy/view/auth/login_view.dart';
-import 'package:opinion_easy/view/auth/set_mpin_view.dart';
 import 'package:opinion_easy/view/auth/register_view.dart';
-import 'package:opinion_easy/view/auth/verify_number_view.dart';
 import 'package:opinion_easy/view/bottom_nav.dart';
 import 'package:opinion_easy/view/deactivated_view.dart';
 import 'package:opinion_easy/view/home/home_view.dart';
@@ -19,7 +16,6 @@ import 'package:opinion_easy/view/profile/profile_content/monthly_top_performer_
 import 'package:opinion_easy/view/profile/profile_content/privacy_policy.dart';
 import 'package:opinion_easy/view/profile/profile_content/refer_and_earn.dart';
 import 'package:opinion_easy/view/profile/profile_content/terms_and_condition.dart';
-import 'package:opinion_easy/view/leaderboard/yearly_top_performer_view.dart';
 import 'package:opinion_easy/view/splash_view.dart';
 import 'package:get/get.dart';
 
@@ -37,9 +33,6 @@ var pagePath = [
   GetPage(name: '/register', page: () => RegisterView()),
   GetPage(name: '/bottom-nav', page: () => BottomNav()),
   GetPage(name: '/home', page: () => HomeView()),
-  GetPage(name: '/forgot', page: () => ForgotMPINView()),
-  GetPage(name: '/verify-number', page: () => VerifyNumberView()),
-  GetPage(name: '/set-mpin', page: () => SetMPINView()),
   GetPage(name: '/edit-profile', page: () => EditProfileView()),
   GetPage(name: '/privacy-policy', page: () => PrivacyPolicyView()),
   GetPage(name: '/about-us', page: () => AboutUsView()),
@@ -83,12 +76,7 @@ var pagePath = [
   // Tournament Matches - placeholder for future implementation
   GetPage(
     name: '/tournament/:tournamentName',
-    page: () {
-      final tournamentName = Get.parameters['tournamentName'] ?? '';
-      // TODO: Create a TournamentMatchesView that accepts tournamentName
-      // For now, returning to cricket view
-      return const CricketView();
-    },
+    page: () => const CricketView(),
     transition: Transition.cupertino,
   ),
 ];

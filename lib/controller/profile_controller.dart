@@ -35,16 +35,25 @@ class ProfileController extends GetxController {
   }
 
   // Function to populate controllers with fetched data
-  void setProfileData(Data data) {
-    nameController.text = data.name ?? '';
-    emailController.text = data.email ?? '';
-    phoneController.text = data.phone ?? '';
-    selectedState.value = data.address?.state ?? 'Uttar Pradesh';
-    selectedDob.value = data.dob ?? '';
-    cityController.text = data.address?.city ?? '';
-    addressController.text = data.address?.address ?? '';
-    districtController.text = data.address?.district ?? '';
-    pincodeController.text = data.address?.pincode ?? '';
+  void setProfileData(Data? data) async {
+    final prefs = await SharedPreferences.getInstance();
+    nameController.text = (data?.name?.isNotEmpty == true)
+        ? data!.name!
+        : (prefs.getString('user_name') ?? '');
+    emailController.text = (data?.email?.isNotEmpty == true)
+        ? data!.email!
+        : (prefs.getString('user_email') ?? '');
+    phoneController.text = (data?.phone?.isNotEmpty == true)
+        ? data!.phone!
+        : (prefs.getString('user_phone') ?? '');
+    selectedState.value = (data?.address?.state?.isNotEmpty == true)
+        ? data!.address!.state!
+        : 'Uttar Pradesh';
+    selectedDob.value = data?.dob ?? '';
+    cityController.text = data?.address?.city ?? '';
+    addressController.text = data?.address?.address ?? '';
+    districtController.text = data?.address?.district ?? '';
+    pincodeController.text = data?.address?.pincode ?? '';
   }
 
   List<String> states = <String>[
@@ -123,7 +132,7 @@ class ProfileController extends GetxController {
     );
   }
 
-  Future<void> updateProfile() async {
+  Future<bool> updateProfile({bool navigateHomeOnSuccess = false}) async {
     try {
       if (profileKey.currentState!.validate()) {
         isLoading.value = true;
@@ -142,15 +151,28 @@ class ProfileController extends GetxController {
         );
 
         if (response['status'] == true) {
-          Get.back();
-          fetchProfile();
-          Get.snackbar('Success', response['message']);
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('is_profile_complete', true);
+          await fetchProfile();
+          Get.snackbar('Success', response['message'] ?? 'Profile updated successfully');
+          if (navigateHomeOnSuccess) {
+            Get.offAllNamed('/bottom-nav');
+          } else {
+            Get.back();
+          }
+          return true;
         } else {
-          Get.snackbar('Error', response['details']['reason']);
+          final errorMsg = response['message'] ??
+              response['details']?['reason'] ??
+              'Failed to update profile';
+          Get.snackbar('Error', errorMsg.toString());
+          return false;
         }
       }
+      return false;
     } catch (e) {
       Get.snackbar('Error', e.toString());
+      return false;
     } finally {
       isLoading.value = false;
     }
@@ -162,6 +184,9 @@ class ProfileController extends GetxController {
 
       if (response.status == true) {
         profile.value = response.data;
+        if (response.data != null) {
+          setProfileData(response.data);
+        }
         if (response.data?.status == 0) {
           Get.offAllNamed('/deactivated');
         }

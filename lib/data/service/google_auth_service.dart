@@ -55,20 +55,27 @@ class GoogleAuthService {
   /// Step 2: Flutter → Laravel: Send idToken to backend
   static Future<Map<String, dynamic>> sendTokenToBackend(
     String idToken,
-    String accessToken,
-  ) async {
+    String accessToken, {
+    String? referralCode,
+  }) async {
     final url = Uri.parse(ApiEndpoints.googleLogin);
     debugPrint("🌐 [GoogleAuthService] Sending token to backend: $url");
+
+    final Map<String, dynamic> body = {
+      'id_token': idToken,
+      'access_token': accessToken,
+    };
+    if (referralCode != null && referralCode.isNotEmpty) {
+      body['referral_code'] = referralCode;
+    }
+
     final response = await http.post(
       url,
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",
       },
-      body: jsonEncode({
-        'id_token': idToken,
-        'access_token': accessToken,
-      }),
+      body: jsonEncode(body),
     );
     debugPrint("🌐 [GoogleAuthService] Response status: ${response.statusCode}");
     debugPrint("🌐 [GoogleAuthService] Response body: ${response.body}");

@@ -1,10 +1,19 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:opinion_easy/data/service/google_auth_service.dart';
 
 class GoogleAuthController extends GetxController {
   var isLoading = false.obs;
+  final TextEditingController referralController = TextEditingController();
+  final isNewUser = false.obs;
+  final isProfileComplete = false.obs;
+
+  @override
+  void onClose() {
+    referralController.dispose();
+    super.onClose();
+  }
 
   /// Full Google login flow: Step 1 → 2 → 5 → 6
   Future<bool> loginWithGoogle() async {
@@ -22,10 +31,11 @@ class GoogleAuthController extends GetxController {
       final idToken = tokens['id_token']!;
       final accessToken = tokens['access_token']!;
 
-      // Step 2: Send idToken to Laravel backend
+      // Step 2: Send idToken + optional referralCode to Laravel backend
       final response = await GoogleAuthService.sendTokenToBackend(
         idToken,
         accessToken,
+        referralCode: referralController.text.trim(),
       );
 
       // Step 5 & 6: Laravel returns user info + API token → save it
@@ -37,14 +47,36 @@ class GoogleAuthController extends GetxController {
           await prefs.setString('token', response['data']['token']);
         }
 
-        // Optionally save user info locally
+        final newUser = response['data']?['is_new_user'] == true;
+        final profileComplete =
+            response['data']?['is_profile_complete'] == true;
+        isNewUser.value = newUser;
+        isProfileComplete.value = profileComplete;
+
+        await prefs.setBool('is_new_user', newUser);
+        await prefs.setBool('is_profile_complete', profileComplete);
+
+        // Save user info locally
         if (response['data']?['user'] != null) {
           final user = response['data']['user'];
           await prefs.setString('user_name', user['name'] ?? '');
           await prefs.setString('user_email', user['email'] ?? '');
           await prefs.setString('user_photo', user['photo'] ?? '');
+          if (user['phone'] != null) {
+            await prefs.setString('user_phone', user['phone'] ?? '');
+          }
+          if (user['referral_code'] != null) {
+            await prefs.setString('user_referral_code', user['referral_code'] ?? '');
+          }
         }
         await prefs.setBool('is_google_user', true);
+
+        // Route: if new user or profile incomplete, open registration/profile completion
+        if (newUser || !profileComplete) {
+          Get.offAllNamed('/register');
+        } else {
+          Get.offAllNamed('/bottom-nav');
+        }
 
         return true;
       } else {

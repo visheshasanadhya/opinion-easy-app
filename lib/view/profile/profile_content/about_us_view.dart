@@ -60,7 +60,7 @@ class AboutUsView extends StatelessWidget {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            "About Daily Opinion",
+                            "About Opinion Easy",
                             style: TextStyle(
                               fontSize: titleFont + 2,
                               fontWeight: FontWeight.w800,

@@ -1,26 +1,19 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first, use_build_context_synchronously
-import 'package:opinion_easy/controller/auth_controller/google_auth_controller.dart';
-import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:pinput/pinput.dart';
+import 'package:intl/intl.dart';
+import 'package:opinion_easy/controller/profile_controller.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:opinion_easy/core/utils/widgets/btn_widget.dart';
-import 'package:opinion_easy/controller/auth_controller/register_controller.dart';
+import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 
 class RegisterView extends StatelessWidget {
-  final RegisterController registerController = Get.put(RegisterController());
-  final GoogleAuthController googleAuthController =
-      Get.put(GoogleAuthController());
+  final ProfileController profileController = Get.put(ProfileController());
 
   RegisterView({super.key});
 
-  // ── Shared decorations ─────────────────────────────────────
-
-  static InputDecoration _fieldDecoration(String hint, {Widget? prefix}) {
+  InputDecoration _inputDecoration(String hint, {Widget? prefix}) {
     return InputDecoration(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       hintText: hint,
       hintStyle: AppText.captionSm,
       filled: true,
@@ -30,544 +23,390 @@ class RegisterView extends StatelessWidget {
           ? const BoxConstraints(minWidth: 0, minHeight: 0)
           : null,
       border: OutlineInputBorder(
-        borderSide: BorderSide(color: AppColor.borderLight),
         borderRadius: BorderRadius.circular(AppDeco.radiusSm),
+        borderSide: BorderSide(color: AppColor.borderLight, width: 1),
       ),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: AppColor.borderLight),
         borderRadius: BorderRadius.circular(AppDeco.radiusSm),
+        borderSide: BorderSide(color: AppColor.borderLight, width: 1),
       ),
       focusedBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: AppColor.white, width: 1.5),
         borderRadius: BorderRadius.circular(AppDeco.radiusSm),
+        borderSide: const BorderSide(color: AppColor.white, width: 1.5),
       ),
       errorBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: AppColor.red),
         borderRadius: BorderRadius.circular(AppDeco.radiusSm),
+        borderSide: const BorderSide(color: AppColor.red, width: 1),
       ),
       focusedErrorBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: AppColor.red, width: 1.5),
         borderRadius: BorderRadius.circular(AppDeco.radiusSm),
+        borderSide: const BorderSide(color: AppColor.red, width: 1.5),
       ),
+      errorStyle: const TextStyle(color: AppColor.red),
     );
   }
 
-  static Widget get _phonePrefix => Padding(
-        padding: const EdgeInsets.only(left: 14, right: 8),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.phone_outlined, color: AppColor.white, size: 18),
-            HS(6),
-            Text("+91 ", style: AppText.bodyMd),
-          ],
-        ),
-      );
-
-  static PinTheme get _pinTheme => PinTheme(
-        width: 60,
-        height: 60,
-        textStyle: AppText.h3,
-        decoration: BoxDecoration(
-          color: AppColor.cardAlt,
-          borderRadius: BorderRadius.circular(AppDeco.radiusSm),
-          border: Border.all(color: AppColor.borderLight),
-        ),
-      );
-
-  static PinTheme get _focusedPinTheme => PinTheme(
-        width: 60,
-        height: 60,
-        textStyle: AppText.h3,
-        decoration: BoxDecoration(
-          color: AppColor.cardAlt,
-          borderRadius: BorderRadius.circular(AppDeco.radiusSm),
-          border: Border.all(color: AppColor.white, width: 1.5),
-        ),
-      );
-
-  Widget _label(String text) => Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Align(
-          alignment: Alignment.topLeft,
-          child: Text(text, style: AppText.hint),
-        ),
-      );
+  Widget _label(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Text(text, style: AppText.hint),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final controller = profileController;
+
     return Scaffold(
       backgroundColor: AppColor.scaffold,
+      appBar: AppBar(
+        backgroundColor: AppColor.scaffold,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        automaticallyImplyLeading: false,
+        title: Text("Complete Profile", style: AppText.h3),
+        centerTitle: true,
+        actions: [
+          TextButton(
+            onPressed: () => Get.offAllNamed('/bottom-nav'),
+            child: Text(
+              "Skip",
+              style: AppText.bodySm.copyWith(
+                color: AppColor.textGrey,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          HS(8),
+        ],
+      ),
       body: SafeArea(
-        child: Form(
-          key: registerController.registerKey,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  VS(48),
-                  Center(
-                    child: Image.asset(
-                      "assets/icons/logo_512.png",
-                      height: 100,
-                    ),
-                  ),
-                  VS(12),
-                  Text("Welcome to Opinion Easy", style: AppText.h3),
-                  VS(4),
-                  Text("Earning Reward and Gift", style: AppText.caption),
-                  VS(32),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          child: Form(
+            key: controller.profileKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Just a few details to finish setting up your account.",
+                  style: AppText.caption,
+                ),
+                VS(24),
 
-                  // ── Google Sign-In button (Primary) ─────────────
-                  Obx(
-                    () => SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: ElevatedButton(
-                        onPressed: googleAuthController.isLoading.value
-                            ? null
-                            : () async {
-                                bool success = await googleAuthController
-                                    .loginWithGoogle();
-                                if (success) {
-                                  Get.offAllNamed('/bottom-nav');
-                                }
-                              },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColor.white,
-                          foregroundColor: AppColor.black,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(AppDeco.radiusSm),
+                // ── Profile Picture Avatar ───────────────
+                Center(
+                  child: Stack(
+                    children: [
+                      Obx(() {
+                        final imageUrl = controller.profile.value?.profilePic;
+                        final imageFile = controller.selectedImage.value;
+                        return Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: AppColor.borderStrong,
+                              width: 2.5,
+                            ),
+                          ),
+                          child: CircleAvatar(
+                            radius: 48,
+                            backgroundColor: AppColor.cardAlt,
+                            backgroundImage: imageFile != null
+                                ? FileImage(imageFile)
+                                : imageUrl != null && imageUrl.isNotEmpty
+                                    ? NetworkImage(imageUrl)
+                                    : const AssetImage('assets/images/user.jpg')
+                                        as ImageProvider,
+                          ),
+                        );
+                      }),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: GestureDetector(
+                          onTap: controller.showImageSourceDialog,
+                          child: Container(
+                            height: 32,
+                            width: 32,
+                            decoration: BoxDecoration(
+                              color: AppColor.white,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: AppColor.scaffold,
+                                width: 2,
+                              ),
+                            ),
+                            child: const Icon(
+                              Icons.camera_alt_outlined,
+                              size: 16,
+                              color: AppColor.black,
+                            ),
                           ),
                         ),
-                        child: googleAuthController.isLoading.value
-                            ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: AppColor.black,
-                                ),
-                              )
-                            : Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    'assets/icons/google_logo.png',
-                                    height: 22,
-                                    width: 22,
-                                  ),
-                                  HS(12),
-                                  Text(
-                                    "Sign Up with Google",
-                                    style: AppText.bodyMd.copyWith(
-                                      color: AppColor.black,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
                       ),
-                    ),
-                  ),
-
-                  VS(24),
-
-                  // ── OR divider ───────────────────────────────
-                  Row(
-                    children: [
-                      Expanded(child: Divider(color: AppColor.borderLight)),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Text("OR REGISTER WITH PHONE", style: AppText.captionSm),
-                      ),
-                      Expanded(child: Divider(color: AppColor.borderLight)),
                     ],
                   ),
-                  VS(20),
+                ),
+                VS(28),
 
-                  // ── Name ──────────────────────────────
-                  _label("Name"),
-                  TextFormField(
-                    controller: registerController.nameController,
-                    cursorColor: AppColor.white,
-                    style: AppText.bodyMd,
-                    decoration: _fieldDecoration("Enter Your Full Name"),
-                    validator: (value) {
-                      if (value == null || value.isEmpty)
-                        return 'Name is required';
-                      if (!RegExp(r'^[A-Za-z ]+$').hasMatch(value))
-                        return 'Name can contain only letters and spaces';
-                      return null;
-                    },
-                  ),
-                  VS(14),
+                // ── Name ────────────────────────────────
+                _label("Full Name"),
+                TextFormField(
+                  controller: controller.nameController,
+                  style: AppText.bodyMd,
+                  decoration: _inputDecoration("e.g. Vishesh Sanadhya"),
+                  keyboardType: TextInputType.name,
+                  validator: (v) =>
+                      (v == null || v.trim().isEmpty) ? 'Name is required' : null,
+                ),
+                VS(16),
 
-                  // ── Phone ─────────────────────────────
-                  _label("Phone Number"),
-                  TextFormField(
-                    controller: registerController.phoneController,
-                    cursorColor: AppColor.white,
-                    style: AppText.bodyMd,
-                    keyboardType: TextInputType.phone,
-                    inputFormatters: [
-                      LengthLimitingTextInputFormatter(10),
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
-                    decoration: _fieldDecoration(
-                      "Enter 10-digit mobile number",
-                      prefix: _phonePrefix,
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty)
-                        return 'Phone number is required';
-                      if (!RegExp(r'^[6-9]\d{9}$').hasMatch(value))
-                        return 'Enter a valid 10-digit phone number';
-                      return null;
-                    },
-                  ),
-                  VS(14),
-
-                  // ── Referral Code ─────────────────────
-                  _label("Referral Code"),
-                  TextFormField(
-                    controller: registerController.referralController,
-                    cursorColor: AppColor.white,
-                    style: AppText.bodyMd,
-                    decoration: _fieldDecoration(
-                      "Enter Referral Code (optional)",
-                    ),
-                  ),
-                  VS(24),
-
-                  Obx(
-                    () => PrimaryBtnWidget(
-                      name: registerController.isLoading.value
-                          ? "Loading..."
-                          : "Next — OTP Verification",
-                      onTap: () async {
-                        final requestData = {
-                          'name': registerController.nameController.text.trim(),
-                          'phone':
-                              registerController.phoneController.text.trim(),
-                          'referral_code':
-                              registerController.referralController.text.trim(),
-                        };
-                        bool? isSuccess = await registerController.register(
-                          requestData,
-                        );
-                        if (isSuccess == true) {
-                          registerController.otpController.clear();
-                          _otpSheet(context);
-                        }
-                      },
-                    ),
-                  ),
-
-                  VS(20),
-
-                  InkWell(
-                    onTap: () => Get.offNamed('/login'),
-                    child: RichText(
-                      text: TextSpan(
+                // ── Phone ────────────────────────────────
+                _label("Phone Number"),
+                TextFormField(
+                  controller: controller.phoneController,
+                  style: AppText.bodyMd,
+                  keyboardType: TextInputType.phone,
+                  decoration: _inputDecoration(
+                    "Enter 10-digit number",
+                    prefix: Padding(
+                      padding: const EdgeInsets.only(left: 14, right: 8),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          TextSpan(
-                            text: "Already have an Account? ",
-                            style: AppText.bodyMd,
+                          const Icon(
+                            Icons.phone_outlined,
+                            color: AppColor.white,
+                            size: 18,
                           ),
-                          TextSpan(
-                            text: "Sign In",
+                          HS(6),
+                          Text("+91 ", style: AppText.bodyMd),
+                        ],
+                      ),
+                    ),
+                  ),
+                  validator: (v) {
+                    if (v == null || v.trim().isEmpty) {
+                      return 'Phone number is required';
+                    }
+                    if (!RegExp(r'^[6-9]\d{9}$').hasMatch(v.trim())) {
+                      return 'Enter a valid 10-digit mobile number';
+                    }
+                    return null;
+                  },
+                ),
+                VS(16),
+
+                // ── Email ─────────────────────────────────
+                _label("Email Address"),
+                TextFormField(
+                  controller: controller.emailController,
+                  style: AppText.bodyMd,
+                  decoration: _inputDecoration("example@gmail.com"),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (v) {
+                    if (v == null || v.trim().isEmpty) return 'Email is required';
+                    if (!RegExp(
+                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                    ).hasMatch(v.trim())) {
+                      return 'Enter a valid email address';
+                    }
+                    return null;
+                  },
+                ),
+                VS(16),
+
+                // ── Date of Birth ────────────────────────
+                _label("Date of Birth"),
+                GestureDetector(
+                  onTap: () async {
+                    FocusScope.of(context).unfocus();
+                    final picked = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime(2000),
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime.now(),
+                      builder: (context, child) => Theme(
+                        data: Theme.of(context).copyWith(
+                          colorScheme: const ColorScheme.dark(
+                            primary: AppColor.white,
+                            onPrimary: AppColor.black,
+                            surface: AppColor.card,
+                            onSurface: AppColor.white,
+                          ),
+                          dialogTheme: const DialogThemeData(
+                            backgroundColor: AppColor.card,
+                          ),
+                        ),
+                        child: child!,
+                      ),
+                    );
+                    if (picked != null) {
+                      controller.selectedDob.value =
+                          DateFormat('yyyy-MM-dd').format(picked);
+                    }
+                  },
+                  child: Obx(
+                    () => Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 16,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColor.cardAlt,
+                        borderRadius: BorderRadius.circular(AppDeco.radiusSm),
+                        border: Border.all(
+                          color: AppColor.borderLight,
+                          width: 1,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.calendar_today_outlined,
+                            size: 18,
+                            color: AppColor.textGrey,
+                          ),
+                          HS(10),
+                          Text(
+                            controller.selectedDob.value.isEmpty
+                                ? "Select Date of Birth"
+                                : controller.selectedDob.value,
                             style: AppText.bodyMd.copyWith(
-                              color: AppColor.textGrey,
+                              color: controller.selectedDob.value.isEmpty
+                                  ? AppColor.textGrey
+                                  : AppColor.white,
                             ),
                           ),
                         ],
                       ),
                     ),
                   ),
-                  VS(32),
+                ),
+                VS(16),
 
-                  Text(
-                    "By proceeding, I confirm that I agree to the",
-                    style: AppText.captionSm,
+                // ── Address ───────────────────────────────
+                _label("Address"),
+                TextFormField(
+                  maxLines: 2,
+                  controller: controller.addressController,
+                  style: AppText.bodyMd,
+                  decoration: _inputDecoration(
+                    "Street, locality, area details",
                   ),
-                  VS(2),
-                  GestureDetector(
-                    onTap: () {
-                      Get.toNamed('/terms-and-conditions');
+                  keyboardType: TextInputType.streetAddress,
+                ),
+                VS(16),
+
+                // ── State ─────────────────────────────────
+                _label("State"),
+                Obx(
+                  () => DropdownButtonFormField<String>(
+                    dropdownColor: AppColor.card,
+                    style: AppText.bodyMd,
+                    iconEnabledColor: AppColor.textGrey,
+                    decoration: _inputDecoration("Select State"),
+                    initialValue: controller.selectedState.value.isEmpty
+                        ? null
+                        : controller.selectedState.value,
+                    hint: Text("Select State", style: AppText.captionSm),
+                    onChanged: (v) => controller.selectedState.value = v ?? '',
+                    items: controller.states
+                        .map((s) => DropdownMenuItem(value: s, child: Text(s)))
+                        .toList(),
+                  ),
+                ),
+                VS(16),
+
+                // ── District ──────────────────────────────
+                _label("District"),
+                TextFormField(
+                  controller: controller.districtController,
+                  style: AppText.bodyMd,
+                  decoration: _inputDecoration("Enter District"),
+                ),
+                VS(16),
+
+                // ── City & Pincode ────────────────────────
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _label("City"),
+                          TextFormField(
+                            controller: controller.cityController,
+                            style: AppText.bodyMd,
+                            decoration: _inputDecoration("City"),
+                          ),
+                        ],
+                      ),
+                    ),
+                    HS(12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _label("Pincode"),
+                          TextFormField(
+                            controller: controller.pincodeController,
+                            style: AppText.bodyMd,
+                            decoration: _inputDecoration("6-digit code"),
+                            keyboardType: TextInputType.number,
+                            validator: (v) {
+                              if (v != null &&
+                                  v.isNotEmpty &&
+                                  !RegExp(r'^\d{6}$').hasMatch(v)) {
+                                return 'Invalid 6-digit code';
+                              }
+                              return null;
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                VS(32),
+
+                // ── Complete Profile Button ───────────────
+                Obx(
+                  () => PrimaryBtnWidget(
+                    name: controller.isLoading.value
+                        ? "Saving..."
+                        : "Complete Registration",
+                    onTap: () async {
+                      await controller.updateProfile(
+                        navigateHomeOnSuccess: true,
+                      );
                     },
+                  ),
+                ),
+                VS(16),
+
+                // ── Skip Option ───────────────────────────
+                Center(
+                  child: TextButton(
+                    onPressed: () => Get.offAllNamed('/bottom-nav'),
                     child: Text(
-                      "Terms and Conditions.",
+                      "I'll complete this later",
                       style: AppText.captionSm.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: AppColor.white,
+                        color: AppColor.textGrey,
+                        decoration: TextDecoration.underline,
                       ),
                     ),
                   ),
-                  VS(32),
-                ],
-              ),
+                ),
+                VS(24),
+              ],
             ),
           ),
         ),
       ),
-    );
-  }
-
-  // ── OTP sheet ────────────────────────────────────────────────
-
-  Future<dynamic> _otpSheet(BuildContext context) {
-    return showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return Container(
-          width: double.infinity,
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          decoration: BoxDecoration(
-            color: AppColor.card,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-            border: Border.all(color: AppColor.borderLight),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: 20),
-                  decoration: BoxDecoration(
-                    color: AppColor.cardLight,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                Text("Verify Your Number", style: AppText.h2),
-                VS(8),
-                Text("We've sent a 4-digit code to", style: AppText.caption),
-                VS(2),
-                Text(
-                  "+91 ${registerController.phoneController.text}",
-                  style: AppText.bodyMd,
-                ),
-                VS(28),
-                Pinput(
-                  length: 4,
-                  controller: registerController.otpController,
-                  keyboardType: TextInputType.number,
-                  defaultPinTheme: _pinTheme,
-                  focusedPinTheme: _focusedPinTheme,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) return 'Enter OTP';
-                    if (value.length != 4) return 'OTP must be 4 digits';
-                    return null;
-                  },
-                ),
-                VS(28),
-                Obx(
-                  () => SecondaryBtnWidget(
-                    name: registerController.isLoading.value
-                        ? "Loading..."
-                        : "Verify",
-                    horizontalPadding: 40,
-                    onTap: () async {
-                      final requestData = {
-                        'name': registerController.nameController.text.trim(),
-                        'phone': registerController.phoneController.text.trim(),
-                        'referral_code':
-                            registerController.referralController.text.trim(),
-                        'otp': registerController.otpController.text.trim(),
-                      };
-                      if (registerController.otpController.text.isNotEmpty) {
-                        bool isSuccess = await registerController.register(
-                          requestData,
-                        );
-                        if (isSuccess) {
-                          Navigator.pop(context);
-                          _setMPinSheet(context);
-                        }
-                      } else {
-                        Get.snackbar('Oops', 'Kindly enter OTP');
-                      }
-                    },
-                  ),
-                ),
-                VS(16),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  // ── Set MPIN sheet ───────────────────────────────────────────
-
-  Future<dynamic> _setMPinSheet(BuildContext context) {
-    return showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return Container(
-          width: double.infinity,
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          decoration: BoxDecoration(
-            color: AppColor.card,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-            border: Border.all(color: AppColor.borderLight),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: 20),
-                  decoration: BoxDecoration(
-                    color: AppColor.cardLight,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                Text("Set Your 4-Digit MPIN", style: AppText.h2),
-                VS(8),
-                Text(
-                  "Create a secure PIN to access your account",
-                  style: AppText.caption,
-                ),
-                VS(28),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Enter MPIN", style: AppText.hint),
-                    VS(10),
-                    Pinput(
-                      length: 4,
-                      controller: registerController.mpinController,
-                      keyboardType: TextInputType.number,
-                      defaultPinTheme: _pinTheme,
-                      focusedPinTheme: _focusedPinTheme,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) return 'Enter MPIN';
-                        if (value.length != 4) return 'MPIN must be 4 digits';
-                        return null;
-                      },
-                    ),
-                    VS(18),
-                    Text("Confirm MPIN", style: AppText.hint),
-                    VS(10),
-                    Pinput(
-                      length: 4,
-                      controller: registerController.confirmMpinController,
-                      keyboardType: TextInputType.number,
-                      defaultPinTheme: _pinTheme,
-                      focusedPinTheme: _focusedPinTheme,
-                      validator: (value) {
-                        if (value == null || value.isEmpty)
-                          return 'Confirm MPIN';
-                        if (value.length != 4) return 'MPIN must be 4 digits';
-                        return null;
-                      },
-                    ),
-                  ],
-                ),
-                VS(28),
-                Obx(
-                  () => SecondaryBtnWidget(
-                    name: registerController.isLoading.value
-                        ? "Loading..."
-                        : "Done",
-                    horizontalPadding: 80,
-                    onTap: () async {
-                      if (registerController.mpinController.text.isEmpty) {
-                        Get.snackbar('Oops', 'Kindly enter MPIN');
-                      } else if (registerController
-                          .confirmMpinController.text.isEmpty) {
-                        Get.snackbar('Oops', 'Kindly confirm MPIN');
-                      } else if (registerController.mpinController.text !=
-                          registerController.confirmMpinController.text) {
-                        Get.snackbar('Oops', 'MPIN does not match');
-                      } else {
-                        final requestData = {
-                          'name': registerController.nameController.text.trim(),
-                          'phone':
-                              registerController.phoneController.text.trim(),
-                          'referral_code':
-                              registerController.referralController.text.trim(),
-                          'otp': registerController.otpController.text.trim(),
-                          'mpin': registerController.mpinController.text.trim(),
-                        };
-                        bool isSuccess = await registerController.register(
-                          requestData,
-                        );
-                        if (isSuccess) {
-                          Get.back();
-                          showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (context) {
-                              Future.delayed(
-                                const Duration(seconds: 1),
-                                () => Get.offAllNamed('/bottom-nav'),
-                              );
-                              return Dialog(
-                                backgroundColor: Colors.transparent,
-                                elevation: 0,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 24,
-                                    vertical: 36,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: AppColor.card,
-                                    borderRadius: BorderRadius.circular(
-                                      AppDeco.radiusLg,
-                                    ),
-                                    border: Border.all(
-                                      color: AppColor.borderLight,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const Text(
-                                        "🎉",
-                                        style: TextStyle(fontSize: 32),
-                                      ),
-                                      VS(12),
-                                      Text(
-                                        "Account Successfully\nCreated",
-                                        textAlign: TextAlign.center,
-                                        style: AppText.h2,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                        }
-                      }
-                    },
-                  ),
-                ),
-                VS(16),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 }
