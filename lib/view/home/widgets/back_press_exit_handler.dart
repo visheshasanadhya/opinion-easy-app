@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:opinion_easy/core/utils/widgets/btn_widget.dart';
+import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 
 class BackPressExitHandler extends StatefulWidget {
   final Widget child;
@@ -20,13 +22,12 @@ class BackPressExitHandler extends StatefulWidget {
 
 class _BackPressExitHandlerState extends State<BackPressExitHandler> {
   DateTime? _lastBackPress;
-  static const _backPressInterval = Duration(seconds: 2);
-
+  static const Duration _backPressInterval = Duration(seconds: 2);
   OverlayEntry? _toastEntry;
 
   // ── Main back-press logic ──────────────────────────────────
   Future<bool> _onWillPop() async {
-    // Not on home tab → go home first
+    // If not on the Home tab, switch back to Home first
     if (!widget.isHomeTab) {
       widget.onGoHome();
       return false;
@@ -42,7 +43,7 @@ class _BackPressExitHandlerState extends State<BackPressExitHandler> {
       return false;
     }
 
-    // Second press within 2 s → show confirmation dialog
+    // Second press within 2s → show confirmation dialog
     await _showExitDialog();
     return false;
   }
@@ -50,6 +51,10 @@ class _BackPressExitHandlerState extends State<BackPressExitHandler> {
   // ── Floating toast ─────────────────────────────────────────
   void _showToast(String message) {
     _toastEntry?.remove();
+    _toastEntry = null;
+
+    final overlay = Overlay.maybeOf(context);
+    if (overlay == null) return;
 
     _toastEntry = OverlayEntry(
       builder: (_) => Positioned(
@@ -58,27 +63,29 @@ class _BackPressExitHandlerState extends State<BackPressExitHandler> {
         right: 0,
         child: Center(
           child: Material(
-            color: Colors.transparent,
+            color: AppColor.transparent,
             child: _ToastBubble(message: message),
           ),
         ),
       ),
     );
 
-    Overlay.of(context).insert(_toastEntry!);
+    overlay.insert(_toastEntry!);
 
     Future.delayed(_backPressInterval, () {
-      _toastEntry?.remove();
-      _toastEntry = null;
+      if (mounted) {
+        _toastEntry?.remove();
+        _toastEntry = null;
+      }
     });
   }
 
-  // ── Exit confirmation dialog ───────────────────────────────
+  // ── Exit confirmation dialog (matches _showLogoutDialog) ───
   Future<void> _showExitDialog() async {
     final result = await showDialog<bool>(
       context: context,
       barrierDismissible: true,
-      barrierColor: Colors.black.withValues(alpha: 0.65),
+      barrierColor: AppColor.blackOp(0.65),
       builder: (ctx) => const _ExitDialog(),
     );
 
@@ -90,6 +97,7 @@ class _BackPressExitHandlerState extends State<BackPressExitHandler> {
   @override
   void dispose() {
     _toastEntry?.remove();
+    _toastEntry = null;
     super.dispose();
   }
 
@@ -148,14 +156,14 @@ class _ToastBubbleState extends State<_ToastBubble>
       child: FadeTransition(
         opacity: _fade,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
           decoration: BoxDecoration(
-            color: const Color(0xFF1C1C1E),
+            color: AppColor.cardAlt,
             borderRadius: BorderRadius.circular(28),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.10)),
+            border: Border.all(color: AppColor.borderLight),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.45),
+                color: AppColor.blackOp(0.45),
                 blurRadius: 20,
                 offset: const Offset(0, 6),
               ),
@@ -167,21 +175,19 @@ class _ToastBubbleState extends State<_ToastBubble>
               Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: Colors.redAccent.withValues(alpha: 0.15),
+                  color: AppColor.red.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
                   Icons.exit_to_app_rounded,
-                  color: Colors.redAccent,
+                  color: AppColor.red,
                   size: 16,
                 ),
               ),
-              const SizedBox(width: 10),
+              HS(10),
               Text(
                 widget.message,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 13.5,
+                style: AppText.bodySm.copyWith(
                   fontWeight: FontWeight.w500,
                   letterSpacing: 0.1,
                 ),
@@ -194,101 +200,62 @@ class _ToastBubbleState extends State<_ToastBubble>
   }
 }
 
-// ── Exit Dialog ────────────────────────────────────────────────
+// ── Exit Dialog (Styled identical to _showLogoutDialog) ─────────
 class _ExitDialog extends StatelessWidget {
   const _ExitDialog();
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+      backgroundColor: AppColor.transparent,
       child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFF141414),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.09), width: 1.5),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.55),
-              blurRadius: 40,
-              offset: const Offset(0, 12),
+          color: AppColor.card,
+          borderRadius: BorderRadius.circular(AppDeco.radiusLg),
+          border: Border.all(color: AppColor.borderLight),
+        ),
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: AppDeco.circleBorder,
+              child: const Icon(
+                Icons.logout_rounded,
+                color: AppColor.white,
+                size: 28,
+              ),
+            ),
+            VS(16),
+            Text("Exit App?", style: AppText.h1),
+            VS(8),
+            Text(
+              "Are you sure you want to exit\nOpinion Easy?",
+              textAlign: TextAlign.center,
+              style: AppText.caption,
+            ),
+            VS(22),
+            Row(
+              children: [
+                Expanded(
+                  child: SecondaryBtnWidget(
+                    name: "Stay",
+                    onTap: () => Navigator.of(context).pop(false),
+                    horizontalPadding: 0,
+                  ),
+                ),
+                HS(12),
+                Expanded(
+                  child: PrimaryBtnWidget(
+                    name: "Exit",
+                    onTap: () => Navigator.of(context).pop(true),
+                    horizontalPadding: 0,
+                  ),
+                ),
+              ],
             ),
           ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(28),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // ── Icon container ─────────────────────────────
-              Container(
-                padding: const EdgeInsets.all(18),
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.12),
-                    width: 1.5,
-                  ),
-                ),
-                child: const Icon(
-                  Icons.logout_rounded,
-                  color: Colors.white,
-                  size: 32,
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // ── Title ──────────────────────────────────────
-              const Text(
-                'Exit App?',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: -0.3,
-                ),
-              ),
-              const SizedBox(height: 10),
-
-              // ── Subtitle ───────────────────────────────────
-              Text(
-                'Are you sure you want to exit\n Opinion Easy?',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[500],
-                  height: 1.55,
-                ),
-              ),
-              const SizedBox(height: 28),
-
-              // ── Buttons ────────────────────────────────────
-              Row(
-                children: [
-                  // Stay / Cancel
-                  Expanded(
-                    child: SecondaryBtnWidget(
-                      name: 'Stay',
-                      onTap: () => Navigator.of(context).pop(false),
-                      horizontalPadding: 0,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-
-                  // Exit
-                  Expanded(
-                    child: PrimaryBtnWidget(
-                      name: 'Exit',
-                      onTap: () => Navigator.of(context).pop(true),
-                      horizontalPadding: 0,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
         ),
       ),
     );
