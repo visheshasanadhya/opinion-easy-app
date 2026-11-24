@@ -16,6 +16,7 @@ class CustomTextField extends StatelessWidget {
   final TextCapitalization textCapitalization;
   final List<TextInputFormatter>? inputFormatters;
   final String? Function(String?)? validator;
+  final AutovalidateMode? autovalidateMode;
   final ValueChanged<String>? onChange;
   final ValueChanged<String>? onFieldSubmitted;
   final FocusNode? focusNode;
@@ -49,6 +50,7 @@ class CustomTextField extends StatelessWidget {
     this.textCapitalization = TextCapitalization.none,
     this.inputFormatters,
     this.validator,
+    this.autovalidateMode = AutovalidateMode.onUserInteraction,
     this.onChange,
     this.onFieldSubmitted,
     this.focusNode,
@@ -96,6 +98,7 @@ class CustomTextField extends StatelessWidget {
       textCapitalization: textCapitalization,
       inputFormatters: inputFormatters,
       validator: validator,
+      autovalidateMode: autovalidateMode,
       onChanged: onChange,
       onFieldSubmitted: onFieldSubmitted,
       onTapOutside: (_) => FocusScope.of(context).unfocus(),

@@ -42,6 +42,7 @@ class EditProfileView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
           child: Form(
             key: controller.profileKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -274,8 +275,9 @@ class EditProfileView extends StatelessWidget {
                   controller: controller.addressController,
                   hintText: "23/234, Soft Link Road, Sec-32, 112345",
                   keyboardType: TextInputType.streetAddress,
-                  validator: (v) =>
-                      (v == null || v.isEmpty) ? 'Address is required' : null,
+                  validator: (v) => (v == null || v.trim().isEmpty)
+                      ? 'Address is required'
+                      : null,
                 ),
                 VS(16),
 
@@ -321,8 +323,10 @@ class EditProfileView extends StatelessWidget {
                               )
                             : null,
                     validator: (v) {
-                      if (v == null || v.isEmpty) return 'Pincode is required';
-                      if (!RegExp(r'^\d{6}$').hasMatch(v)) {
+                      if (v == null || v.trim().isEmpty) {
+                        return 'Pincode is required';
+                      }
+                      if (!RegExp(r'^\d{6}$').hasMatch(v.trim())) {
                         return 'Invalid 6-digit pincode';
                       }
                       return null;
