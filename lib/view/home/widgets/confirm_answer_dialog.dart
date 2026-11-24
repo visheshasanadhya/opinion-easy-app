@@ -32,7 +32,7 @@ class ConfirmAnswerDialog extends StatefulWidget {
         onCancel: onCancel,
       ),
       barrierDismissible: false,
-      barrierColor: AppColor.black.withOpacity(0.75),
+      barrierColor: AppColor.black.withValues(alpha: 0.75),
     );
   }
 
@@ -133,9 +133,9 @@ class _ConfirmAnswerDialogState extends State<ConfirmAnswerDialog> {
               Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: accentColor.withOpacity(0.12),
+                  color: accentColor.withValues(alpha: 0.12),
                   shape: BoxShape.circle,
-                  border: Border.all(color: accentColor.withOpacity(0.25)),
+                  border: Border.all(color: accentColor.withValues(alpha: 0.25)),
                 ),
                 child: Icon(
                   isYes
@@ -216,7 +216,7 @@ class _ConfirmAnswerDialogState extends State<ConfirmAnswerDialog> {
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 13),
                         side: BorderSide(
-                          color: AppColor.white.withOpacity(0.15),
+                          color: AppColor.white.withValues(alpha: 0.15),
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -237,7 +237,7 @@ class _ConfirmAnswerDialogState extends State<ConfirmAnswerDialog> {
                       onPressed: _isConfirming ? null : _handleConfirm,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _isConfirming
-                            ? accentColor.withOpacity(0.4)
+                            ? accentColor.withValues(alpha: 0.4)
                             : accentColor,
                         padding: const EdgeInsets.symmetric(vertical: 13),
                         elevation: 0,

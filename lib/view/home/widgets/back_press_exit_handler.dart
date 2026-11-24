@@ -78,7 +78,7 @@ class _BackPressExitHandlerState extends State<BackPressExitHandler> {
     final result = await showDialog<bool>(
       context: context,
       barrierDismissible: true,
-      barrierColor: Colors.black.withOpacity(0.65),
+      barrierColor: Colors.black.withValues(alpha: 0.65),
       builder: (ctx) => const _ExitDialog(),
     );
 
@@ -152,10 +152,10 @@ class _ToastBubbleState extends State<_ToastBubble>
           decoration: BoxDecoration(
             color: const Color(0xFF1C1C1E),
             borderRadius: BorderRadius.circular(28),
-            border: Border.all(color: Colors.white.withOpacity(0.10)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.10)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.45),
+                color: Colors.black.withValues(alpha: 0.45),
                 blurRadius: 20,
                 offset: const Offset(0, 6),
               ),
@@ -167,7 +167,7 @@ class _ToastBubbleState extends State<_ToastBubble>
               Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: Colors.redAccent.withOpacity(0.15),
+                  color: Colors.redAccent.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -207,10 +207,10 @@ class _ExitDialog extends StatelessWidget {
         decoration: BoxDecoration(
           color: const Color(0xFF141414),
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.white.withOpacity(0.09), width: 1.5),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.09), width: 1.5),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.55),
+              color: Colors.black.withValues(alpha: 0.55),
               blurRadius: 40,
               offset: const Offset(0, 12),
             ),
@@ -228,7 +228,7 @@ class _ExitDialog extends StatelessWidget {
                   color: Colors.transparent,
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.12),
+                    color: Colors.white.withValues(alpha: 0.12),
                     width: 1.5,
                   ),
                 ),

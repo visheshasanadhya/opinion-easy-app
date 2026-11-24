@@ -210,9 +210,9 @@ class _WalletViewState extends State<WalletView> {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: AppColor.orange.withOpacity(0.10),
+          color: AppColor.orange.withValues(alpha: 0.10),
           borderRadius: BorderRadius.circular(AppDeco.radius),
-          border: Border.all(color: AppColor.orange.withOpacity(0.35)),
+          border: Border.all(color: AppColor.orange.withValues(alpha: 0.35)),
         ),
         child: Row(
           children: [
@@ -240,9 +240,9 @@ class _WalletViewState extends State<WalletView> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColor.orange.withOpacity(0.15),
+                color: AppColor.orange.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColor.orange.withOpacity(0.35)),
+                border: Border.all(color: AppColor.orange.withValues(alpha: 0.35)),
               ),
               child: const Icon(
                 Icons.card_giftcard_rounded,
@@ -535,9 +535,9 @@ class _WalletViewState extends State<WalletView> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              color: statusColor.withOpacity(0.15),
+              color: statusColor.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: statusColor.withOpacity(0.4)),
+              border: Border.all(color: statusColor.withValues(alpha: 0.4)),
             ),
             child: Text(
               (redeem.status ?? "PENDING").toUpperCase(),

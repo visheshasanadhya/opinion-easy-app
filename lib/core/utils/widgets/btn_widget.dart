@@ -29,7 +29,7 @@ class PrimaryBtnWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
-              color: AppColor.white.withOpacity(0.15),
+              color: AppColor.white.withValues(alpha: 0.15),
               blurRadius: 16,
               offset: const Offset(0, 4),
             ),
@@ -77,7 +77,7 @@ class SecondaryBtnWidget extends StatelessWidget {
           color: Colors.transparent,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: AppColor.white.withOpacity(0.12),
+            color: AppColor.white.withValues(alpha: 0.12),
             width: 1.5,
           ),
         ),

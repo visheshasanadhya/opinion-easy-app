@@ -120,9 +120,9 @@ class ReferAndEarnView extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
-                color: AppColor.green.withOpacity(0.08),
+                color: AppColor.green.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(AppDeco.radius),
-                border: Border.all(color: AppColor.green.withOpacity(0.25)),
+                border: Border.all(color: AppColor.green.withValues(alpha: 0.25)),
               ),
               child: Row(
                 children: [

@@ -498,7 +498,7 @@ class _LeaderboardViewState extends State<LeaderboardView>
                     Icon(
                       Icons.military_tech_outlined,
                       size: 40,
-                      color: AppColor.textMuted.withOpacity(0.4),
+                      color: AppColor.textMuted.withValues(alpha: 0.4),
                     ),
                     const SizedBox(height: 10),
                     Text(

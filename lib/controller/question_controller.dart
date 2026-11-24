@@ -146,7 +146,7 @@ class QuestionController extends GetxController {
           "Success",
           response["message"] ?? "Answer submitted!",
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green.withOpacity(0.8),
+          backgroundColor: Colors.green.withValues(alpha: 0.8),
           colorText: Colors.white,
           duration: const Duration(seconds: 1),
         );

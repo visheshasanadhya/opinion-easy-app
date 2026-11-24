@@ -20,7 +20,6 @@ class _PollResultWidgetState extends State<PollResultWidget>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
   late final Animation<double> _yesFill;
-  late final Animation<double> _noFill;
 
   double get _total => (widget.yesCount + widget.noCount).toDouble();
   double get _yesPct => _total == 0 ? 0 : widget.yesCount / _total;
@@ -34,7 +33,6 @@ class _PollResultWidgetState extends State<PollResultWidget>
       duration: const Duration(milliseconds: 900),
     );
     _yesFill = CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic);
-    _noFill = CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic);
     _ctrl.forward();
   }
 
@@ -55,10 +53,10 @@ class _PollResultWidgetState extends State<PollResultWidget>
       decoration: BoxDecoration(
         color: const Color(0xFF1E1E1E),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.35),
+            color: Colors.black.withValues(alpha: 0.35),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -81,7 +79,7 @@ class _PollResultWidgetState extends State<PollResultWidget>
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
-                  color: Colors.white.withOpacity(0.55),
+                  color: Colors.white.withValues(alpha: 0.55),
                   letterSpacing: 0.3,
                 ),
               ),
@@ -90,7 +88,7 @@ class _PollResultWidgetState extends State<PollResultWidget>
                 '${widget.yesCount + widget.noCount} votes',
                 style: TextStyle(
                   fontSize: 12,
-                  color: Colors.white.withOpacity(0.35),
+                  color: Colors.white.withValues(alpha: 0.35),
                 ),
               ),
             ],
@@ -110,7 +108,7 @@ class _PollResultWidgetState extends State<PollResultWidget>
                     Container(
                       height: 10,
                       width: double.infinity,
-                      color: const Color(0xFFE53935).withOpacity(0.25),
+                      color: const Color(0xFFE53935).withValues(alpha: 0.25),
                     ),
                     // YES fill
                     FractionallySizedBox(
@@ -224,7 +222,7 @@ class _VoteLabel extends StatelessWidget {
           '$count votes',
           style: TextStyle(
             fontSize: 11,
-            color: Colors.white.withOpacity(0.35),
+            color: Colors.white.withValues(alpha: 0.35),
           ),
         ),
       ],

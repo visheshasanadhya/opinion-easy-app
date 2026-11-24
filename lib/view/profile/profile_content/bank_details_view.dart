@@ -76,10 +76,10 @@ class BankDetailsView extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(28),
               decoration: BoxDecoration(
-                color: AppColor.white.withOpacity(0.1),
+                color: AppColor.white.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: AppColor.white.withOpacity(0.2),
+                  color: AppColor.white.withValues(alpha: 0.2),
                   width: 1,
                 ),
               ),
@@ -131,10 +131,10 @@ class BankDetailsView extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFF141414),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.08), width: 1),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08), width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withValues(alpha: 0.3),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -144,7 +144,7 @@ class BankDetailsView extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
-          splashColor: Colors.white.withOpacity(0.04),
+          splashColor: Colors.white.withValues(alpha: 0.04),
           onTap: () {
             controller.loadBankDetailForEdit(bankDetail);
             _showBankFormBottomSheet(context, controller, isEdit: true);
@@ -164,10 +164,10 @@ class BankDetailsView extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColor.white.withOpacity(0.12),
+                        color: AppColor.white.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: AppColor.white.withOpacity(0.3),
+                          color: AppColor.white.withValues(alpha: 0.3),
                         ),
                       ),
                       child: const Row(
@@ -277,7 +277,7 @@ class BankDetailsView extends StatelessWidget {
                 ],
 
                 const SizedBox(height: 16),
-                Divider(color: Colors.white.withOpacity(0.06), height: 1),
+                Divider(color: Colors.white.withValues(alpha: 0.06), height: 1),
                 const SizedBox(height: 16),
 
                 // ── Account number ─────────────────────────
@@ -362,7 +362,7 @@ class BankDetailsView extends StatelessWidget {
           decoration: BoxDecoration(
             color: const Color(0xFF141414),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withOpacity(0.08)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -370,9 +370,9 @@ class BankDetailsView extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.1),
+                  color: Colors.red.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.red.withOpacity(0.2)),
+                  border: Border.all(color: Colors.red.withValues(alpha: 0.2)),
                 ),
                 child: const Icon(
                   Icons.delete_rounded,
@@ -407,7 +407,7 @@ class BankDetailsView extends StatelessWidget {
                       onPressed: () => Get.back(),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 13),
-                        side: BorderSide(color: Colors.white.withOpacity(0.2)),
+                        side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),

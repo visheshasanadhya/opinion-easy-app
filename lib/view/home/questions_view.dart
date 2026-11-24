@@ -50,8 +50,9 @@ class _QuestionViewState extends State<QuestionView> {
       // ── Native ad pinned at the very bottom ───────────────────────────────
       // Shrinks to nothing instantly if the ad isn't loaded — no shimmer wait.
       bottomNavigationBar: Obx(() {
-        if (!_sharedNativeAd.isNativeLoaded.value)
+        if (!_sharedNativeAd.isNativeLoaded.value) {
           return const SizedBox.shrink();
+        }
         return SafeArea(
           top: false,
           child: DarkNativeAdWidget(
@@ -191,7 +192,7 @@ class _QuestionViewState extends State<QuestionView> {
                               style: ElevatedButton.styleFrom(
                                 minimumSize: const Size(double.infinity, 52),
                                 backgroundColor: isDisabled
-                                    ? AppColor.green.withOpacity(0.4)
+                                    ? AppColor.green.withValues(alpha: 0.4)
                                     : AppColor.green,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(14),
@@ -206,8 +207,8 @@ class _QuestionViewState extends State<QuestionView> {
                                 children: [
                                   Icon(
                                     Icons.check_circle_outline_rounded,
-                                    color: AppColor.white.withOpacity(
-                                      isDisabled ? 0.6 : 1,
+                                    color: AppColor.white.withValues(
+                                      alpha: isDisabled ? 0.6 : 1,
                                     ),
                                     size: 22,
                                   ),
@@ -215,8 +216,8 @@ class _QuestionViewState extends State<QuestionView> {
                                   Text(
                                     'Yes',
                                     style: AppText.body.copyWith(
-                                      color: AppColor.white.withOpacity(
-                                        isDisabled ? 0.6 : 1,
+                                      color: AppColor.white.withValues(
+                                        alpha: isDisabled ? 0.6 : 1,
                                       ),
                                       fontSize: 18,
                                     ),
@@ -231,7 +232,7 @@ class _QuestionViewState extends State<QuestionView> {
                               style: ElevatedButton.styleFrom(
                                 minimumSize: const Size(double.infinity, 52),
                                 backgroundColor: isDisabled
-                                    ? AppColor.red.withOpacity(0.4)
+                                    ? AppColor.red.withValues(alpha: 0.4)
                                     : AppColor.red,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(14),
@@ -246,8 +247,8 @@ class _QuestionViewState extends State<QuestionView> {
                                 children: [
                                   Icon(
                                     Icons.cancel_outlined,
-                                    color: AppColor.white.withOpacity(
-                                      isDisabled ? 0.6 : 1,
+                                    color: AppColor.white.withValues(
+                                      alpha: isDisabled ? 0.6 : 1,
                                     ),
                                     size: 22,
                                   ),
@@ -255,8 +256,8 @@ class _QuestionViewState extends State<QuestionView> {
                                   Text(
                                     'No',
                                     style: AppText.body.copyWith(
-                                      color: AppColor.white.withOpacity(
-                                        isDisabled ? 0.6 : 1,
+                                      color: AppColor.white.withValues(
+                                        alpha: isDisabled ? 0.6 : 1,
                                       ),
                                       fontSize: 18,
                                     ),
@@ -345,9 +346,9 @@ class _QuestionViewState extends State<QuestionView> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -381,7 +382,7 @@ class _QuestionViewState extends State<QuestionView> {
           Text(
             text,
             style: AppText.captionSm.copyWith(
-              color: AppColor.red.withOpacity(0.85),
+              color: AppColor.red.withValues(alpha: 0.85),
               fontSize: 12,
             ),
           ),

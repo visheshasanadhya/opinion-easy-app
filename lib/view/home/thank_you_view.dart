@@ -44,10 +44,10 @@ class _ThankYouViewState extends State<ThankYouView> {
                 Container(
                   padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
-                    color: AppColor.green.withOpacity(0.12),
+                    color: AppColor.green.withValues(alpha: 0.12),
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: AppColor.green.withOpacity(0.3),
+                      color: AppColor.green.withValues(alpha: 0.3),
                     ),
                   ),
                   child: const Icon(

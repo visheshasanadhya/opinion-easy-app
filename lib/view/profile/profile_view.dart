@@ -92,8 +92,9 @@ class ProfileView extends StatelessWidget {
   Widget _buildProfileCard() {
     return InkWell(
       onTap: () {
-        if (profileController.profile.value != null)
+        if (profileController.profile.value != null) {
           profileController.setProfileData(profileController.profile.value!);
+        }
         Get.toNamed('/edit-profile');
       },
       borderRadius: BorderRadius.circular(AppDeco.radius),

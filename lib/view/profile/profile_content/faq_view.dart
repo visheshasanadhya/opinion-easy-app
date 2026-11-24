@@ -87,14 +87,14 @@ class _FAQTileState extends State<_FAQTile> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: _expanded
-              ? primaryColor.withOpacity(0.4)
-              : Colors.white.withOpacity(0.07),
+              ? primaryColor.withValues(alpha: 0.4)
+              : Colors.white.withValues(alpha: 0.07),
           width: 1,
         ),
         boxShadow: _expanded
             ? [
                 BoxShadow(
-                  color: primaryColor.withOpacity(0.08),
+                  color: primaryColor.withValues(alpha: 0.08),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -120,8 +120,8 @@ class _FAQTileState extends State<_FAQTile> {
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: _expanded
-                    ? primaryColor.withOpacity(0.15)
-                    : Colors.white.withOpacity(0.06),
+                    ? primaryColor.withValues(alpha: 0.15)
+                    : Colors.white.withValues(alpha: 0.06),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
