@@ -30,6 +30,10 @@ class CategoryController extends GetxController {
         categories.value = response.data ?? [];
       }
     } catch (e) {
+      if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
+          e.toString().contains("Authentication is required")) {
+        return;
+      }
       Get.snackbar('Error', e.toString());
     } finally {
       isLoading.value = false;

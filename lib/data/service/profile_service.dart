@@ -5,6 +5,8 @@ import 'package:opinion_easy/core/api_contstant/api_constant.dart';
 import 'package:opinion_easy/data/model/profile_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'api_client.dart';
+import 'auth_error_handler.dart';
 
 class ProfileService {
   Future<Map<String, dynamic>> updateProfile(
@@ -24,21 +26,17 @@ class ProfileService {
     String? token = prefs.getString('token');
 
     if (token == null || token.isEmpty) {
+      AuthErrorHandler.handleAuthError();
       return {"status": false, "message": "Token not found, please re-login"};
     }
 
     final url = Uri.parse(ApiEndpoints.profile);
 
-    var request = http.MultipartRequest(
-      'POST',
-      url,
-    ); // Use POST instead of PATCH
+    var request = http.MultipartRequest('POST', url);
 
     request.headers['Accept'] = 'application/json';
     request.headers['Authorization'] = 'Bearer $token';
-    // DO NOT set Content-Type manually for MultipartRequest
 
-    // Add text fields
     final fields = <String, String>{
       'name': name,
       'email': email,
@@ -59,7 +57,6 @@ class ProfileService {
 
     request.fields.addAll(fields);
 
-    // Add profile image if selected
     if (imageFile != null) {
       request.files.add(
         await http.MultipartFile.fromPath('profile_pic', imageFile.path),
@@ -70,7 +67,10 @@ class ProfileService {
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
 
-      // Check if server actually returns JSON
+      if (AuthErrorHandler.checkAuthError(response)) {
+        return {"status": false, "message": "Authentication required"};
+      }
+
       if (response.headers['content-type']?.contains('application/json') ??
           false) {
         return jsonDecode(response.body);
@@ -83,27 +83,9 @@ class ProfileService {
   }
 
   Future<ProfileModel> fetchProfile() async {
-    final prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('token');
-
-    if (token == null || token.isEmpty) {
-      throw Exception("token not found re-login");
-    }
-
     final url = Uri.parse(ApiEndpoints.profile);
-
-    var response = await http.get(
-      url,
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $token",
-      },
-    );
-
+    var response = await ApiClient.get(url);
     final responseData = jsonDecode(response.body);
-
-    print("response data $responseData");
-
     return ProfileModel.fromJson(responseData);
   }
 }

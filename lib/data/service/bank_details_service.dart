@@ -1,30 +1,13 @@
 // lib/data/service/bank_details_service.dart
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/api_contstant/api_constant.dart';
+import 'api_client.dart';
 
 class BankDetailsService {
-  Future<String?> _getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('token');
-  }
-
-  Future<Map<String, String>> _getHeaders() async {
-    final token = await _getToken();
-    return {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
-    };
-  }
-
   Future<Map<String, dynamic>> getBankDetails() async {
     try {
-      final headers = await _getHeaders();
-      final url = Uri.parse('${ApiEndpoints.baseUrl}/customer-bank-details');
-
-      final response = await http.get(url, headers: headers);
+      final url = Uri.parse(ApiEndpoints.bankDetails);
+      final response = await ApiClient.get(url);
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = jsonDecode(response.body);
@@ -47,16 +30,11 @@ class BankDetailsService {
 
   Future<Map<String, dynamic>> addBankDetail(Map<String, dynamic> data) async {
     try {
-      final headers = await _getHeaders();
-      final url = Uri.parse('${ApiEndpoints.baseUrl}/customer-bank-details');
-
-      final response = await http.post(
+      final url = Uri.parse(ApiEndpoints.bankDetails);
+      final response = await ApiClient.post(
         url,
-        headers: headers,
         body: jsonEncode(data),
       );
-
-      print("Response Body: ${response.body}");
 
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
 
@@ -82,14 +60,9 @@ class BankDetailsService {
     Map<String, dynamic> data,
   ) async {
     try {
-      final headers = await _getHeaders();
-      final url = Uri.parse(
-        '${ApiEndpoints.baseUrl}/customer-bank-details/$id',
-      );
-
-      final response = await http.put(
+      final url = Uri.parse('${ApiEndpoints.bankDetails}/$id');
+      final response = await ApiClient.put(
         url,
-        headers: headers,
         body: jsonEncode(data),
       );
 
@@ -114,23 +87,17 @@ class BankDetailsService {
 
   Future<Map<String, dynamic>> deleteBankDetail(String id) async {
     try {
-      final headers = await _getHeaders();
-      final url = Uri.parse(
-        '${ApiEndpoints.baseUrl}/customer-bank-details/$id',
-      );
+      final url = Uri.parse('${ApiEndpoints.bankDetails}/$id');
+      final response = await ApiClient.delete(url);
 
-      final response = await http.delete(url, headers: headers);
+      final Map<String, dynamic> jsonData = jsonDecode(response.body);
 
-      if (response.statusCode == 200 || response.statusCode == 204) {
-        final jsonData = response.body.isNotEmpty
-            ? jsonDecode(response.body)
-            : {"message": "Bank detail deleted successfully"};
+      if (response.statusCode == 200) {
         return {
           "status": true,
           "message": jsonData["message"] ?? "Bank detail deleted successfully",
         };
       } else {
-        final jsonData = jsonDecode(response.body);
         return {
           "status": false,
           "message": jsonData["message"] ?? "Failed to delete bank detail",

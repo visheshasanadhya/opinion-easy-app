@@ -20,6 +20,10 @@ class FaqController extends GetxController {
       var response = await faqService.fetchFaqs();
       faqs.assignAll(response);
     } catch (e) {
+      if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
+          e.toString().contains("Authentication is required")) {
+        return;
+      }
       Get.snackbar('Oops', e.toString());
     } finally {
       isLoading.value = false;

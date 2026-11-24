@@ -51,6 +51,10 @@ class HistoryController extends GetxController {
       }
       isDataLoaded.value = true;
     } catch (e) {
+      if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
+          e.toString().contains("Authentication is required")) {
+        return;
+      }
       Get.snackbar('Error', e.toString());
     } finally {
       isLoading.value = false;
@@ -76,6 +80,10 @@ class HistoryController extends GetxController {
         redeemHistory.addAll(redeem);
       }
     } catch (e) {
+      if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
+          e.toString().contains("Authentication is required")) {
+        return;
+      }
       Get.snackbar('Error', e.toString());
     } finally {
       isMoreLoading.value = false;

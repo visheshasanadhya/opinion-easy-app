@@ -247,6 +247,10 @@ class ProfileController extends GetxController {
       }
       return false;
     } catch (e) {
+      if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
+          e.toString().contains("Authentication is required")) {
+        return false;
+      }
       Get.snackbar('Error', e.toString());
       return false;
     } finally {
@@ -268,6 +272,10 @@ class ProfileController extends GetxController {
         }
       } else {}
     } catch (e) {
+      if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
+          e.toString().contains("Authentication is required")) {
+        return;
+      }
       Get.snackbar('Error', e.toString());
     } finally {
       isLoading.value = false;

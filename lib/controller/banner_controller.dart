@@ -26,6 +26,10 @@ class BannerController extends GetxController {
         Get.snackbar('Oops', 'No banners found');
       }
     } catch (e) {
+      if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
+          e.toString().contains("Authentication is required")) {
+        return;
+      }
       Get.snackbar('Oops', e.toString());
     } finally {
       isLoading.value = false;

@@ -53,6 +53,10 @@ class QuestionController extends GetxController {
       final data = await questionService.fetchQuestion(subCategId);
       questions.assignAll(data);
     } catch (e) {
+      if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
+          e.toString().contains("Authentication is required")) {
+        return;
+      }
       Get.snackbar("Error", "Failed to load questions");
     } finally {
       isLoading(false);
@@ -151,6 +155,10 @@ class QuestionController extends GetxController {
         Get.snackbar("Oops", response['message'] ?? "Failed to submit answer");
       }
     } catch (e) {
+      if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
+          e.toString().contains("Authentication is required")) {
+        return;
+      }
       Get.snackbar("Error", e.toString());
     } finally {
       isSubmitting.value = false;

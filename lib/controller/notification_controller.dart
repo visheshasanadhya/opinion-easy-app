@@ -2,9 +2,8 @@ import 'dart:convert';
 import 'package:opinion_easy/core/api_contstant/api_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:opinion_easy/data/model/notification_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../data/service/api_client.dart';
 
 class NotificationController extends GetxController {
   var notifications = <NotificationModel>[].obs;
@@ -36,24 +35,8 @@ class NotificationController extends GetxController {
         isLoading.value = true;
       }
 
-      final prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('token');
-      if (token == null || token.isEmpty) {
-        Get.snackbar(
-          "Session Expired",
-          "Please login again",
-          backgroundColor: Colors.red.shade300,
-          colorText: Colors.white,
-        );
-        return;
-      }
-
-      final response = await http.get(
+      final response = await ApiClient.get(
         Uri.parse("${ApiEndpoints.notification}?page=$currentPage"),
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer $token",
-        },
       );
 
       debugPrint("📩 Notification Response: ${response.body}");
@@ -102,16 +85,8 @@ class NotificationController extends GetxController {
   /// Fetch unread count
   Future<void> fetchUnreadCount() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('token');
-      if (token == null || token.isEmpty) return;
-
-      final response = await http.get(
+      final response = await ApiClient.get(
         Uri.parse(ApiEndpoints.unreadNotification),
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer $token",
-        },
       );
 
       if (response.statusCode == 200) {
@@ -132,17 +107,9 @@ class NotificationController extends GetxController {
   /// Mark given notifications as read
   Future<void> markNotificationsAsRead(List<int> ids) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('token');
-      if (token == null || token.isEmpty) return;
-
       isMarking.value = true;
-      final response = await http.post(
+      final response = await ApiClient.post(
         Uri.parse(ApiEndpoints.markReadNotification),
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer $token",
-        },
         body: jsonEncode({"ids": ids}),
       );
 

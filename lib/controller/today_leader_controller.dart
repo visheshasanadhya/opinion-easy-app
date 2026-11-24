@@ -15,6 +15,10 @@ class TodayLeaderController extends GetxController {
       );
       todayLeaderModel.value = result;
     } catch (e) {
+      if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
+          e.toString().contains("Authentication is required")) {
+        return;
+      }
       Get.snackbar('Error', e.toString());
     } finally {
       isLoading(false);
