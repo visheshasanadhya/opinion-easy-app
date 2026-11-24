@@ -1,12 +1,12 @@
-import 'dart:convert';
-import 'package:opinion_easy/core/api_contstant/api_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:opinion_easy/data/model/notification_model.dart';
-import '../data/service/api_client.dart';
+import 'package:opinion_easy/data/service/notification_service1.dart';
 import '../data/service/internet_monitor.dart';
 
 class NotificationController extends GetxController {
+  final NotificationService1 notificationService = NotificationService1();
+
   var notifications = <NotificationModel>[].obs;
   var unreadCount = 0.obs;
   var isLoading = false.obs;
@@ -41,37 +41,18 @@ class NotificationController extends GetxController {
         isLoading.value = true;
       }
 
-      final response = await ApiClient.get(
-        Uri.parse(
-          "${ApiEndpoints.notification}?start=$currentPage&limit=${ApiEndpoints.limitPagination}",
-        ),
+      final result = await notificationService.fetchNotifications(
+        page: currentPage,
       );
 
-      debugPrint("📩 Notification Response: ${response.body}");
+      final List<NotificationModel> list =
+          result["notifications"] as List<NotificationModel>;
+      totalPages = result["last_page"] ?? 1;
 
-      if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body);
-
-        // Safe type checking to prevent 'List<dynamic>' is not a subtype of 'Map<String, dynamic>' error
-        if (jsonData is Map<String, dynamic> && jsonData["status"] == true) {
-          final dataObject = jsonData["data"];
-
-          if (dataObject is Map<String, dynamic> &&
-              dataObject.containsKey('data')) {
-            final List<dynamic> list = dataObject['data'];
-            totalPages = dataObject['last_page'] ?? 1;
-
-            if (isRefresh || currentPage == 1) {
-              notifications.value = list
-                  .map((e) => NotificationModel.fromJson(e))
-                  .toList();
-            } else {
-              notifications.addAll(
-                list.map((e) => NotificationModel.fromJson(e)).toList(),
-              );
-            }
-          }
-        }
+      if (isRefresh || currentPage == 1) {
+        notifications.assignAll(list);
+      } else {
+        notifications.addAll(list);
       }
     } catch (e) {
       if (InternetMonitor.isNetworkError(e)) return;
@@ -95,20 +76,8 @@ class NotificationController extends GetxController {
   Future<void> fetchUnreadCount() async {
     if (InternetMonitor.isOffline) return;
     try {
-      final response = await ApiClient.get(
-        Uri.parse(ApiEndpoints.unreadNotification),
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        // Ensure data is a Map before accessing 'status' and 'unread_count'
-        if (data is Map<String, dynamic> && data["status"] == true) {
-          // Use a safe cast or check if the value is an int
-          unreadCount.value = data["unread_count"] is int
-              ? data["unread_count"]
-              : 0;
-        }
-      }
+      final count = await notificationService.fetchUnreadCount();
+      unreadCount.value = count;
     } catch (e) {
       if (InternetMonitor.isNetworkError(e)) return;
       debugPrint("❌ Exception fetching unread count: $e");
@@ -119,18 +88,12 @@ class NotificationController extends GetxController {
   Future<void> markNotificationsAsRead(List<int> ids) async {
     try {
       isMarking.value = true;
-      final response = await ApiClient.post(
-        Uri.parse(ApiEndpoints.markReadNotification),
-        body: jsonEncode({"ids": ids}),
-      );
+      final success = await notificationService.markAsRead(ids);
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        if (data is Map<String, dynamic> && data["status"] == true) {
-          // After successfully marking as read, refresh the list and count
-          await fetchNotifications(isRefresh: true);
-          await fetchUnreadCount();
-        }
+      if (success) {
+        // After successfully marking as read, refresh the list and count
+        await fetchNotifications(isRefresh: true);
+        await fetchUnreadCount();
       }
     } catch (e) {
       debugPrint("❌ Exception marking notifications: $e");
