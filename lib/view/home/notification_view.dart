@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:opinion_easy/controller/notification_controller.dart';
-import 'package:opinion_easy/core/utils/widgets/custom_app_bar.dart';
+import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:opinion_easy/core/utils/widgets/app_loader.dart';
 import 'package:opinion_easy/core/utils/widgets/app_refresh.dart';
+import 'package:opinion_easy/core/utils/widgets/custom_app_bar.dart';
+import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
+import 'package:opinion_easy/data/model/notification_model.dart';
 
 class NotificationView extends StatefulWidget {
   const NotificationView({super.key});
@@ -38,7 +41,7 @@ class _NotificationViewState extends State<NotificationView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0D0D0D),
+      backgroundColor: AppColor.scaffold,
       appBar: CustomAppBar(
         title: "Notifications",
         showBackButton: true,
@@ -46,102 +49,98 @@ class _NotificationViewState extends State<NotificationView> {
           Obx(() {
             final unreadCount =
                 controller.notifications.where((e) => !e.isRead).length;
-
             final bool hasUnread = unreadCount > 0;
 
-            return controller.isMarking.value
-                ? const Padding(
-                    padding: EdgeInsets.only(right: 16),
-                    child: AppLoader(size: 22, strokeWidth: 2.5),
-                  )
-                : Padding(
-                    padding: const EdgeInsets.only(right: 12),
-                    child: Stack(
-                      children: [
-                        Container(
-                          width: 48,
-                          height: 48,
-                          decoration: BoxDecoration(
-                            color: hasUnread
-                                ? const Color(0xFF4A90E2).withOpacity(0.15)
-                                : const Color(0xFF1A1A1A),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: hasUnread
-                                  ? const Color(0xFF4A90E2).withOpacity(0.3)
-                                  : Colors.white.withOpacity(0.1),
-                            ),
+            if (controller.isMarking.value) {
+              return const Padding(
+                padding: EdgeInsets.only(right: 16),
+                child: AppLoader(size: 22, strokeWidth: 2.5),
+              );
+            }
+
+            return Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: hasUnread
+                          ? AppColor.blue.withValues(alpha: 0.15)
+                          : AppColor.cardAlt,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: hasUnread
+                            ? AppColor.blue.withValues(alpha: 0.3)
+                            : AppColor.borderLight,
+                      ),
+                    ),
+                    child: InkWell(
+                      onTap: controller.notifications.isEmpty || !hasUnread
+                          ? null
+                          : () {
+                              final ids = controller.notifications
+                                  .where((e) => !e.isRead)
+                                  .map((e) => e.id)
+                                  .toList();
+                              if (ids.isNotEmpty) {
+                                controller.markNotificationsAsRead(ids);
+                              }
+                            },
+                      borderRadius: BorderRadius.circular(12),
+                      child: Icon(
+                        Icons.done_all_rounded,
+                        color: hasUnread ? AppColor.blue : AppColor.textMuted,
+                        size: 22,
+                      ),
+                    ),
+                  ),
+                  if (hasUnread)
+                    Positioned(
+                      right: -3,
+                      top: -3,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 2),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: AppColor.gradientNotif,
                           ),
-                          child: InkWell(
-                            onTap: controller.notifications.isEmpty ||
-                                    !hasUnread
-                                ? null
-                                : () {
-                                    final ids = controller.notifications
-                                        .where((e) => !e.isRead)
-                                        .map((e) => e.id)
-                                        .toList();
-                                    if (ids.isNotEmpty) {
-                                      controller.markNotificationsAsRead(ids);
-                                    }
-                                  },
-                            borderRadius: BorderRadius.circular(12),
-                            child: Icon(
-                              Icons.done_all_rounded,
-                              color: hasUnread
-                                  ? const Color(0xFF4A90E2)
-                                  : Colors.grey[700],
-                              size: 22,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: AppColor.card,
+                            width: 2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColor.gradientNotif[0]
+                                  .withValues(alpha: 0.4),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 18,
+                          minHeight: 18,
+                        ),
+                        child: Center(
+                          child: Text(
+                            unreadCount > 99 ? '99+' : '$unreadCount',
+                            style: AppText.micro.copyWith(
+                              color: AppColor.white,
+                              fontSize: 9,
+                              fontWeight: FontWeight.w800,
                             ),
                           ),
                         ),
-                        if (hasUnread)
-                          Positioned(
-                            right: -2,
-                            top: -2,
-                            child: Container(
-                              padding: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Color(0xFFFF512F),
-                                    Color(0xFFDD2476),
-                                  ],
-                                ),
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: const Color(0xFF141414),
-                                  width: 2,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: const Color(
-                                      0xFFFF512F,
-                                    ).withOpacity(0.4),
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              constraints: const BoxConstraints(
-                                minWidth: 20,
-                                minHeight: 20,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  unreadCount > 99 ? '99+' : '$unreadCount',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
+                      ),
                     ),
-                  );
+                ],
+              ),
+            );
           }),
         ],
       ),
@@ -152,7 +151,7 @@ class _NotificationViewState extends State<NotificationView> {
           }
 
           if (controller.notifications.isEmpty && !controller.isLoading.value) {
-            return const _EmptyStateWidget();
+            return _buildEmptyState();
           }
 
           return AppRefresh(
@@ -163,7 +162,7 @@ class _NotificationViewState extends State<NotificationView> {
               physics: const AlwaysScrollableScrollPhysics(),
               itemCount: controller.notifications.length +
                   (controller.hasMore ? 1 : 0),
-              separatorBuilder: (context, index) => const SizedBox(height: 12),
+              separatorBuilder: (context, index) => const VS(12),
               itemBuilder: (context, index) {
                 if (index == controller.notifications.length) {
                   return const Padding(
@@ -184,80 +183,37 @@ class _NotificationViewState extends State<NotificationView> {
       ),
     );
   }
-}
 
-class _EmptyStateWidget extends StatelessWidget {
-  const _EmptyStateWidget();
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: Padding(
-          padding: const EdgeInsets.all(40.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(32),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      const Color(0xFF4A90E2).withOpacity(0.2),
-                      const Color(0xFF357ABD).withOpacity(0.2),
-                    ],
-                  ),
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: const Color(0xFF4A90E2).withOpacity(0.3),
-                    width: 2,
-                  ),
-                ),
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1A1A1A),
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF4A90E2).withOpacity(0.2),
-                        blurRadius: 20,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                  ),
+  Widget _buildEmptyState() {
+    return AppRefresh(
+      onRefresh: () => controller.fetchNotifications(isRefresh: true),
+      child: Center(
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: AppDeco.circleBorder,
                   child: const Icon(
-                    Icons.notifications_outlined,
-                    size: 64,
-                    color: Color(0xFF4A90E2),
+                    Icons.notifications_off_outlined,
+                    size: 48,
+                    color: AppColor.textGrey,
                   ),
                 ),
-              ),
-              const SizedBox(height: 32),
-              const Text(
-                "All Clear! 🎉",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.white,
-                  letterSpacing: -0.5,
+                const VS(20),
+                const Text("No notifications yet", style: AppText.h3),
+                const VS(8),
+                Text(
+                  "We'll notify you when something arrives",
+                  textAlign: TextAlign.center,
+                  style: AppText.caption.copyWith(color: AppColor.textMuted),
                 ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                "You're all caught up!\nNo new notifications right now.",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 15,
-                  color: Colors.grey[500],
-                  height: 1.6,
-                  letterSpacing: 0.2,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -266,10 +222,13 @@ class _EmptyStateWidget extends StatelessWidget {
 }
 
 class _NotificationItemWidget extends StatelessWidget {
-  final dynamic item;
+  final NotificationModel item;
   final NotificationController controller;
 
-  const _NotificationItemWidget({required this.item, required this.controller});
+  const _NotificationItemWidget({
+    required this.item,
+    required this.controller,
+  });
 
   String _formatTimeAgo(DateTime dateTime) {
     final now = DateTime.now();
@@ -288,15 +247,9 @@ class _NotificationItemWidget extends StatelessWidget {
     }
   }
 
-  IconData _getNotificationIcon() {
-    return item.isRead
-        ? Icons.mark_email_read_rounded
-        : Icons.mark_email_unread_rounded;
-  }
-
   @override
   Widget build(BuildContext context) {
-    bool isRead = item.isRead;
+    final bool isRead = item.isRead;
 
     return Dismissible(
       key: Key(item.id.toString()),
@@ -305,18 +258,20 @@ class _NotificationItemWidget extends StatelessWidget {
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFFEF4444), Color(0xFFDC2626)],
-          ),
-          borderRadius: BorderRadius.circular(20),
+          color: AppColor.red,
+          borderRadius: BorderRadius.circular(AppDeco.radiusLg),
         ),
-        child: const Icon(Icons.delete_rounded, color: Colors.white, size: 28),
+        child: const Icon(
+          Icons.delete_outline_rounded,
+          color: AppColor.white,
+          size: 24,
+        ),
       ),
       onDismissed: (direction) {
         controller.notifications.remove(item);
       },
       child: Material(
-        color: Colors.transparent,
+        color: AppColor.transparent,
         child: InkWell(
           onTap: () async {
             if (!isRead) {
@@ -325,24 +280,24 @@ class _NotificationItemWidget extends StatelessWidget {
               await controller.markNotificationsAsRead([item.id]);
             }
           },
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(AppDeco.radiusLg),
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFF1A1A1A),
-              borderRadius: BorderRadius.circular(20),
+              color: AppColor.cardAlt,
+              borderRadius: BorderRadius.circular(AppDeco.radiusLg),
               border: Border.all(
                 color: isRead
-                    ? Colors.white.withOpacity(0.1)
-                    : const Color(0xFF4A90E2).withOpacity(0.4),
-                width: isRead ? 1 : 2,
+                    ? AppColor.borderLight
+                    : AppColor.blue.withValues(alpha: 0.4),
+                width: isRead ? 1 : 1.5,
               ),
               boxShadow: [
                 BoxShadow(
                   color: isRead
-                      ? Colors.black.withOpacity(0.3)
-                      : const Color(0xFF4A90E2).withOpacity(0.2),
-                  blurRadius: isRead ? 12 : 16,
+                      ? AppColor.blackOp(0.3)
+                      : AppColor.blue.withValues(alpha: 0.15),
+                  blurRadius: isRead ? 8 : 12,
                   offset: const Offset(0, 4),
                 ),
               ],
@@ -350,39 +305,28 @@ class _NotificationItemWidget extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Icon Container
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: isRead
-                          ? [
-                              Colors.grey.withOpacity(0.15),
-                              Colors.grey.withOpacity(0.1),
-                            ]
-                          : [
-                              const Color(0xFF4A90E2).withOpacity(0.2),
-                              const Color(0xFF357ABD).withOpacity(0.2),
-                            ],
-                    ),
-                    borderRadius: BorderRadius.circular(14),
+                    color: isRead
+                        ? AppColor.cardLight
+                        : AppColor.blue.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(AppDeco.radius),
                     border: Border.all(
                       color: isRead
-                          ? Colors.grey.withOpacity(0.2)
-                          : const Color(0xFF4A90E2).withOpacity(0.3),
+                          ? AppColor.borderFaint
+                          : AppColor.blue.withValues(alpha: 0.3),
                     ),
                   ),
                   child: Icon(
-                    _getNotificationIcon(),
-                    color: isRead ? Colors.grey[600] : const Color(0xFF4A90E2),
-                    size: 24,
+                    isRead
+                        ? Icons.mark_email_read_outlined
+                        : Icons.mark_email_unread_outlined,
+                    color: isRead ? AppColor.textMuted : AppColor.blue,
+                    size: 22,
                   ),
                 ),
-                const SizedBox(width: 14),
-
-                // Content
+                const HS(14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -392,12 +336,11 @@ class _NotificationItemWidget extends StatelessWidget {
                           Expanded(
                             child: Text(
                               item.title,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight:
-                                    isRead ? FontWeight.w600 : FontWeight.w800,
-                                color: Colors.white,
-                                letterSpacing: -0.2,
+                              style: (isRead ? AppText.bodyMd : AppText.body)
+                                  .copyWith(
+                                color: isRead
+                                    ? AppColor.textGrey
+                                    : AppColor.textWhite,
                               ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -406,55 +349,41 @@ class _NotificationItemWidget extends StatelessWidget {
                           if (!isRead)
                             Container(
                               margin: const EdgeInsets.only(left: 8),
-                              width: 10,
-                              height: 10,
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Color(0xFFFF512F),
-                                    Color(0xFFDD2476),
-                                  ],
+                              width: 8,
+                              height: 8,
+                              decoration: const BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: AppColor.gradientNotif,
                                 ),
                                 shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: const Color(
-                                      0xFFFF512F,
-                                    ).withOpacity(0.5),
-                                    blurRadius: 6,
-                                  ),
-                                ],
                               ),
                             ),
                         ],
                       ),
-                      const SizedBox(height: 6),
+                      const VS(6),
                       Text(
                         item.message,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[400],
-                          height: 1.5,
-                          letterSpacing: 0.1,
+                        style: AppText.captionSm.copyWith(
+                          color:
+                              isRead ? AppColor.textMuted : AppColor.textGrey,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 10),
+                      const VS(10),
                       Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.access_time_rounded,
-                            size: 14,
-                            color: Colors.grey[600],
+                            size: 13,
+                            color: AppColor.textMuted,
                           ),
-                          const SizedBox(width: 4),
+                          const HS(4),
                           Text(
                             _formatTimeAgo(item.createdAt),
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.grey[600],
-                              fontWeight: FontWeight.w500,
+                            style: AppText.captionSm.copyWith(
+                              fontSize: 12,
+                              color: AppColor.textMuted,
                             ),
                           ),
                         ],
