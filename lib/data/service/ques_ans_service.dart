@@ -4,8 +4,14 @@ import 'package:opinion_easy/data/model/question_model.dart';
 import 'api_client.dart';
 
 class QuestionService {
-  Future<List<Question>> fetchQuestion(String subCategId) async {
-    final url = Uri.parse("${ApiEndpoints.questions}/$subCategId");
+  Future<List<Question>> fetchQuestion(
+    String subCategId, {
+    int start = ApiEndpoints.startPagination,
+    int limit = ApiEndpoints.limitPagination,
+  }) async {
+    final url = Uri.parse(
+      "${ApiEndpoints.questions}/$subCategId?start=$start&limit=$limit",
+    );
     var response = await ApiClient.get(url);
 
     if (response.statusCode == 200) {

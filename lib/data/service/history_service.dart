@@ -4,8 +4,11 @@ import 'package:opinion_easy/data/model/history_model.dart';
 import 'api_client.dart';
 
 class HistoryService {
-  Future<Map<String, List>> fetchHistory({int page = 1}) async {
-    final url = Uri.parse("${ApiEndpoints.history}?page=$page");
+  Future<Map<String, List>> fetchHistory({
+    int page = ApiEndpoints.startPagination,
+    int limit = ApiEndpoints.limitPagination,
+  }) async {
+    final url = Uri.parse("${ApiEndpoints.history}?start=$page&limit=$limit");
     var response = await ApiClient.get(url);
 
     if (response.statusCode == 200) {

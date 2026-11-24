@@ -25,6 +25,10 @@ class ApiEndpoints {
   static String unreadNotification = "$baseUrl/notifications/unread-count";
   static String bankDetails = "$baseUrl/customer-bank-details";
 
+  // ==================== PAGINATION CONSTANTS ==================== //
+  static const int startPagination = 1;
+  static const int limitPagination = 20;
+
   // ==================== POSTAL PINCODE ==================== //
   static const postalPincode = "https://api.postalpincode.in/pincode/";
 

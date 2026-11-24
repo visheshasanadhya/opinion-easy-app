@@ -36,7 +36,9 @@ class NotificationController extends GetxController {
       }
 
       final response = await ApiClient.get(
-        Uri.parse("${ApiEndpoints.notification}?page=$currentPage"),
+        Uri.parse(
+          "${ApiEndpoints.notification}?start=$currentPage&limit=${ApiEndpoints.limitPagination}",
+        ),
       );
 
       debugPrint("📩 Notification Response: ${response.body}");

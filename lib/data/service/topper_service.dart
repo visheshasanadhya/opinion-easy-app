@@ -4,8 +4,15 @@ import 'package:opinion_easy/data/model/topper_model.dart';
 import 'api_client.dart';
 
 class TopperService {
-  Future<TopperModel> fetchTopperList(String whichTopper) async {
-    final url = Uri.parse("${ApiEndpoints.topper}?$whichTopper");
+  Future<TopperModel> fetchTopperList(
+    String whichTopper, {
+    int start = ApiEndpoints.startPagination,
+    int limit = ApiEndpoints.limitPagination,
+  }) async {
+    final query = whichTopper.isNotEmpty ? "$whichTopper&" : "";
+    final url = Uri.parse(
+      "${ApiEndpoints.topper}?${query}start=$start&limit=$limit",
+    );
     var response = await ApiClient.get(url);
 
     if (response.statusCode == 200) {

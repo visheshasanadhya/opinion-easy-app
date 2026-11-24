@@ -4,8 +4,14 @@ import '../model/today_leader_model.dart';
 import 'api_client.dart';
 
 class TodayLeaderService {
-  Future<TodayLeaderModel> fetchTodayLeaderList(String whichLeader) async {
-    final url = Uri.parse(ApiEndpoints.todayLeader);
+  Future<TodayLeaderModel> fetchTodayLeaderList(
+    String whichLeader, {
+    int start = ApiEndpoints.startPagination,
+    int limit = ApiEndpoints.limitPagination,
+  }) async {
+    final url = Uri.parse(
+      "${ApiEndpoints.todayLeader}?start=$start&limit=$limit",
+    );
     var response = await ApiClient.get(url);
 
     if (response.statusCode == 200) {
