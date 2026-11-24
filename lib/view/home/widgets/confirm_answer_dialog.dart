@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:opinion_easy/core/admob/admob.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
-import 'package:opinion_easy/core/utils/widgets/app_shimmer.dart';
 import 'package:opinion_easy/data/model/question_model.dart';
 
 class ConfirmAnswerDialog extends StatefulWidget {
@@ -287,22 +285,10 @@ class _ConfirmAnswerDialogState extends State<ConfirmAnswerDialog> {
     required AdsController controller,
     required bool showLoading,
   }) {
-    return Obx(() {
-      if (controller.isLoaded.value && controller.bannerAd != null) {
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: SizedBox(
-            width: controller.bannerAd!.size.width.toDouble(),
-            height: controller.bannerAd!.size.height.toDouble(),
-            child: AdWidget(ad: controller.bannerAd!),
-          ),
-        );
-      }
-      if (showLoading) {
-        return AppShimmer.nativeAdPlaceholder(height: 50);
-      }
-      return const SizedBox.shrink();
-    });
+    return DarkBannerAdWidget(
+      controller: controller,
+      showShimmer: showLoading,
+    );
   }
 
   // ── Point item ─────────────────────────────────────────────

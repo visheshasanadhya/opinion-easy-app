@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:opinion_easy/controller/leaderboard_controller.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
+import 'package:opinion_easy/core/utils/widgets/app_loader.dart';
 import 'package:opinion_easy/core/utils/widgets/app_refresh.dart';
 import 'package:opinion_easy/core/utils/widgets/custom_app_bar.dart';
-import 'package:opinion_easy/core/utils/widgets/loader_widget/topper_widget.dart';
 import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 
 enum LeaderboardSource { bottomNav, profile }
@@ -105,7 +105,7 @@ class _LeaderboardViewState extends State<LeaderboardView>
             children: [
               Container(height: 1, color: AppColor.borderFaint),
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+                padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
                 child: Container(
                   height: 42,
                   decoration: BoxDecoration(
@@ -199,9 +199,7 @@ class _LeaderboardViewState extends State<LeaderboardView>
   Widget _buildTodayTab() {
     return Obx(() {
       if (leaderboardController.isTodayLoading.value) {
-        return const Stack(
-          children: [Positioned.fill(child: ShimmerTopPerformerView())],
-        );
+        return const AppLoader();
       }
       final model = leaderboardController.todayModel.value;
       if (model.data == null || model.data!.isEmpty) {
@@ -226,9 +224,7 @@ class _LeaderboardViewState extends State<LeaderboardView>
   Widget _buildMonthlyTab() {
     return Obx(() {
       if (leaderboardController.isMonthlyLoading.value) {
-        return const Stack(
-          children: [Positioned.fill(child: ShimmerTopPerformerView())],
-        );
+        return const AppLoader();
       }
       final model = leaderboardController.monthlyModel.value;
       if (model.data == null || model.data!.isEmpty) {
@@ -253,9 +249,7 @@ class _LeaderboardViewState extends State<LeaderboardView>
   Widget _buildAllTimeTab() {
     return Obx(() {
       if (leaderboardController.isAllTimeLoading.value) {
-        return const Stack(
-          children: [Positioned.fill(child: ShimmerTopPerformerView())],
-        );
+        return const AppLoader();
       }
       final model = leaderboardController.allTimeModel.value;
       if (model.data == null || model.data!.isEmpty) {
@@ -494,23 +488,55 @@ class _LeaderboardViewState extends State<LeaderboardView>
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         border: Border.all(color: AppColor.borderFaint),
       ),
-      child: ListView.separated(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: EdgeInsets.fromLTRB(
-          20,
-          24,
-          20,
-          80 + MediaQuery.of(context).padding.bottom,
-        ),
-        itemCount: rest.length,
-        separatorBuilder: (_, __) => Divider(
-          color: AppColor.borderFaint,
-          height: 1,
-          thickness: 1,
-          indent: 60,
-        ),
-        itemBuilder: (_, index) => _listItem(rest[index], index + 4),
-      ),
+      child: rest.isEmpty
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.military_tech_outlined,
+                      size: 40,
+                      color: AppColor.textMuted.withOpacity(0.4),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      "No other ranks yet",
+                      style: AppText.bodySm.copyWith(
+                        color: AppColor.textGrey,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "Keep answering questions to climb the leaderboard!",
+                      textAlign: TextAlign.center,
+                      style: AppText.caption.copyWith(
+                        color: AppColor.textMuted,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : ListView.separated(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.fromLTRB(
+                20,
+                24,
+                20,
+                80 + MediaQuery.of(context).padding.bottom,
+              ),
+              itemCount: rest.length,
+              separatorBuilder: (_, __) => Divider(
+                color: AppColor.borderFaint,
+                height: 1,
+                thickness: 1,
+                indent: 60,
+              ),
+              itemBuilder: (_, index) => _listItem(rest[index], index + 4),
+            ),
     );
   }
 
