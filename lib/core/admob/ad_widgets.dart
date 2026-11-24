@@ -44,7 +44,7 @@ class _AppBannerAdState extends State<AppBannerAd> {
     }
 
     final ad = BannerAd(
-      adUnitId: widget.adUnitId ?? AdUnits.homeBanner,
+      adUnitId: widget.adUnitId ?? AdUnits.banner,
       size: size,
       request: const AdRequest(),
       listener: BannerAdListener(
@@ -175,7 +175,7 @@ class _AppNativeAdState extends State<AppNativeAd> {
 
   void _loadNativeAd() {
     final ad = NativeAd(
-      adUnitId: widget.adUnitId ?? AdUnits.questionPageNative,
+      adUnitId: widget.adUnitId ?? AdUnits.native,
       request: const AdRequest(),
       nativeTemplateStyle: _darkNativeStyle,
       listener: NativeAdListener(

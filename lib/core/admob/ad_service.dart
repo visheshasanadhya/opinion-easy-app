@@ -86,7 +86,7 @@ class AdService extends GetxService with WidgetsBindingObserver {
     _isInterstitialLoading = true;
 
     InterstitialAd.load(
-      adUnitId: AdUnits.questionInterstitial,
+      adUnitId: AdUnits.interstitial,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {

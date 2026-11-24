@@ -77,7 +77,7 @@ class _ConfirmAnswerDialogState extends State<ConfirmAnswerDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               // ── Top banner ───────────────────────────
-              AppBannerAd(adUnitId: AdUnits.dialogTopBanner),
+              const AppBannerAd(),
               const SizedBox(height: 20),
 
               // ── Icon ─────────────────────────────────
@@ -219,7 +219,7 @@ class _ConfirmAnswerDialogState extends State<ConfirmAnswerDialog> {
               const SizedBox(height: 18),
 
               // ── Bottom banner ────────────────────────
-              AppBannerAd(adUnitId: AdUnits.dialogBottomBanner),
+              const AppBannerAd(),
             ],
           ),
         ),
