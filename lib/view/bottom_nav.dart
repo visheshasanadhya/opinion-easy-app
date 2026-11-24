@@ -8,7 +8,7 @@
 // import 'dart:ui';
 //
 // import 'home/widgets/back_press_exit_handler.dart';
-// import 'leaderboard/today_leader_view.dart';
+// import 'leaderboard/leaderboard_view.dart';
 //
 // class BottomNav extends StatefulWidget {
 //   final int selectedIndex;
@@ -288,7 +288,7 @@ import 'package:get/get.dart';
 import 'dart:ui';
 
 import 'home/widgets/back_press_exit_handler.dart';
-import 'leaderboard/today_leader_view.dart';
+import 'leaderboard/leaderboard_view.dart';
 
 class BottomNav extends StatefulWidget {
   final int selectedIndex;

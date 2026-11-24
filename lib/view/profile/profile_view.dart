@@ -163,12 +163,12 @@ class ProfileView extends StatelessWidget {
               padding: const EdgeInsets.all(7),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColor.borderLight),
+                border: Border.all(color: AppColor.borderStrong),
               ),
               child: const Icon(
                 Icons.edit_outlined,
-                size: 16,
-                color: AppColor.textGrey,
+                size: 18,
+                color: AppColor.textWhite,
               ),
             ),
           ],

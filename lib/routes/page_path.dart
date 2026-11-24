@@ -48,5 +48,4 @@ var pagePath = [
     name: '/monthly-top-performer',
     page: () => MonthlyTopPerformerView(),
   ),
-  //GetPage(name: '/yearly-top-performer', page: () => YearlyTopPerformerView()),
 ];
