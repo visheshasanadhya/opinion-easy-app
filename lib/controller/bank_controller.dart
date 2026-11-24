@@ -1,7 +1,6 @@
 // lib/controller/bank_controller.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../core/utils/widgets/invalid_ifsc_bottom_sheet.dart';
 import '../data/model/bank_details_model.dart';
 import '../data/model/razorpay_ifsc_model.dart';
 import '../data/service/bank_details_service.dart';
@@ -15,6 +14,7 @@ class BankDetailsController extends GetxController {
   final isLoading = false.obs;
   final isFetchingIfsc = false.obs;
   final isIfscValid = false.obs;
+  final ifscError = RxnString();
   final selectedBankDetail = Rxn<BankDetailsModel>();
   final ifscData = Rxn<RazorpayIfscModel>();
 
@@ -80,53 +80,39 @@ class BankDetailsController extends GetxController {
   /// Triggered whenever user edits IFSC Code
   void onIfscChanged(String value) {
     final code = value.trim().toUpperCase();
+    ifscError.value = null;
 
     if (code.length == 11) {
-      verifyAndFetchIfsc(code, showDialogOnError: true);
+      verifyAndFetchIfsc(code);
     } else {
       if (isIfscValid.value) {
-        isIfscValid.value = false;
-        ifscData.value = null;
-        bankNameController.clear();
-        branchNameController.clear();
-        bankStateController.clear();
-        bankCityController.clear();
+        _resetIfscFields();
       }
     }
   }
 
   /// Checks IFSC format via regex & calls free Razorpay IFSC API
-  Future<bool> verifyAndFetchIfsc(
-    String code, {
-    bool showDialogOnError = true,
-  }) async {
+  Future<bool> verifyAndFetchIfsc(String code) async {
     final ifsc = code.trim().toUpperCase();
 
     // 1. Length check
     if (ifsc.length != 11) {
       _resetIfscFields();
-      if (showDialogOnError) {
-        InvalidIfscBottomSheet.show(
-          message: "IFSC Code must be 11 characters.",
-        );
-      }
+      ifscError.value = "IFSC Code must be 11 characters.";
       return false;
     }
 
     // 2. Format validation (Regex: 4 letters, '0', 6 alphanumeric)
     if (!ifscRegex.hasMatch(ifsc)) {
       _resetIfscFields();
-      if (showDialogOnError) {
-        InvalidIfscBottomSheet.show(
-          message:
-              "Invalid IFSC format.\n5th character must be '0' and first 4 characters must be alphabets.",
-        );
-      }
+      ifscError.value =
+          "Invalid IFSC format. 5th character must be '0' and first 4 characters must be alphabets.";
       return false;
     }
 
     // If already verified for the same code, do not re-fetch
     if (ifsc == _lastCheckedIfsc && isIfscValid.value) {
+      ifscError.value = null;
       return true;
     }
 
@@ -138,6 +124,7 @@ class BankDetailsController extends GetxController {
       if (result != null && (result.bank ?? "").isNotEmpty) {
         ifscData.value = result;
         isIfscValid.value = true;
+        ifscError.value = null;
         _lastCheckedIfsc = ifsc;
         bankNameController.text = result.bank ?? "";
         branchNameController.text = result.branch ?? "";
@@ -146,20 +133,13 @@ class BankDetailsController extends GetxController {
         return true;
       } else {
         _resetIfscFields();
-        if (showDialogOnError) {
-          InvalidIfscBottomSheet.show(
-            message: "Invalid IFSC Code.\nBank details not found for this IFSC.",
-          );
-        }
+        ifscError.value =
+            "Invalid IFSC Code. Bank details not found for this IFSC.";
         return false;
       }
     } catch (e) {
       _resetIfscFields();
-      if (showDialogOnError) {
-        InvalidIfscBottomSheet.show(
-          message: "Unable to verify IFSC. Please check your connection.",
-        );
-      }
+      ifscError.value = "Unable to verify IFSC. Please check your connection.";
       return false;
     } finally {
       isFetchingIfsc.value = false;
@@ -203,7 +183,6 @@ class BankDetailsController extends GetxController {
     if (!isIfscValid.value) {
       final ifscOk = await verifyAndFetchIfsc(
         ifscController.text.trim().toUpperCase(),
-        showDialogOnError: true,
       );
       if (!ifscOk) return false;
     }
@@ -241,7 +220,6 @@ class BankDetailsController extends GetxController {
     if (!isIfscValid.value) {
       final ifscOk = await verifyAndFetchIfsc(
         ifscController.text.trim().toUpperCase(),
-        showDialogOnError: true,
       );
       if (!ifscOk) return false;
     }
@@ -308,7 +286,7 @@ class BankDetailsController extends GetxController {
     autoValidateMode.value = AutovalidateMode.disabled;
 
     if (bankDetail.ifsc.isNotEmpty) {
-      verifyAndFetchIfsc(bankDetail.ifsc, showDialogOnError: false);
+      verifyAndFetchIfsc(bankDetail.ifsc);
     }
   }
 
@@ -325,6 +303,7 @@ class BankDetailsController extends GetxController {
     bankCityController.clear();
     selectedBankDetail.value = null;
     isIfscValid.value = false;
+    ifscError.value = null;
     ifscData.value = null;
     _lastCheckedIfsc = "";
     autoValidateMode.value = AutovalidateMode.disabled;
@@ -411,6 +390,9 @@ class BankDetailsController extends GetxController {
     }
     if (!ifscRegex.hasMatch(code)) {
       return 'Invalid IFSC format (e.g. SBIN0000691)';
+    }
+    if (ifscError.value != null && ifscError.value!.isNotEmpty) {
+      return ifscError.value;
     }
     if (!isIfscValid.value) {
       return 'Please enter a valid verified IFSC code';

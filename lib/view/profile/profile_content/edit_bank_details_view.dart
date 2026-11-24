@@ -225,9 +225,58 @@ class BankFormBottomSheet extends StatelessWidget {
                                 color: Color(0xFF00C853),
                                 size: 20,
                               )
-                            : null),
+                            : (controller.ifscError.value != null &&
+                                    controller.ifscError.value!.isNotEmpty
+                                ? const Icon(
+                                    Icons.error_outline_rounded,
+                                    color: Color(0xFFFF4757),
+                                    size: 20,
+                                  )
+                                : null)),
                     validator: controller.validateIFSC,
                   ),
+                  if (controller.ifscError.value != null &&
+                      controller.ifscError.value!.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 9,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFF4757).withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color:
+                              const Color(0xFFFF4757).withValues(alpha: 0.35),
+                        ),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(top: 2),
+                            child: Icon(
+                              Icons.error_outline_rounded,
+                              color: Color(0xFFFF4757),
+                              size: 16,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              controller.ifscError.value!,
+                              style: const TextStyle(
+                                color: Color(0xFFFF6B6B),
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 16),
 
                   // ── Field 5: UPI ID (Optional) ─────────────
