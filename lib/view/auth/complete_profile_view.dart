@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:opinion_easy/controller/profile_controller.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:opinion_easy/core/utils/widgets/btn_widget.dart';
+import 'package:opinion_easy/core/utils/widgets/custom_app_bar.dart';
 import 'package:opinion_easy/core/utils/widgets/custom_text_field.dart';
 import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 
@@ -26,13 +27,9 @@ class CompleteProfileView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColor.scaffold,
-      appBar: AppBar(
-        backgroundColor: AppColor.scaffold,
-        elevation: 0,
-        surfaceTintColor: Colors.transparent,
-        automaticallyImplyLeading: false,
-        title: Text("Complete Profile", style: AppText.h3),
-        centerTitle: true,
+      appBar: CustomAppBar(
+        title: "Complete Profile",
+        showBackButton: false,
         actions: [
           TextButton(
             onPressed: () => Get.offAllNamed('/bottom-nav'),

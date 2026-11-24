@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:opinion_easy/controller/leaderboard_controller.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
+import 'package:opinion_easy/core/utils/widgets/custom_app_bar.dart';
 import 'package:opinion_easy/core/utils/widgets/loader_widget/topper_widget.dart';
 import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 
@@ -94,23 +95,9 @@ class _LeaderboardViewState extends State<LeaderboardView>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.scaffold,
-      appBar: AppBar(
-        backgroundColor: AppColor.card,
-        surfaceTintColor: AppColor.transparent,
-        elevation: 0,
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        leading: widget.source == LeaderboardSource.profile
-            ? IconButton(
-                icon: const Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  color: AppColor.white,
-                  size: 18,
-                ),
-                onPressed: () => Navigator.of(context).pop(),
-              )
-            : null,
-        title: Text("Leaderboard", style: AppText.h3),
+      appBar: CustomAppBar(
+        title: "Leaderboard",
+        showBackButton: widget.source == LeaderboardSource.profile,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(57),
           child: Column(

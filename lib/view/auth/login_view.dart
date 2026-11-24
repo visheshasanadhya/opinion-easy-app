@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:opinion_easy/controller/auth_controller/google_auth_controller.dart';
+import 'package:opinion_easy/controller/google_auth_controller.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 

@@ -1,3 +1,4 @@
+import 'package:opinion_easy/core/utils/widgets/custom_app_bar.dart';
 import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 import 'package:opinion_easy/view/home/widgets/sub_category_card_widget.dart';
 import 'package:flutter/material.dart';
@@ -60,22 +61,19 @@ class _SubCategViewState extends State<SubCategView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.scaffold,
-      appBar: AppBar(
-        backgroundColor: AppColor.card,
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18),
-          color: AppColor.white,
-          onPressed: () => Navigator.of(context).pop(),
+      appBar: CustomAppBar(
+        titleWidget: Obx(
+          () => Text(
+            categoryController.categName.value,
+            style: const TextStyle(
+              fontSize: 18,
+              color: AppColor.whiteColor,
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.5,
+            ),
+          ),
         ),
-        title: Obx(
-          () => Text(categoryController.categName.value, style: AppText.h3),
-        ),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(height: 1, color: AppColor.borderFaint),
-        ),
+        showBackButton: true,
       ),
       body: SafeArea(
         child: Padding(

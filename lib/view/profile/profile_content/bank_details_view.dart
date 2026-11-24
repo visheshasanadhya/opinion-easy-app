@@ -3,6 +3,7 @@ import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:opinion_easy/data/model/bank_details_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../core/utils/widgets/custom_app_bar.dart';
 import '../../../controller/bank_controller.dart';
 import 'edit_bank_details_view.dart';
 
@@ -15,32 +16,9 @@ class BankDetailsView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColor.scaffold,
-      appBar: AppBar(
-        backgroundColor: AppColor.card,
-        elevation: 0,
-        centerTitle: true,
-        title: const Text(
-          "Bank Details",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w700,
-            fontSize: 18,
-          ),
-        ),
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: Colors.white,
-            size: 20,
-          ),
-          onPressed: () => Get.back(),
-        ),
-        // actions: [
-        //   IconButton(
-        //     icon: const Icon(Icons.refresh_rounded, color: Colors.white),
-        //     onPressed: () => controller.fetchBankDetails(),
-        //   ),
-        // ],
+      appBar: const CustomAppBar(
+        title: "Bank Details",
+        showBackButton: true,
       ),
       body: Obx(() {
         if (controller.isLoading.value && controller.bankDetails.isEmpty) {

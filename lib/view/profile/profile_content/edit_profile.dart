@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
+import 'package:opinion_easy/core/utils/widgets/custom_app_bar.dart';
 import 'package:opinion_easy/core/utils/widgets/btn_widget.dart';
 import 'package:opinion_easy/controller/profile_controller.dart';
 import 'package:opinion_easy/core/utils/widgets/custom_text_field.dart';
@@ -28,24 +29,9 @@ class EditProfileView extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: AppColor.scaffold,
-      appBar: AppBar(
-        backgroundColor: AppColor.card,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: AppColor.white,
-            size: 20,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text("Personal Details", style: AppText.h3),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(height: 1, color: AppColor.borderFaint),
-        ),
+      appBar: const CustomAppBar(
+        title: "Personal Details",
+        showBackButton: true,
       ),
       body: SafeArea(
         child: SingleChildScrollView(

@@ -1,3 +1,4 @@
+import 'package:opinion_easy/core/utils/widgets/custom_app_bar.dart';
 import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -62,19 +63,10 @@ class _QuestionViewState extends State<QuestionView> {
         );
       }),
 
-      appBar: AppBar(
-        backgroundColor: AppColor.scaffold,
-        elevation: 0,
+      appBar: CustomAppBar(
         centerTitle: false,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: AppColor.white,
-            size: 20,
-          ),
-        ),
-        title: Obx(() {
+        showBackButton: true,
+        titleWidget: Obx(() {
           if (controller.questions.isEmpty) {
             return Text('Questions', style: AppText.h3);
           }

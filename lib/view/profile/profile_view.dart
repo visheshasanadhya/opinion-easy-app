@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:opinion_easy/controller/history_controller.dart';
 import 'package:opinion_easy/controller/profile_controller.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
+import 'package:opinion_easy/core/utils/widgets/custom_app_bar.dart';
 import 'package:opinion_easy/core/utils/widgets/btn_widget.dart';
 import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 import 'package:flutter/material.dart';
@@ -25,16 +26,9 @@ class ProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.scaffold,
-      appBar: AppBar(
-        backgroundColor: AppColor.card,
-        elevation: 0,
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        title: Text("Profile", style: AppText.h3),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(height: 1, color: AppColor.borderFaint),
-        ),
+      appBar: const CustomAppBar(
+        title: "Profile",
+        showBackButton: false,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 22),

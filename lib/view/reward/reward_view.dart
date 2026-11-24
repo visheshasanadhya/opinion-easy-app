@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:opinion_easy/controller/profile_controller.dart';
 import 'package:opinion_easy/controller/reward_controller.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
+import 'package:opinion_easy/core/utils/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
@@ -21,16 +22,9 @@ class _RewardViewState extends State<RewardView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.scaffold,
-      appBar: AppBar(
-        backgroundColor: AppColor.card,
-        elevation: 0,
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        title: Text("Rewards Store", style: AppText.h3),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(height: 1, color: AppColor.borderFaint),
-        ),
+      appBar: const CustomAppBar(
+        title: "Rewards Store",
+        showBackButton: false,
       ),
       body: SafeArea(
         child: RefreshIndicator(
