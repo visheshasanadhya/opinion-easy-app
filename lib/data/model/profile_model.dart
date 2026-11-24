@@ -18,11 +18,13 @@ class Data {
   String? phone;
   int? status;
   String? email;
+  String? googleId;
   String? refferalCode;
   String? refferedBy;
   int? points;
   String? dob;
   String? profilePic;
+  String? lastDailyPoints;
   String? createdAt;
   String? updatedAt;
   Address? address;
@@ -32,12 +34,14 @@ class Data {
     this.name,
     this.phone,
     this.status,
+    this.email,
+    this.googleId,
     this.refferalCode,
     this.refferedBy,
-    this.email,
-    this.dob,
     this.points,
+    this.dob,
     this.profilePic,
+    this.lastDailyPoints,
     this.createdAt,
     this.updatedAt,
     this.address,
@@ -46,9 +50,10 @@ class Data {
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     points = json['points'];
-    name = json['name'].toString();
-    phone = json['phone'].toString();
-    email = json['email'] != null ? json['email'].toString() : "user@email.com";
+    name = json['name']?.toString();
+    phone = json['phone']?.toString();
+    email = json['email']?.toString();
+    googleId = json['google_id']?.toString();
     refferalCode = json['referral_code'] != null
         ? json['referral_code'].toString()
         : "NA";
@@ -57,9 +62,10 @@ class Data {
         : "Unknown";
     status = json['status'];
     dob = json['dob'] != null ? json['dob'].toString() : "Enter DOB";
-    profilePic = json['profile_pic'].toString();
-    createdAt = json['created_at'].toString();
-    updatedAt = json['updated_at'].toString();
+    profilePic = json['profile_pic']?.toString();
+    lastDailyPoints = json['last_daily_points']?.toString();
+    createdAt = json['created_at']?.toString();
+    updatedAt = json['updated_at']?.toString();
     address = json['address'] != null
         ? Address.fromJson(json['address'])
         : null;
@@ -92,12 +98,12 @@ class Address {
   Address.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     customerId = json['customer_id'];
-    state = json['state'].toString();
-    district = json['district'].toString();
-    city = json['city'].toString();
-    pincode = json['pincode'].toString();
-    address = json['address'].toString();
-    createdAt = json['created_at'].toString();
-    updatedAt = json['updated_at'].toString();
+    state = json['state']?.toString();
+    district = json['district']?.toString();
+    city = json['city']?.toString();
+    pincode = json['pincode']?.toString();
+    address = json['address']?.toString();
+    createdAt = json['created_at']?.toString();
+    updatedAt = json['updated_at']?.toString();
   }
 }
