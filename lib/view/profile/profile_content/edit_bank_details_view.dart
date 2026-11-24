@@ -60,18 +60,18 @@ class BankFormBottomSheet extends StatelessWidget {
                         width: 44,
                         height: 44,
                         decoration: BoxDecoration(
-                          color: AppColor.primaryColor1.withValues(alpha: 0.15),
+                          color: AppColor.white.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(
                             color:
-                                AppColor.primaryColor1.withValues(alpha: 0.35),
+                                AppColor.white.withValues(alpha: 0.35),
                             width: 1.2,
                           ),
                         ),
                         alignment: Alignment.center,
                         child: const Icon(
                           Icons.account_balance_rounded,
-                          color: AppColor.primaryColor1,
+                          color: AppColor.white,
                           size: 24,
                         ),
                       ),
@@ -140,7 +140,7 @@ class BankFormBottomSheet extends StatelessWidget {
                     ],
                     iconWidget: const Icon(
                       Icons.person_outline_rounded,
-                      color: AppColor.primaryColor1,
+                      color: AppColor.white,
                       size: 18,
                     ),
                     validator: controller.validateAccountHolderName,
@@ -160,7 +160,7 @@ class BankFormBottomSheet extends StatelessWidget {
                     ],
                     iconWidget: const Icon(
                       Icons.badge_outlined,
-                      color: AppColor.primaryColor1,
+                      color: AppColor.white,
                       size: 18,
                     ),
                     validator: controller.validateAccountNo,
@@ -180,7 +180,7 @@ class BankFormBottomSheet extends StatelessWidget {
                     ],
                     iconWidget: const Icon(
                       Icons.badge_outlined,
-                      color: AppColor.primaryColor1,
+                      color: AppColor.white,
                       size: 18,
                     ),
                     validator: controller.validateConfirmAccountNo,
@@ -203,7 +203,7 @@ class BankFormBottomSheet extends StatelessWidget {
                     iconWidget: const Text(
                       "#",
                       style: TextStyle(
-                        color: AppColor.primaryColor1,
+                        color: AppColor.white,
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                       ),
@@ -215,7 +215,7 @@ class BankFormBottomSheet extends StatelessWidget {
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColor.primaryColor1,
+                                AppColor.white,
                               ),
                             ),
                           )
@@ -294,7 +294,7 @@ class BankFormBottomSheet extends StatelessWidget {
                     ],
                     iconWidget: const Icon(
                       Icons.alternate_email_rounded,
-                      color: AppColor.primaryColor1,
+                      color: AppColor.white,
                       size: 18,
                     ),
                     validator: controller.validateUpiId,
@@ -312,7 +312,7 @@ class BankFormBottomSheet extends StatelessWidget {
                       readOnly: true,
                       iconWidget: const Icon(
                         Icons.account_balance_outlined,
-                        color: AppColor.primaryColor1,
+                        color: AppColor.white,
                         size: 18,
                       ),
                     ),
@@ -326,7 +326,7 @@ class BankFormBottomSheet extends StatelessWidget {
                       readOnly: true,
                       iconWidget: const Icon(
                         Icons.badge_outlined,
-                        color: AppColor.primaryColor1,
+                        color: AppColor.white,
                         size: 18,
                       ),
                     ),
@@ -340,7 +340,7 @@ class BankFormBottomSheet extends StatelessWidget {
                       readOnly: true,
                       iconWidget: const Icon(
                         Icons.location_on_outlined,
-                        color: AppColor.primaryColor1,
+                        color: AppColor.white,
                         size: 18,
                       ),
                     ),
@@ -354,7 +354,7 @@ class BankFormBottomSheet extends StatelessWidget {
                       readOnly: true,
                       iconWidget: const Icon(
                         Icons.location_on_outlined,
-                        color: AppColor.primaryColor1,
+                        color: AppColor.white,
                         size: 18,
                       ),
                     ),
@@ -373,9 +373,9 @@ class BankFormBottomSheet extends StatelessWidget {
                             if (isSuccess) Get.back();
                           },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColor.primaryColor1,
+                      backgroundColor: AppColor.white,
                       disabledBackgroundColor:
-                          AppColor.primaryColor1.withValues(alpha: 0.4),
+                          AppColor.white.withValues(alpha: 0.4),
                       foregroundColor: AppColor.card,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
@@ -444,7 +444,7 @@ class BankFormBottomSheet extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
-              color: AppColor.primaryColor1.withValues(alpha: 0.5),
+              color: AppColor.white.withValues(alpha: 0.5),
               width: 1.2,
             ),
             color: const Color(0xFF2A2E44),
@@ -464,7 +464,7 @@ class BankFormBottomSheet extends StatelessWidget {
       borderColor: readOnly
           ? const Color(0xFF2C3249)
           : Colors.white.withValues(alpha: 0.1),
-      focusedBorderColor: AppColor.primaryColor1,
+      focusedBorderColor: AppColor.white,
       borderRadius: BorderRadius.circular(16),
       contentPadding:
           const EdgeInsets.symmetric(horizontal: 14, vertical: 15),

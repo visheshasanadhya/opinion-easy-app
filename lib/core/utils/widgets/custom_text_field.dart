@@ -74,7 +74,7 @@ class CustomTextField extends StatelessWidget {
       width: 1.0,
     );
     final focusedBorder = BorderSide(
-      color: focusedBorderColor ?? AppColor.primaryColor1,
+      color: focusedBorderColor ?? AppColor.white,
       width: 1.5,
     );
     const errorBorder = BorderSide(
@@ -103,7 +103,7 @@ class CustomTextField extends StatelessWidget {
       enabled: enabled,
       maxLines: maxLines,
       maxLength: maxLength,
-      cursorColor: AppColor.primaryColor1,
+      cursorColor: AppColor.white,
       style: style ??
           (readOnly
               ? AppText.bodyMd.copyWith(color: AppColor.textGrey)

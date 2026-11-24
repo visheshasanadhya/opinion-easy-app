@@ -46,7 +46,7 @@ class BankDetailsView extends StatelessWidget {
                 _showBankFormBottomSheet(context, controller, isEdit: false);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColor.primaryColor1,
+                backgroundColor: AppColor.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),
                 ),
@@ -76,17 +76,17 @@ class BankDetailsView extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(28),
               decoration: BoxDecoration(
-                color: AppColor.primaryColor1.withOpacity(0.1),
+                color: AppColor.white.withOpacity(0.1),
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: AppColor.primaryColor1.withOpacity(0.2),
+                  color: AppColor.white.withOpacity(0.2),
                   width: 1,
                 ),
               ),
               child: Icon(
                 Icons.account_balance_rounded,
                 size: 64,
-                color: AppColor.primaryColor1,
+                color: AppColor.white,
               ),
             ),
             const SizedBox(height: 24),
@@ -164,10 +164,10 @@ class BankDetailsView extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColor.primaryColor1.withOpacity(0.12),
+                        color: AppColor.white.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: AppColor.primaryColor1.withOpacity(0.3),
+                          color: AppColor.white.withOpacity(0.3),
                         ),
                       ),
                       child: const Row(
@@ -175,14 +175,14 @@ class BankDetailsView extends StatelessWidget {
                         children: [
                           Icon(
                             Icons.account_balance_wallet_rounded,
-                            color: AppColor.primaryColor1,
+                            color: AppColor.white,
                             size: 14,
                           ),
                           SizedBox(width: 6),
                           Text(
                             'Bank Account',
                             style: TextStyle(
-                              color: AppColor.primaryColor1,
+                              color: AppColor.white,
                               fontSize: 11,
                               fontWeight: FontWeight.w700,
                             ),
@@ -204,7 +204,7 @@ class BankDetailsView extends StatelessWidget {
                               Icon(
                                 Icons.edit_rounded,
                                 size: 18,
-                                color: AppColor.primaryColor1,
+                                color: AppColor.white,
                               ),
                               const SizedBox(width: 12),
                               const Text(
@@ -269,7 +269,7 @@ class BankDetailsView extends StatelessWidget {
                         ? '${bankDetail.bankName} (${bankDetail.branchName})'
                         : bankDetail.bankName!,
                     style: const TextStyle(
-                      color: AppColor.primaryColor1,
+                      color: AppColor.white,
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                     ),

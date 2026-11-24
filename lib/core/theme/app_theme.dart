@@ -9,7 +9,7 @@ class AppTheme {
       brightness: Brightness.dark,
       scaffoldBackgroundColor: AppColor.scaffold,
       colorScheme: const ColorScheme.dark(
-        primary: AppColor.primaryColor1,
+        primary: AppColor.white,
         surface: Color(0xFF141414),
       ),
       textTheme: GoogleFonts.poppinsTextTheme(

@@ -27,16 +27,12 @@ class AppColor {
 
   // Brand
   static const Color blue = Color(0xFF4A90E2);
-  static const Color blueDark = Color(0xFF357ABD);
   static const Color purple = Color(0xFF6F63FF);
-  static const Color purpleDark = Color(0xFF5A4EFF);
 
   // Semantic
   static const Color green = Color(0xFF4CAF50);
   static const Color red = Color(0xFFFF4757);
-  static const Color redAlt = Color(0xFFEF4444);
   static const Color orange = Color(0xFFFF9800);
-  static const Color yellow = Color(0xFFFFEB3B);
 
   // Podium
   static const Color gold = Color(0xFFFFD700);
@@ -53,49 +49,16 @@ class AppColor {
   static const Color shimmerHighlight = Color(0xFF2A2A2A);
 
   // Gradients
-  static const List<Color> gradientBlue = [
-    Color(0xFF4A90E2),
-    Color(0xFF357ABD)
-  ];
-  static const List<Color> gradientGold = [
-    Color(0xFFFFD200),
-    Color(0xFFF7971E)
-  ];
   static const List<Color> gradientNotif = [
     Color(0xFFFF512F),
-    Color(0xFFDD2476)
-  ];
-  static const List<Color> gradientPurple = [
-    Color(0xFF6F63FF),
-    Color(0xFF5A4EFF)
+    Color(0xFFDD2476),
   ];
 
   // Helpers
-  static Color whiteOp(double opacity) => Colors.white.withOpacity(opacity);
-  static Color blackOp(double opacity) => Colors.black.withOpacity(opacity);
-
-  // ── Legacy aliases ──────────────────────────────────────────────────────────
-  static const Color bgDeep = scaffold;
-  static const Color bgCard = card;
-  static const Color bgCardAlt = cardAlt;
-  static const Color bgCardLight = cardLight;
-  static const Color textPrimary = textWhite;
-  static const Color textSecondary = textGrey;
-  static const Color borderSubtle = borderFaint;
-  static const Color borderMedium = borderLight;
-  static const Color blueAccent = blue;
-  static const Color greenColor = green;
-  static const Color redColor = red;
-  static const Color whiteColor = white;
-  static const Color blackColor = black;
-  static const Color primaryColor1 = white;
-  static const Color primaryColor2 = blue;
-  static const Color greyColor = textGrey;
-  static const Color lightGrey = Color(0xFF7B7B7B);
-  static const Color whileColor = white; // legacy typo alias
-  static const List<Color> goldGradient = gradientGold;
-  static const List<Color> blueGradient = gradientBlue;
-  static const List<Color> notifGradient = gradientNotif;
+  static Color whiteOp(double opacity) =>
+      Colors.white.withValues(alpha: opacity);
+  static Color blackOp(double opacity) =>
+      Colors.black.withValues(alpha: opacity);
 }
 
 // ════════════════════════════════════════════════════════════

@@ -45,8 +45,8 @@ class RewardController extends GetxController {
         Get.snackbar(
           'Oops',
           result['message'],
-          backgroundColor: AppColor.redColor.withOpacity(0.5),
-          colorText: AppColor.whileColor,
+          backgroundColor: AppColor.red.withValues(alpha: 0.5),
+          colorText: AppColor.white,
         );
         return false;
       }

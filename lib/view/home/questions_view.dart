@@ -289,7 +289,7 @@ class _QuestionViewState extends State<QuestionView> {
                               label: Text(
                                 'Back',
                                 style: AppText.captionSm.copyWith(
-                                  color: AppColor.whileColor,
+                                  color: AppColor.white,
                                 ),
                               ),
                             )
@@ -305,7 +305,7 @@ class _QuestionViewState extends State<QuestionView> {
                               icon: Text(
                                 'Skip',
                                 style: AppText.captionSm.copyWith(
-                                  color: AppColor.whileColor,
+                                  color: AppColor.white,
                                 ),
                               ),
                               label: const Icon(
