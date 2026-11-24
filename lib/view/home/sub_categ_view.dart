@@ -1,6 +1,5 @@
 import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 import 'package:opinion_easy/view/home/widgets/sub_category_card_widget.dart';
-import 'package:opinion_easy/view/home/widgets/watch_live_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:opinion_easy/controller/category_controller.dart';
@@ -9,8 +8,6 @@ import 'package:opinion_easy/core/admob/admob.dart';
 import 'package:opinion_easy/controller/sub_categ_controller.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:opinion_easy/core/utils/widgets/app_shimmer.dart';
-import 'Sub_categ_Widgets/cricket_widget_view.dart';
-import 'Sub_categ_Widgets/stock_market_live_view.dart';
 
 class SubCategView extends StatefulWidget {
   const SubCategView({super.key});
@@ -86,14 +83,11 @@ class _SubCategViewState extends State<SubCategView> {
           child: Obx(() {
             final subCateg = subCategController.subCategList;
 
-            final bool isSports = categoryController.categId == 1;
-            final bool isStock = categoryController.categId == 3;
-
             if (subCategController.isLoading.value) {
               return AppShimmer.subCategoryList();
             }
 
-            if (subCateg.isEmpty && !isStock && !isSports) {
+            if (subCateg.isEmpty) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -114,16 +108,6 @@ class _SubCategViewState extends State<SubCategView> {
               );
             }
             final List<Widget> children = [];
-
-            // final liveCard = _buildLiveCard(
-            //   isSportsCategory: isSports,
-            //   isStockMarketCategory: isStock,
-            // );
-
-            // if (liveCard != null) {
-            //   children.add(liveCard);
-            //   if (subCateg.isNotEmpty) children.add(VS(16));
-            // }
 
             for (int i = 0; i < subCateg.length; i++) {
               children.add(
@@ -168,31 +152,4 @@ class _SubCategViewState extends State<SubCategView> {
       ),
     );
   }
-
-  // Widget? _buildLiveCard({
-  //   required bool isSportsCategory,
-  //   required bool isStockMarketCategory,
-  // }) {
-  //   if (isSportsCategory) {
-  //     return WatchLiveCard(
-  //       title: 'View Live Score',
-  //       subTitle: 'All cricket match',
-  //       onTap: () => Get.to(() => const CricketView()),
-  //       icon: Icons.sports_cricket_rounded,
-  //       gradientColors: subCategController.cricketGradient,
-  //       liveColor: AppColor.red,
-  //     );
-  //   }
-  //   if (isStockMarketCategory) {
-  //     return WatchLiveCard(
-  //       title: 'Show Live Stock',
-  //       subTitle: 'Check Real-time Market Data',
-  //       onTap: () => Get.to(() => const StockMarketLiveView()),
-  //       icon: Icons.bar_chart_rounded,
-  //       gradientColors: subCategController.stockMarketGradient,
-  //       liveColor: AppColor.green,
-  //     );
-  //   }
-  //   return null;
-  // }
 }

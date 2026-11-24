@@ -24,8 +24,4 @@ class ApiEndpoints {
   static String markReadNotification = "$baseUrl/notifications/mark-read";
   static String unreadNotification = "$baseUrl/notifications/unread-count";
   static String bankDetails = "$baseUrl/customer-bank-details";
-  // static String upcomingmatches = "$baseUrl/cricket/upcoming-matches";
-  // static String livematches = "$baseUrl/cricket/live-matches";
-  static String stocks = "$baseUrl/stocks/market-data";
-  static String allMatchesEndpoint = "$baseUrl/cricket/all-data";
 }

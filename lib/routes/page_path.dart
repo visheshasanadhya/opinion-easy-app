@@ -20,9 +20,6 @@ import 'package:opinion_easy/view/splash_view.dart';
 import 'package:get/get.dart';
 
 import '../In_app_update.dart';
-import '../view/home/Sub_categ_Widgets/cricket_widget_view.dart';
-import '../view/home/Sub_categ_Widgets/pages/cricket_schedule_detail.dart';
-import '../view/home/Sub_categ_Widgets/pages/live_cricket_detail.dart';
 
 var pagePath = [
   GetPage(
@@ -51,32 +48,4 @@ var pagePath = [
     page: () => MonthlyTopPerformerView(),
   ),
   //GetPage(name: '/yearly-top-performer', page: () => YearlyTopPerformerView()),
-  GetPage(name: '/cricket', page: () => const CricketView()),
-
-  // Live Match Detail - with teamId as query parameter
-  GetPage(
-    name: '/live-match/:matchId',
-    page: () {
-      final matchId = Get.parameters['matchId'] ?? '';
-      return NewMatchDetailView(matchId: matchId);
-    },
-    transition: Transition.cupertino,
-  ),
-
-  // Schedule Detail - for upcoming matches
-  GetPage(
-    name: '/schedule/:matchId',
-    page: () {
-      final matchId = Get.parameters['matchId'] ?? '';
-      return NewScheduleDetailView(matchId: matchId);
-    },
-    transition: Transition.cupertino,
-  ),
-
-  // Tournament Matches - placeholder for future implementation
-  GetPage(
-    name: '/tournament/:tournamentName',
-    page: () => const CricketView(),
-    transition: Transition.cupertino,
-  ),
 ];
