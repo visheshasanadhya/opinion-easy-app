@@ -144,7 +144,7 @@ class ProfileView extends StatelessWidget {
                   children: [
                     Text(
                       profile?.name ?? "User",
-                      style: AppText.bodyMd,
+                      style: AppText.h4,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

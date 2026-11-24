@@ -8,7 +8,7 @@ import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 
 enum LeaderboardSource { bottomNav, profile }
 
-enum LeaderboardType { today, yearly }
+enum LeaderboardType { today, monthly, yearly }
 
 class LeaderboardView extends StatefulWidget {
   final LeaderboardSource source;
@@ -38,10 +38,15 @@ class _LeaderboardViewState extends State<LeaderboardView>
   void initState() {
     super.initState();
     selectedType = widget.initialType;
+    final initialIndex = selectedType == LeaderboardType.today
+        ? 0
+        : selectedType == LeaderboardType.monthly
+            ? 1
+            : 2;
     _tabController = TabController(
-      length: 2,
+      length: 3,
       vsync: this,
-      initialIndex: selectedType == LeaderboardType.today ? 0 : 1,
+      initialIndex: initialIndex,
     );
     _tabController.addListener(_handleTabChange);
     _fetchData();
@@ -57,7 +62,9 @@ class _LeaderboardViewState extends State<LeaderboardView>
     if (!_tabController.indexIsChanging) {
       final newType = _tabController.index == 0
           ? LeaderboardType.today
-          : LeaderboardType.yearly;
+          : _tabController.index == 1
+              ? LeaderboardType.monthly
+              : LeaderboardType.yearly;
       if (newType != selectedType) {
         setState(() => selectedType = newType);
         _fetchData();
@@ -66,10 +73,16 @@ class _LeaderboardViewState extends State<LeaderboardView>
   }
 
   void _fetchData() {
-    if (selectedType == LeaderboardType.today) {
-      todayController.fetchTodayLeaderList("today");
-    } else {
-      topperController.fetchTopperList("year");
+    switch (selectedType) {
+      case LeaderboardType.today:
+        todayController.fetchTodayLeaderList("today");
+        break;
+      case LeaderboardType.monthly:
+        topperController.fetchMonthlyList();
+        break;
+      case LeaderboardType.yearly:
+        topperController.fetchYearlyList();
+        break;
     }
   }
 
@@ -100,7 +113,7 @@ class _LeaderboardViewState extends State<LeaderboardView>
             children: [
               Container(height: 1, color: AppColor.borderFaint),
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
                 child: Container(
                   height: 42,
                   decoration: BoxDecoration(
@@ -124,8 +137,8 @@ class _LeaderboardViewState extends State<LeaderboardView>
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.today_outlined, size: 15),
-                            HS(5),
+                            Icon(Icons.today_outlined, size: 14),
+                            HS(4),
                             Text("Today"),
                           ],
                         ),
@@ -134,8 +147,18 @@ class _LeaderboardViewState extends State<LeaderboardView>
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.calendar_month_outlined, size: 15),
-                            HS(5),
+                            Icon(Icons.date_range_outlined, size: 14),
+                            HS(4),
+                            Text("Monthly"),
+                          ],
+                        ),
+                      ),
+                      Tab(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.calendar_month_outlined, size: 14),
+                            HS(4),
                             Text("Yearly"),
                           ],
                         ),
@@ -150,7 +173,11 @@ class _LeaderboardViewState extends State<LeaderboardView>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [_buildTodayTab(), _buildYearlyTab()],
+        children: [
+          _buildTodayTab(),
+          _buildMonthlyTab(),
+          _buildYearlyTab(),
+        ],
       ),
     );
   }
@@ -166,8 +193,32 @@ class _LeaderboardViewState extends State<LeaderboardView>
       if (model.data == null || model.data!.isEmpty) {
         return _emptyState(
           "No leaders today",
-          "Be the first to lead!",
+          "Be the first to lead today!",
           Icons.today_outlined,
+        );
+      }
+      final list = model.data!;
+      return _leaderboardContent(
+        list.take(3).toList(),
+        list.length > 3 ? list.sublist(3) : [],
+        model.currentUser,
+      );
+    });
+  }
+
+  Widget _buildMonthlyTab() {
+    return Obx(() {
+      if (topperController.isMonthlyLoading.value) {
+        return const Stack(
+          children: [Positioned.fill(child: ShimmerTopPerformerView())],
+        );
+      }
+      final model = topperController.monthlyModel.value;
+      if (model.data == null || model.data!.isEmpty) {
+        return _emptyState(
+          "No monthly leaders",
+          "Be the first to lead this month!",
+          Icons.date_range_outlined,
         );
       }
       final list = model.data!;
@@ -181,16 +232,16 @@ class _LeaderboardViewState extends State<LeaderboardView>
 
   Widget _buildYearlyTab() {
     return Obx(() {
-      if (topperController.isLoading.value) {
+      if (topperController.isYearlyLoading.value) {
         return const Stack(
           children: [Positioned.fill(child: ShimmerTopPerformerView())],
         );
       }
-      final model = topperController.topperModel.value;
+      final model = topperController.yearlyModel.value;
       if (model.data == null || model.data!.isEmpty) {
         return _emptyState(
           "No yearly leaders",
-          "Be the first to lead!",
+          "Be the first to lead this year!",
           Icons.leaderboard_outlined,
         );
       }

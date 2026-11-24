@@ -12,7 +12,7 @@ import 'package:opinion_easy/view/profile/profile_content/edit_profile.dart';
 import 'package:opinion_easy/view/profile/profile_content/faq_view.dart';
 import 'package:opinion_easy/view/profile/profile_content/help_view.dart';
 import 'package:opinion_easy/view/profile/profile_content/history_view.dart';
-import 'package:opinion_easy/view/profile/profile_content/monthly_top_performer_view.dart';
+import 'package:opinion_easy/view/leaderboard/leaderboard_view.dart';
 import 'package:opinion_easy/view/profile/profile_content/privacy_policy.dart';
 import 'package:opinion_easy/view/profile/profile_content/refer_and_earn.dart';
 import 'package:opinion_easy/view/profile/profile_content/terms_and_condition.dart';
@@ -46,6 +46,9 @@ var pagePath = [
   GetPage(name: '/sub-categ', page: () => SubCategView()),
   GetPage(
     name: '/monthly-top-performer',
-    page: () => MonthlyTopPerformerView(),
+    page: () => const LeaderboardView(
+      source: LeaderboardSource.profile,
+      initialType: LeaderboardType.monthly,
+    ),
   ),
 ];
