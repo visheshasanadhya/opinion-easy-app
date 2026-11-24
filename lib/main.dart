@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:opinion_easy/core/admob/admob.dart';
 import 'package:opinion_easy/data/service/fcm_service.dart';
+import 'package:opinion_easy/data/service/internet_monitor.dart';
 import 'package:opinion_easy/firebase_options.dart';
 import 'package:opinion_easy/routes/page_path.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -39,6 +40,7 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FCMService.initializeLocalNotifications();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  await InternetMonitor.init();
 
   if (!kIsWeb) {
     await MobileAds.instance.initialize();
@@ -62,8 +64,26 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    InternetMonitor.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
