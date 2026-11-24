@@ -92,7 +92,7 @@ class _LeaderboardViewState extends State<LeaderboardView>
       backgroundColor: AppColor.scaffold,
       appBar: AppBar(
         backgroundColor: AppColor.card,
-        surfaceTintColor: Colors.transparent,
+        surfaceTintColor: AppColor.transparent,
         elevation: 0,
         centerTitle: true,
         automaticallyImplyLeading: false,
@@ -127,7 +127,7 @@ class _LeaderboardViewState extends State<LeaderboardView>
                       borderRadius: BorderRadius.circular(10),
                     ),
                     indicatorSize: TabBarIndicatorSize.tab,
-                    dividerColor: Colors.transparent,
+                    dividerColor: AppColor.transparent,
                     labelColor: AppColor.black,
                     unselectedLabelColor: AppColor.white,
                     labelStyle: AppText.labelSm,
@@ -406,7 +406,7 @@ class _LeaderboardViewState extends State<LeaderboardView>
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.4),
+                          color: AppColor.blackOp(0.4),
                           blurRadius: 6,
                           offset: const Offset(0, 2),
                         ),

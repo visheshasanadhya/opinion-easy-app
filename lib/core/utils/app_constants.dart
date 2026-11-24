@@ -46,6 +46,7 @@ class AppColor {
   // Base
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
+  static const Color transparent = Colors.transparent;
 
   // Shimmer
   static const Color shimmerBase = Color(0xFF1E1E1E);
