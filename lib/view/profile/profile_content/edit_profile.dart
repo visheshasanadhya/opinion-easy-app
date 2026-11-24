@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:opinion_easy/core/utils/widgets/btn_widget.dart';
 import 'package:opinion_easy/controller/profile_controller.dart';
+import 'package:opinion_easy/core/utils/widgets/custom_text_field.dart';
 import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,49 +13,7 @@ class EditProfileView extends StatelessWidget {
 
   EditProfileView({super.key});
 
-  // ── Dark-themed input decoration ──────────────────────────
-  InputDecoration _inputDecoration(
-    String hint, {
-    Widget? prefix,
-    Widget? suffix,
-  }) {
-    return InputDecoration(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      hintText: hint,
-      hintStyle: AppText.captionSm,
-      filled: true,
-      fillColor: AppColor.cardAlt,
-      prefixIcon: prefix,
-      prefixIconConstraints: prefix != null
-          ? const BoxConstraints(minWidth: 0, minHeight: 0)
-          : null,
-      suffixIcon: suffix,
-      suffixIconConstraints: suffix != null
-          ? const BoxConstraints(minWidth: 0, minHeight: 0)
-          : null,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppDeco.radiusSm),
-        borderSide: BorderSide(color: AppColor.borderLight, width: 1),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppDeco.radiusSm),
-        borderSide: BorderSide(color: AppColor.borderLight, width: 1),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppDeco.radiusSm),
-        borderSide: const BorderSide(color: AppColor.blue, width: 1.5),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppDeco.radiusSm),
-        borderSide: const BorderSide(color: AppColor.red, width: 1),
-      ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppDeco.radiusSm),
-        borderSide: const BorderSide(color: AppColor.red, width: 1.5),
-      ),
-      errorStyle: const TextStyle(color: AppColor.red),
-    );
-  }
+
 
   // ── Section label ─────────────────────────────────────────
   Widget _label(String text) {
@@ -141,9 +100,10 @@ class EditProfileView extends StatelessWidget {
                               backgroundImage: imageFile != null
                                   ? FileImage(imageFile)
                                   : imageUrl != null && imageUrl.isNotEmpty
-                                  ? NetworkImage(imageUrl)
-                                  : const AssetImage('assets/images/user.jpg')
-                                        as ImageProvider,
+                                      ? NetworkImage(imageUrl)
+                                      : const AssetImage(
+                                              'assets/images/user.jpg')
+                                          as ImageProvider,
                             ),
                           );
                         }),
@@ -178,11 +138,10 @@ class EditProfileView extends StatelessWidget {
                 VS(32),
 
                 // ── Name ────────────────────────────────
-                _label("Name"),
-                TextFormField(
+                CustomTextField(
+                  title: "Name",
                   controller: controller.nameController,
-                  style: AppText.bodyMd,
-                  decoration: _inputDecoration("e.g. Raj Kumar"),
+                  hintText: "e.g. Raj Kumar",
                   keyboardType: TextInputType.name,
                   validator: (v) =>
                       (v == null || v.isEmpty) ? 'Name is required' : null,
@@ -190,31 +149,28 @@ class EditProfileView extends StatelessWidget {
                 VS(16),
 
                 // ── Phone ────────────────────────────────
-                _label("Phone Number"),
-                TextFormField(
+                CustomTextField(
+                  title: "Phone Number",
                   controller: controller.phoneController,
-                  style: AppText.bodyMd,
                   keyboardType: TextInputType.phone,
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
                     LengthLimitingTextInputFormatter(10),
                   ],
-                  decoration: _inputDecoration(
-                    "Enter 10-digit number",
-                    prefix: Padding(
-                      padding: const EdgeInsets.only(left: 14, right: 8),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.phone_outlined,
-                            color: AppColor.white,
-                            size: 18,
-                          ),
-                          HS(6),
-                          Text("+91 ", style: AppText.bodyMd),
-                        ],
-                      ),
+                  hintText: "Enter 10-digit number",
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.only(left: 14, right: 8),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.phone_outlined,
+                          color: AppColor.white,
+                          size: 18,
+                        ),
+                        HS(6),
+                        Text("+91 ", style: AppText.bodyMd),
+                      ],
                     ),
                   ),
                   validator: (v) {
@@ -298,35 +254,29 @@ class EditProfileView extends StatelessWidget {
                 VS(16),
 
                 // ── Email (Fixed from Google account) ────
-                _label("Email Address"),
-                TextFormField(
+                CustomTextField(
+                  title: "Email Address",
                   controller: controller.emailController,
                   readOnly: true,
-                  style: AppText.bodyMd.copyWith(color: AppColor.textGrey),
                   keyboardType: TextInputType.emailAddress,
-                  decoration: _inputDecoration(
-                    "example@email.com",
-                    prefix: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 14),
-                      child: Icon(
-                        Icons.lock_outline_rounded,
-                        color: AppColor.textGrey,
-                        size: 18,
-                      ),
+                  hintText: "example@email.com",
+                  prefixIcon: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 14),
+                    child: Icon(
+                      Icons.lock_outline_rounded,
+                      color: AppColor.textGrey,
+                      size: 18,
                     ),
                   ),
                 ),
                 VS(16),
 
                 // ── Address ───────────────────────────────
-                _label("Address"),
-                TextFormField(
+                CustomTextField(
+                  title: "Address",
                   maxLines: 2,
                   controller: controller.addressController,
-                  style: AppText.bodyMd,
-                  decoration: _inputDecoration(
-                    "23/234, Soft Link Road, Sec-32, 112345",
-                  ),
+                  hintText: "23/234, Soft Link Road, Sec-32, 112345",
                   keyboardType: TextInputType.streetAddress,
                   validator: (v) =>
                       (v == null || v.isEmpty) ? 'Address is required' : null,
@@ -334,49 +284,46 @@ class EditProfileView extends StatelessWidget {
                 VS(16),
 
                 // ── Pincode (Auto-fetches City & State) ──
-                _label("Pincode"),
                 Obx(
-                  () => TextFormField(
+                  () => CustomTextField(
+                    title: "Pincode",
                     controller: controller.pincodeController,
-                    style: AppText.bodyMd,
                     keyboardType: TextInputType.number,
                     inputFormatters: [
                       FilteringTextInputFormatter.digitsOnly,
                       LengthLimitingTextInputFormatter(6),
                     ],
-                    decoration: _inputDecoration(
-                      "Enter 6-digit pincode",
-                      prefix: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 14),
-                        child: Icon(
-                          Icons.location_on_outlined,
-                          color: AppColor.white,
-                          size: 20,
-                        ),
+                    hintText: "Enter 6-digit pincode",
+                    prefixIcon: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 14),
+                      child: Icon(
+                        Icons.location_on_outlined,
+                        color: AppColor.white,
+                        size: 20,
                       ),
-                      suffix: controller.isVerifyingPincode.value
-                          ? const Padding(
-                              padding: EdgeInsets.all(14),
-                              child: SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: AppColor.white,
-                                ),
-                              ),
-                            )
-                          : controller.isPincodeValid.value
-                              ? const Padding(
-                                  padding: EdgeInsets.all(14),
-                                  child: Icon(
-                                    Icons.check_circle,
-                                    color: AppColor.green,
-                                    size: 20,
-                                  ),
-                                )
-                              : null,
                     ),
+                    suffixIcon: controller.isVerifyingPincode.value
+                        ? const Padding(
+                            padding: EdgeInsets.all(14),
+                            child: SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColor.white,
+                              ),
+                            ),
+                          )
+                        : controller.isPincodeValid.value
+                            ? const Padding(
+                                padding: EdgeInsets.all(14),
+                                child: Icon(
+                                  Icons.check_circle,
+                                  color: AppColor.green,
+                                  size: 20,
+                                ),
+                              )
+                            : null,
                     validator: (v) {
                       if (v == null || v.isEmpty) return 'Pincode is required';
                       if (!RegExp(r'^\d{6}$').hasMatch(v)) {
@@ -400,32 +347,20 @@ class EditProfileView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _label("City"),
-                                  TextFormField(
-                                    controller: controller.cityController,
-                                    readOnly: true,
-                                    style: AppText.bodyMd,
-                                    decoration: _inputDecoration("City"),
-                                  ),
-                                ],
+                              child: CustomTextField(
+                                title: "City",
+                                controller: controller.cityController,
+                                readOnly: true,
+                                hintText: "City",
                               ),
                             ),
                             HS(12),
                             Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _label("State"),
-                                  TextFormField(
-                                    controller: controller.stateController,
-                                    readOnly: true,
-                                    style: AppText.bodyMd,
-                                    decoration: _inputDecoration("State"),
-                                  ),
-                                ],
+                              child: CustomTextField(
+                                title: "State",
+                                controller: controller.stateController,
+                                readOnly: true,
+                                hintText: "State",
                               ),
                             ),
                           ],

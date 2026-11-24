@@ -230,7 +230,8 @@ class ProfileController extends GetxController {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setBool('is_profile_complete', true);
           await fetchProfile();
-          Get.snackbar('Success', response['message'] ?? 'Profile updated successfully');
+          Get.snackbar(
+              'Success', response['message'] ?? 'Profile updated successfully');
           if (navigateHomeOnSuccess) {
             Get.offAllNamed('/bottom-nav');
           } else {

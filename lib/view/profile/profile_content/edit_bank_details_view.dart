@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../../controller/bank_controller.dart';
 import '../../../core/utils/app_constants.dart';
+import '../../../core/utils/widgets/custom_text_field.dart';
 
 class BankFormBottomSheet extends StatelessWidget {
   final BankDetailsController controller;
@@ -353,102 +354,49 @@ class BankFormBottomSheet extends StatelessWidget {
     Widget? suffixWidget,
     String? Function(String?)? validator,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Label
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: Colors.white.withValues(alpha: 0.85),
-            letterSpacing: 0.2,
-          ),
-        ),
-        const SizedBox(height: 8),
-
-        // Input Field Card
-        Container(
+    return CustomTextField(
+      title: label,
+      hintText: hint,
+      controller: controller,
+      focusNode: focusNode,
+      readOnly: readOnly,
+      keyboardType: keyboardType,
+      textCapitalization: textCapitalization,
+      inputFormatters: inputFormatters,
+      onChange: onChanged,
+      validator: validator,
+      prefixIcon: Padding(
+        padding: const EdgeInsets.only(left: 12, right: 12),
+        child: Container(
+          width: 34,
+          height: 34,
           decoration: BoxDecoration(
-            color: readOnly ? const Color(0xFF1D2132) : const Color(0xFF1C1F2A),
-            borderRadius: BorderRadius.circular(16),
+            shape: BoxShape.circle,
             border: Border.all(
-              color: readOnly
-                  ? const Color(0xFF2C3249)
-                  : Colors.white.withValues(alpha: 0.1),
-              width: 1,
+              color: AppColor.primaryColor1.withValues(alpha: 0.5),
+              width: 1.2,
             ),
+            color: const Color(0xFF2A2E44),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          child: Row(
-            children: [
-              // Golden Leading Icon Badge
-              Container(
-                width: 34,
-                height: 34,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColor.primaryColor1.withValues(alpha: 0.5),
-                    width: 1.2,
-                  ),
-                  color: const Color(0xFF2A2E44),
-                ),
-                alignment: Alignment.center,
-                child: iconWidget,
-              ),
-              const SizedBox(width: 12),
-
-              // TextFormField
-              Expanded(
-                child: TextFormField(
-                  controller: controller,
-                  focusNode: focusNode,
-                  readOnly: readOnly,
-                  keyboardType: keyboardType,
-                  textCapitalization: textCapitalization,
-                  inputFormatters: inputFormatters,
-                  onChanged: onChanged,
-                  validator: validator,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14.5,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  cursorColor: AppColor.primaryColor1,
-                  decoration: InputDecoration(
-                    isDense: true,
-                    hintText: hint,
-                    hintStyle: TextStyle(
-                      color: Colors.grey[500],
-                      fontSize: 13.5,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    border: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    focusedErrorBorder: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 13),
-                    errorStyle: const TextStyle(
-                      color: Colors.redAccent,
-                      fontSize: 11,
-                      height: 0.8,
-                    ),
-                  ),
-                ),
-              ),
-
-              if (suffixWidget != null) ...[
-                const SizedBox(width: 8),
-                suffixWidget,
-                const SizedBox(width: 4),
-              ],
-            ],
-          ),
+          alignment: Alignment.center,
+          child: iconWidget,
         ),
-      ],
+      ),
+      suffixIcon: suffixWidget != null
+          ? Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: suffixWidget,
+            )
+          : null,
+      fillColor:
+          readOnly ? const Color(0xFF1D2132) : const Color(0xFF1C1F2A),
+      borderColor: readOnly
+          ? const Color(0xFF2C3249)
+          : Colors.white.withValues(alpha: 0.1),
+      focusedBorderColor: AppColor.primaryColor1,
+      borderRadius: BorderRadius.circular(16),
+      contentPadding:
+          const EdgeInsets.symmetric(horizontal: 14, vertical: 15),
     );
   }
 }

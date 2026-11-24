@@ -5,55 +5,13 @@ import 'package:intl/intl.dart';
 import 'package:opinion_easy/controller/profile_controller.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:opinion_easy/core/utils/widgets/btn_widget.dart';
+import 'package:opinion_easy/core/utils/widgets/custom_text_field.dart';
 import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 
 class CompleteProfileView extends StatelessWidget {
   final ProfileController profileController = Get.put(ProfileController());
 
   CompleteProfileView({super.key});
-
-  InputDecoration _inputDecoration(
-    String hint, {
-    Widget? prefix,
-    Widget? suffix,
-  }) {
-    return InputDecoration(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      hintText: hint,
-      hintStyle: AppText.captionSm,
-      filled: true,
-      fillColor: AppColor.cardAlt,
-      prefixIcon: prefix,
-      prefixIconConstraints: prefix != null
-          ? const BoxConstraints(minWidth: 0, minHeight: 0)
-          : null,
-      suffixIcon: suffix,
-      suffixIconConstraints: suffix != null
-          ? const BoxConstraints(minWidth: 0, minHeight: 0)
-          : null,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppDeco.radiusSm),
-        borderSide: BorderSide(color: AppColor.borderLight, width: 1),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppDeco.radiusSm),
-        borderSide: BorderSide(color: AppColor.borderLight, width: 1),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppDeco.radiusSm),
-        borderSide: const BorderSide(color: AppColor.white, width: 1.5),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppDeco.radiusSm),
-        borderSide: const BorderSide(color: AppColor.red, width: 1),
-      ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppDeco.radiusSm),
-        borderSide: const BorderSide(color: AppColor.red, width: 1.5),
-      ),
-      errorStyle: const TextStyle(color: AppColor.red),
-    );
-  }
 
   Widget _label(String text) {
     return Padding(
@@ -160,11 +118,10 @@ class CompleteProfileView extends StatelessWidget {
                 VS(28),
 
                 // ── Name ────────────────────────────────
-                _label("Full Name"),
-                TextFormField(
+                CustomTextField(
+                  title: "Full Name",
                   controller: controller.nameController,
-                  style: AppText.bodyMd,
-                  decoration: _inputDecoration("e.g. Vishesh Sanadhya"),
+                  hintText: "e.g. Vishesh Sanadhya",
                   keyboardType: TextInputType.name,
                   validator: (v) =>
                       (v == null || v.trim().isEmpty) ? 'Name is required' : null,
@@ -172,31 +129,28 @@ class CompleteProfileView extends StatelessWidget {
                 VS(16),
 
                 // ── Phone ────────────────────────────────
-                _label("Phone Number"),
-                TextFormField(
+                CustomTextField(
+                  title: "Phone Number",
                   controller: controller.phoneController,
-                  style: AppText.bodyMd,
                   keyboardType: TextInputType.phone,
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
                     LengthLimitingTextInputFormatter(10),
                   ],
-                  decoration: _inputDecoration(
-                    "Enter 10-digit number",
-                    prefix: Padding(
-                      padding: const EdgeInsets.only(left: 14, right: 8),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.phone_outlined,
-                            color: AppColor.white,
-                            size: 18,
-                          ),
-                          HS(6),
-                          Text("+91 ", style: AppText.bodyMd),
-                        ],
-                      ),
+                  hintText: "Enter 10-digit number",
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.only(left: 14, right: 8),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.phone_outlined,
+                          color: AppColor.white,
+                          size: 18,
+                        ),
+                        HS(6),
+                        Text("+91 ", style: AppText.bodyMd),
+                      ],
                     ),
                   ),
                   validator: (v) {
@@ -212,21 +166,18 @@ class CompleteProfileView extends StatelessWidget {
                 VS(16),
 
                 // ── Email (Fixed from Google account) ────
-                _label("Email Address"),
-                TextFormField(
+                CustomTextField(
+                  title: "Email Address",
                   controller: controller.emailController,
                   readOnly: true,
-                  style: AppText.bodyMd.copyWith(color: AppColor.textGrey),
                   keyboardType: TextInputType.emailAddress,
-                  decoration: _inputDecoration(
-                    "example@gmail.com",
-                    prefix: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 14),
-                      child: Icon(
-                        Icons.lock_outline_rounded,
-                        color: AppColor.textGrey,
-                        size: 18,
-                      ),
+                  hintText: "example@gmail.com",
+                  prefixIcon: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 14),
+                    child: Icon(
+                      Icons.lock_outline_rounded,
+                      color: AppColor.textGrey,
+                      size: 18,
                     ),
                   ),
                 ),
@@ -303,62 +254,56 @@ class CompleteProfileView extends StatelessWidget {
                 VS(16),
 
                 // ── Address ───────────────────────────────
-                _label("Address"),
-                TextFormField(
-                  maxLines: 2,
+                CustomTextField(
+                  title: "Address",
                   controller: controller.addressController,
-                  style: AppText.bodyMd,
-                  decoration: _inputDecoration(
-                    "Street, locality, area details",
-                  ),
+                  maxLines: 2,
+                  hintText: "Street, locality, area details",
                   keyboardType: TextInputType.streetAddress,
                 ),
                 VS(16),
 
                 // ── Pincode (Auto-fetches City & State) ──
-                _label("Pincode"),
                 Obx(
-                  () => TextFormField(
+                  () => CustomTextField(
+                    title: "Pincode",
                     controller: controller.pincodeController,
-                    style: AppText.bodyMd,
                     keyboardType: TextInputType.number,
                     inputFormatters: [
                       FilteringTextInputFormatter.digitsOnly,
                       LengthLimitingTextInputFormatter(6),
                     ],
-                    decoration: _inputDecoration(
-                      "Enter 6-digit pincode",
-                      prefix: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 14),
-                        child: Icon(
-                          Icons.location_on_outlined,
-                          color: AppColor.white,
-                          size: 20,
-                        ),
+                    hintText: "Enter 6-digit pincode",
+                    prefixIcon: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 14),
+                      child: Icon(
+                        Icons.location_on_outlined,
+                        color: AppColor.white,
+                        size: 20,
                       ),
-                      suffix: controller.isVerifyingPincode.value
-                          ? const Padding(
-                              padding: EdgeInsets.all(14),
-                              child: SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: AppColor.white,
-                                ),
-                              ),
-                            )
-                          : controller.isPincodeValid.value
-                              ? const Padding(
-                                  padding: EdgeInsets.all(14),
-                                  child: Icon(
-                                    Icons.check_circle,
-                                    color: AppColor.green,
-                                    size: 20,
-                                  ),
-                                )
-                              : null,
                     ),
+                    suffixIcon: controller.isVerifyingPincode.value
+                        ? const Padding(
+                            padding: EdgeInsets.all(14),
+                            child: SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColor.white,
+                              ),
+                            ),
+                          )
+                        : controller.isPincodeValid.value
+                            ? const Padding(
+                                padding: EdgeInsets.all(14),
+                                child: Icon(
+                                  Icons.check_circle,
+                                  color: AppColor.green,
+                                  size: 20,
+                                ),
+                              )
+                            : null,
                     validator: (v) {
                       if (v != null && v.isNotEmpty && v.length < 6) {
                         return 'Enter 6-digit pincode';
@@ -381,32 +326,20 @@ class CompleteProfileView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _label("City"),
-                                  TextFormField(
-                                    controller: controller.cityController,
-                                    readOnly: true,
-                                    style: AppText.bodyMd,
-                                    decoration: _inputDecoration("City"),
-                                  ),
-                                ],
+                              child: CustomTextField(
+                                title: "City",
+                                controller: controller.cityController,
+                                readOnly: true,
+                                hintText: "City",
                               ),
                             ),
                             HS(12),
                             Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _label("State"),
-                                  TextFormField(
-                                    controller: controller.stateController,
-                                    readOnly: true,
-                                    style: AppText.bodyMd,
-                                    decoration: _inputDecoration("State"),
-                                  ),
-                                ],
+                              child: CustomTextField(
+                                title: "State",
+                                controller: controller.stateController,
+                                readOnly: true,
+                                hintText: "State",
                               ),
                             ),
                           ],
@@ -419,21 +352,17 @@ class CompleteProfileView extends StatelessWidget {
                 }),
 
                 // ── Referral Code (Optional) ────────────
-                _label("Referral Code"),
-                TextFormField(
+                CustomTextField(
+                  title: "Referral Code",
                   controller: controller.referralController,
-                  cursorColor: AppColor.white,
-                  style: AppText.bodyMd,
                   textCapitalization: TextCapitalization.characters,
-                  decoration: _inputDecoration(
-                    "Enter Referral Code (optional)",
-                    prefix: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 14),
-                      child: Icon(
-                        Icons.card_giftcard_outlined,
-                        color: AppColor.white,
-                        size: 20,
-                      ),
+                  hintText: "Enter Referral Code (optional)",
+                  prefixIcon: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 14),
+                    child: Icon(
+                      Icons.card_giftcard_outlined,
+                      color: AppColor.white,
+                      size: 20,
                     ),
                   ),
                 ),
