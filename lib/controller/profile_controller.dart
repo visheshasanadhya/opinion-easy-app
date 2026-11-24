@@ -171,32 +171,33 @@ class ProfileController extends GetxController {
   void showImageSourceDialog() {
     Get.bottomSheet(
       SafeArea(
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 20),
-          decoration: const BoxDecoration(
-            color: AppColor.scaffold,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          child: Wrap(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.camera_alt),
-                title: const Text("Take a photo"),
-                onTap: () {
-                  pickImage(ImageSource.camera);
-                  Get.back();
-                },
-              ),
-              const Divider(color: AppColor.borderLight),
-              ListTile(
-                leading: const Icon(Icons.photo_library),
-                title: const Text("Choose from gallery"),
-                onTap: () {
-                  pickImage(ImageSource.gallery);
-                  Get.back();
-                },
-              ),
-            ],
+        child: Material(
+          color: AppColor.scaffold,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          clipBehavior: Clip.antiAlias,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Wrap(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.camera_alt),
+                  title: const Text("Take a photo"),
+                  onTap: () {
+                    pickImage(ImageSource.camera);
+                    Get.back();
+                  },
+                ),
+                const Divider(color: AppColor.borderLight),
+                ListTile(
+                  leading: const Icon(Icons.photo_library),
+                  title: const Text("Choose from gallery"),
+                  onTap: () {
+                    pickImage(ImageSource.gallery);
+                    Get.back();
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

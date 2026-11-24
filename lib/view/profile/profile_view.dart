@@ -187,8 +187,13 @@ class ProfileView extends StatelessWidget {
           padding: const EdgeInsets.only(left: 4, bottom: 10),
           child: Text(title, style: AppText.hint),
         ),
-        Container(
-          decoration: AppDeco.card,
+        Material(
+          color: AppColor.card,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppDeco.radius),
+            side: const BorderSide(color: AppColor.borderFaint),
+          ),
+          clipBehavior: Clip.antiAlias,
           child: Column(
             children: items
                 .asMap()
