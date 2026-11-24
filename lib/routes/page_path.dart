@@ -1,5 +1,5 @@
 import 'package:opinion_easy/view/auth/login_view.dart';
-import 'package:opinion_easy/view/auth/register_view.dart';
+import 'package:opinion_easy/view/auth/complete_profile_view.dart';
 import 'package:opinion_easy/view/bottom_nav.dart';
 import 'package:opinion_easy/view/deactivated_view.dart';
 import 'package:opinion_easy/view/home/home_view.dart';
@@ -27,7 +27,8 @@ var pagePath = [
     page: () => InAppUpdateWrapper(child: SplashView()),
   ),
   GetPage(name: '/login', page: () => LoginView()),
-  GetPage(name: '/register', page: () => RegisterView()),
+  GetPage(name: '/complete-profile', page: () => CompleteProfileView()),
+  GetPage(name: '/register', page: () => CompleteProfileView()),
   GetPage(name: '/bottom-nav', page: () => BottomNav()),
   GetPage(name: '/home', page: () => HomeView()),
   GetPage(name: '/edit-profile', page: () => EditProfileView()),

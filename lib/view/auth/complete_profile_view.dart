@@ -7,10 +7,10 @@ import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:opinion_easy/core/utils/widgets/btn_widget.dart';
 import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 
-class RegisterView extends StatelessWidget {
+class CompleteProfileView extends StatelessWidget {
   final ProfileController profileController = Get.put(ProfileController());
 
-  RegisterView({super.key});
+  CompleteProfileView({super.key});
 
   InputDecoration _inputDecoration(
     String hint, {
@@ -207,22 +207,24 @@ class RegisterView extends StatelessWidget {
                 ),
                 VS(16),
 
-                // ── Email ─────────────────────────────────
+                // ── Email (Fixed from Google account) ────
                 _label("Email Address"),
                 TextFormField(
                   controller: controller.emailController,
-                  style: AppText.bodyMd,
-                  decoration: _inputDecoration("example@gmail.com"),
+                  readOnly: true,
+                  style: AppText.bodyMd.copyWith(color: AppColor.textGrey),
                   keyboardType: TextInputType.emailAddress,
-                  validator: (v) {
-                    if (v == null || v.trim().isEmpty) return 'Email is required';
-                    if (!RegExp(
-                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                    ).hasMatch(v.trim())) {
-                      return 'Enter a valid email address';
-                    }
-                    return null;
-                  },
+                  decoration: _inputDecoration(
+                    "example@gmail.com",
+                    prefix: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 14),
+                      child: Icon(
+                        Icons.lock_outline_rounded,
+                        color: AppColor.textGrey,
+                        size: 18,
+                      ),
+                    ),
+                  ),
                 ),
                 VS(16),
 
@@ -285,7 +287,7 @@ class RegisterView extends StatelessWidget {
                                 : controller.selectedDob.value,
                             style: AppText.bodyMd.copyWith(
                               color: controller.selectedDob.value.isEmpty
-                                  ? AppColor.textGrey
+                                   ? AppColor.textGrey
                                   : AppColor.white,
                             ),
                           ),

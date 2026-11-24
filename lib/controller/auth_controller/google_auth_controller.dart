@@ -73,7 +73,7 @@ class GoogleAuthController extends GetxController {
 
         // Route: if new user or profile incomplete, open registration/profile completion
         if (newUser || !profileComplete) {
-          Get.offAllNamed('/register');
+          Get.offAllNamed('/complete-profile');
         } else {
           Get.offAllNamed('/bottom-nav');
         }

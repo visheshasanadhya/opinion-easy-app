@@ -39,8 +39,22 @@ class ProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _loadInitialPrefs();
     pincodeController.addListener(_onPincodeChanged);
     fetchProfile();
+  }
+
+  Future<void> _loadInitialPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (emailController.text.isEmpty) {
+      emailController.text = prefs.getString('user_email') ?? '';
+    }
+    if (nameController.text.isEmpty) {
+      nameController.text = prefs.getString('user_name') ?? '';
+    }
+    if (phoneController.text.isEmpty) {
+      phoneController.text = prefs.getString('user_phone') ?? '';
+    }
   }
 
   void _onPincodeChanged() {
