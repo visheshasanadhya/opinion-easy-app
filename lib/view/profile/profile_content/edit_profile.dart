@@ -194,12 +194,34 @@ class EditProfileView extends StatelessWidget {
                 TextFormField(
                   controller: controller.phoneController,
                   style: AppText.bodyMd,
-                  decoration: _inputDecoration("+91 9XXXXXXXXX"),
                   keyboardType: TextInputType.phone,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(10),
+                  ],
+                  decoration: _inputDecoration(
+                    "Enter 10-digit number",
+                    prefix: Padding(
+                      padding: const EdgeInsets.only(left: 14, right: 8),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.phone_outlined,
+                            color: AppColor.white,
+                            size: 18,
+                          ),
+                          HS(6),
+                          Text("+91 ", style: AppText.bodyMd),
+                        ],
+                      ),
+                    ),
+                  ),
                   validator: (v) {
-                    if (v == null || v.isEmpty)
+                    if (v == null || v.trim().isEmpty) {
                       return 'Phone number is required';
-                    if (!RegExp(r'^[6-9]\d{9}$').hasMatch(v)) {
+                    }
+                    if (!RegExp(r'^[6-9]\d{9}$').hasMatch(v.trim())) {
                       return 'Enter a valid 10-digit phone number';
                     }
                     return null;

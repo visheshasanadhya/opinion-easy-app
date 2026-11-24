@@ -177,6 +177,10 @@ class CompleteProfileView extends StatelessWidget {
                   controller: controller.phoneController,
                   style: AppText.bodyMd,
                   keyboardType: TextInputType.phone,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(10),
+                  ],
                   decoration: _inputDecoration(
                     "Enter 10-digit number",
                     prefix: Padding(
@@ -200,7 +204,7 @@ class CompleteProfileView extends StatelessWidget {
                       return 'Phone number is required';
                     }
                     if (!RegExp(r'^[6-9]\d{9}$').hasMatch(v.trim())) {
-                      return 'Enter a valid 10-digit mobile number';
+                      return 'Enter a valid 10-digit phone number';
                     }
                     return null;
                   },
