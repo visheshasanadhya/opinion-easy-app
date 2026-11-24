@@ -154,7 +154,12 @@ class ProfileController extends GetxController {
         ? data!.address!.state!
         : 'Uttar Pradesh';
     stateController.text = data?.address?.state ?? '';
-    selectedDob.value = data?.dob ?? '';
+    final rawDob = data?.dob;
+    selectedDob.value = (rawDob != null &&
+            rawDob != 'Enter DOB' &&
+            rawDob != 'Select Date of Birth')
+        ? rawDob
+        : '';
     cityController.text = data?.address?.city ?? '';
     addressController.text = data?.address?.address ?? '';
     districtController.text = data?.address?.district ?? '';

@@ -49,8 +49,13 @@ class ProfileService {
       'city': city,
       'address': address,
       'pincode': pincode,
-      'dob': dob,
     };
+
+    if (dob.isNotEmpty &&
+        dob != 'Enter DOB' &&
+        dob != 'Select Date of Birth') {
+      fields['dob'] = dob;
+    }
 
     if (district.isNotEmpty) {
       fields['district'] = district;

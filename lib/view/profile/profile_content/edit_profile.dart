@@ -234,11 +234,13 @@ class EditProfileView extends StatelessWidget {
                           ),
                           HS(10),
                           Text(
-                            controller.selectedDob.value.isEmpty
+                            controller.selectedDob.value.isEmpty ||
+                                    controller.selectedDob.value == "Enter DOB"
                                 ? "Select Date of Birth"
                                 : controller.selectedDob.value,
                             style: AppText.bodyMd.copyWith(
-                              color: controller.selectedDob.value.isEmpty
+                              color: controller.selectedDob.value.isEmpty ||
+                                      controller.selectedDob.value == "Enter DOB"
                                   ? AppColor.textGrey
                                   : AppColor.white,
                             ),

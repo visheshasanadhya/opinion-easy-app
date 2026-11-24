@@ -61,7 +61,9 @@ class Data {
         ? json['referred_by'].toString()
         : "Unknown";
     status = json['status'];
-    dob = json['dob'] != null ? json['dob'].toString() : "Enter DOB";
+    dob = json['dob'] != null && json['dob'].toString() != "Enter DOB"
+        ? json['dob'].toString()
+        : null;
     profilePic = json['profile_pic']?.toString();
     lastDailyPoints = json['last_daily_points']?.toString();
     createdAt = json['created_at']?.toString();
