@@ -380,15 +380,15 @@ class _LeaderboardViewState extends State<LeaderboardView>
                     color: AppColor.cardAlt,
                   ),
                   child: ClipOval(
-                    child: user.profilePic != null &&
-                            user.profilePic!.isNotEmpty
-                        ? Image.network(
-                            user.profilePic!,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) =>
-                                _avatarPlaceholder(size),
-                          )
-                        : _avatarPlaceholder(size),
+                    child:
+                        user.profilePic != null && user.profilePic!.isNotEmpty
+                            ? Image.network(
+                                user.profilePic!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) =>
+                                    _avatarPlaceholder(size),
+                              )
+                            : _avatarPlaceholder(size),
                   ),
                 ),
                 Positioned(

@@ -218,7 +218,7 @@ class _HomeViewState extends State<HomeView> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(AppAsset.coinc, height: 20, width: 20),
+            Image.asset(AppAsset.coin, height: 20, width: 20),
             HS(6),
             Obx(
               () => Text(

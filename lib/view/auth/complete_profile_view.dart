@@ -80,11 +80,18 @@ class CompleteProfileView extends StatelessWidget {
                             radius: 48,
                             backgroundColor: AppColor.cardAlt,
                             backgroundImage: imageFile != null
-                                ? FileImage(imageFile)
+                                ? FileImage(imageFile) as ImageProvider
                                 : imageUrl != null && imageUrl.isNotEmpty
                                     ? NetworkImage(imageUrl)
-                                    : const AssetImage(AppAsset.user)
-                                        as ImageProvider,
+                                    : null,
+                            child: (imageFile == null &&
+                                    (imageUrl == null || imageUrl.isEmpty))
+                                ? const Icon(
+                                    Icons.person,
+                                    size: 48,
+                                    color: AppColor.textGrey,
+                                  )
+                                : null,
                           ),
                         );
                       }),
@@ -123,8 +130,9 @@ class CompleteProfileView extends StatelessWidget {
                   controller: controller.nameController,
                   hintText: "e.g. Vishesh Sanadhya",
                   keyboardType: TextInputType.name,
-                  validator: (v) =>
-                      (v == null || v.trim().isEmpty) ? 'Name is required' : null,
+                  validator: (v) => (v == null || v.trim().isEmpty)
+                      ? 'Name is required'
+                      : null,
                 ),
                 VS(16),
 
@@ -242,7 +250,7 @@ class CompleteProfileView extends StatelessWidget {
                                 : controller.selectedDob.value,
                             style: AppText.bodyMd.copyWith(
                               color: controller.selectedDob.value.isEmpty
-                                   ? AppColor.textGrey
+                                  ? AppColor.textGrey
                                   : AppColor.white,
                             ),
                           ),

@@ -125,14 +125,22 @@ class ProfileView extends StatelessWidget {
                 height: 58,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
+                  color: AppColor.cardAlt,
                   border: Border.all(color: AppColor.borderLight, width: 1.5),
-                  image: DecorationImage(
-                    image: hasImage
-                        ? NetworkImage(profile.profilePic!) as ImageProvider
-                        : const AssetImage(AppAsset.user),
-                    fit: BoxFit.cover,
-                  ),
+                  image: hasImage
+                      ? DecorationImage(
+                          image: NetworkImage(profile.profilePic!),
+                          fit: BoxFit.cover,
+                        )
+                      : null,
                 ),
+                child: !hasImage
+                    ? const Icon(
+                        Icons.person,
+                        size: 32,
+                        color: AppColor.textGrey,
+                      )
+                    : null,
               );
             }),
             HS(14),

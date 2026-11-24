@@ -13,8 +13,6 @@ class EditProfileView extends StatelessWidget {
 
   EditProfileView({super.key});
 
-
-
   // ── Section label ─────────────────────────────────────────
   Widget _label(String text) {
     return Padding(
@@ -98,11 +96,18 @@ class EditProfileView extends StatelessWidget {
                               radius: 52,
                               backgroundColor: AppColor.cardAlt,
                               backgroundImage: imageFile != null
-                                  ? FileImage(imageFile)
+                                  ? FileImage(imageFile) as ImageProvider
                                   : imageUrl != null && imageUrl.isNotEmpty
                                       ? NetworkImage(imageUrl)
-                                      : const AssetImage(AppAsset.user)
-                                          as ImageProvider,
+                                      : null,
+                              child: (imageFile == null &&
+                                      (imageUrl == null || imageUrl.isEmpty))
+                                  ? const Icon(
+                                      Icons.person,
+                                      size: 52,
+                                      color: AppColor.textGrey,
+                                    )
+                                  : null,
                             ),
                           );
                         }),

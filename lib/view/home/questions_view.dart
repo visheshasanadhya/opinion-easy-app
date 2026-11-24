@@ -143,7 +143,7 @@ class _QuestionViewState extends State<QuestionView> {
                                     _coinTag(
                                       points: question.attempPoint,
                                       color: AppColor.red,
-                                      icon: AppAsset.coinc,
+                                      icon: AppAsset.coin,
                                     ),
                                   ],
                                 ),
@@ -158,7 +158,7 @@ class _QuestionViewState extends State<QuestionView> {
                                     _coinTag(
                                       points: question.points,
                                       color: AppColor.green,
-                                      icon: AppAsset.coinc,
+                                      icon: AppAsset.coin,
                                     ),
                                   ],
                                 ),
