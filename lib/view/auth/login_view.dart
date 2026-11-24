@@ -30,7 +30,7 @@ class LoginView extends StatelessWidget {
                       // ── App Logo & Header ───────────────────
                       Center(
                         child: Image.asset(
-                          "assets/icons/logo_512.png",
+                          AppAsset.logo512,
                           height: 100,
                         ),
                       ),
@@ -71,7 +71,7 @@ class LoginView extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Image.asset(
-                                        'assets/icons/google_logo.png',
+                                        AppAsset.googleLogo,
                                         height: 22,
                                         width: 22,
                                       ),

@@ -351,7 +351,7 @@ class _LeaderboardViewState extends State<LeaderboardView>
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Image.asset(
-                "assets/icons/crown.png",
+                AppAsset.crown,
                 height: 38,
                 width: 38,
                 color: AppColor.gold,

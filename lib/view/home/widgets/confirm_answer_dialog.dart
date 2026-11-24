@@ -323,7 +323,7 @@ class _ConfirmAnswerDialogState extends State<ConfirmAnswerDialog> {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset("assets/icons/coinc.png", height: 16),
+            Image.asset(AppAsset.coinc, height: 16),
             const SizedBox(width: 4),
             Text(
               "$val",

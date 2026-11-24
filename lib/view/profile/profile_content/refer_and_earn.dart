@@ -38,7 +38,7 @@ class ReferAndEarnView extends StatelessWidget {
               child: Column(
                 children: [
                   Image.asset(
-                    "assets/images/refer_earn.png",
+                    AppAsset.referEarn,
                     height: 180,
                     fit: BoxFit.contain,
                   ),

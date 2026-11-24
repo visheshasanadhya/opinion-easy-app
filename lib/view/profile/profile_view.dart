@@ -129,7 +129,7 @@ class ProfileView extends StatelessWidget {
                   image: DecorationImage(
                     image: hasImage
                         ? NetworkImage(profile.profilePic!) as ImageProvider
-                        : const AssetImage('assets/images/user.jpg'),
+                        : const AssetImage(AppAsset.user),
                     fit: BoxFit.cover,
                   ),
                 ),

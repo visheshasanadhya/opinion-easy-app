@@ -1,5 +1,6 @@
 // splash_screen.dart
 import 'package:opinion_easy/controller/splash_controller.dart';
+import 'package:opinion_easy/core/utils/app_asset.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,7 +20,7 @@ class SplashView extends StatelessWidget {
             duration: const Duration(seconds: 2),
             curve: Curves.easeInOut,
             child: Image.asset(
-              'assets/icons/logo_512.png',
+              AppAsset.logo512,
               width: 200,
               height: 200,
             ),

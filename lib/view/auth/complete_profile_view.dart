@@ -83,7 +83,7 @@ class CompleteProfileView extends StatelessWidget {
                                 ? FileImage(imageFile)
                                 : imageUrl != null && imageUrl.isNotEmpty
                                     ? NetworkImage(imageUrl)
-                                    : const AssetImage('assets/images/user.jpg')
+                                    : const AssetImage(AppAsset.user)
                                         as ImageProvider,
                           ),
                         );

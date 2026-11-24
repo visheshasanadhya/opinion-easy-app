@@ -64,7 +64,7 @@ class _HomeViewState extends State<HomeView> {
       _isAdLoadedOnce = true;
       if (!kIsWeb) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          adsController?.loadAdaptiveBanner(context);
+          adsController.loadAdaptiveBanner(context);
         });
       }
     }
@@ -161,7 +161,7 @@ class _HomeViewState extends State<HomeView> {
             child: ClipOval(
               child: hasImage
                   ? CachedNetworkImage(
-                      imageUrl: profile!.profilePic!,
+                      imageUrl: profile.profilePic!,
                       fit: BoxFit.cover,
                       placeholder: (_, __) =>
                           Container(color: AppColor.cardAlt),
@@ -218,7 +218,7 @@ class _HomeViewState extends State<HomeView> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset('assets/icons/coinc.png', height: 20, width: 20),
+            Image.asset(AppAsset.coinc, height: 20, width: 20),
             HS(6),
             Obx(
               () => Text(
@@ -463,7 +463,7 @@ class _HomeViewState extends State<HomeView> {
                     category.name.toString(),
                   );
                   // In _buildCategories() onTap
-                  if (!kIsWeb) _preload?.refreshSubCategAds();
+                  if (!kIsWeb) _preload.refreshSubCategAds();
 
                   // _preload.refreshSubCategAds();
                 },
