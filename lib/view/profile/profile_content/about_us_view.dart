@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controller/legal_controller.dart';
 import '../../../core/utils/widgets/app_loader.dart';
+import '../../../core/utils/widgets/app_refresh.dart';
 import '../../../core/utils/widgets/custom_app_bar.dart';
 
 class AboutUsView extends StatelessWidget {
@@ -69,8 +70,7 @@ class AboutUsView extends StatelessWidget {
 
             final content = controller.aboutContent.value;
 
-            return RefreshIndicator(
-              color: Theme.of(context).colorScheme.primary,
+            return AppRefresh(
               onRefresh: controller.fetchAboutUs,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),

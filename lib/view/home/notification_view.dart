@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:opinion_easy/controller/notification_controller.dart';
 import 'package:opinion_easy/core/utils/widgets/custom_app_bar.dart';
 import 'package:opinion_easy/core/utils/widgets/app_loader.dart';
+import 'package:opinion_easy/core/utils/widgets/app_refresh.dart';
 
 class NotificationView extends StatefulWidget {
   const NotificationView({super.key});
@@ -154,9 +155,7 @@ class _NotificationViewState extends State<NotificationView> {
             return const _EmptyStateWidget();
           }
 
-          return RefreshIndicator(
-            color: const Color(0xFF4A90E2),
-            backgroundColor: const Color(0xFF1A1A1A),
+          return AppRefresh(
             onRefresh: () => controller.fetchNotifications(isRefresh: true),
             child: ListView.separated(
               controller: scrollController,

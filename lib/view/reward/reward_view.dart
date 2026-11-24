@@ -3,6 +3,7 @@ import 'package:opinion_easy/controller/profile_controller.dart';
 import 'package:opinion_easy/controller/reward_controller.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:opinion_easy/core/utils/widgets/custom_app_bar.dart';
+import 'package:opinion_easy/core/utils/widgets/app_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
@@ -27,9 +28,7 @@ class _RewardViewState extends State<RewardView> {
         showBackButton: false,
       ),
       body: SafeArea(
-        child: RefreshIndicator(
-          color: AppColor.white,
-          backgroundColor: AppColor.card,
+        child: AppRefresh(
           onRefresh: () async {
             await Future.wait([
               rewardController.fetchRewards(),

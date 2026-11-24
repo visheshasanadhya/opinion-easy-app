@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controller/legal_controller.dart';
 import '../../../core/utils/widgets/app_loader.dart';
+import '../../../core/utils/widgets/app_refresh.dart';
 import '../../../core/utils/widgets/custom_app_bar.dart';
 
 class PrivacyPolicyView extends StatelessWidget {
@@ -71,8 +72,7 @@ class PrivacyPolicyView extends StatelessWidget {
                 );
               }
 
-              return RefreshIndicator(
-                color: Theme.of(context).colorScheme.primary,
+              return AppRefresh(
                 onRefresh: controller.fetchPrivacy,
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),

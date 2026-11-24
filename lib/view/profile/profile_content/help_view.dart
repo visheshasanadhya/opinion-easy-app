@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:opinion_easy/controller/legal_controller.dart';
 import 'package:opinion_easy/core/utils/widgets/app_loader.dart';
+import 'package:opinion_easy/core/utils/widgets/app_refresh.dart';
 import 'package:opinion_easy/core/utils/widgets/custom_app_bar.dart';
 import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -52,8 +53,7 @@ class HelpView extends StatelessWidget {
           return const AppLoader();
         }
 
-        return RefreshIndicator(
-          color: Theme.of(context).colorScheme.primary,
+        return AppRefresh(
           onRefresh: controller.fetchHelpSupport,
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),

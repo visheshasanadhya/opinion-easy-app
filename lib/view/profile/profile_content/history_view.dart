@@ -3,9 +3,9 @@ import 'package:opinion_easy/controller/history_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/utils/app_constants.dart';
 import '../../../core/utils/widgets/custom_app_bar.dart';
 import '../../../core/utils/widgets/app_loader.dart';
+import '../../../core/utils/widgets/app_refresh.dart';
 
 class HistoryView extends StatefulWidget {
   const HistoryView({super.key});
@@ -67,9 +67,7 @@ class _HistoryViewState extends State<HistoryView> {
             );
           }
 
-          return RefreshIndicator(
-            color: AppColor.primaryColor1,
-            backgroundColor: Colors.white,
+          return AppRefresh(
             onRefresh: () async {
               await historyController.fetchHistory(isRefresh: true);
             },

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:opinion_easy/controller/leaderboard_controller.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
+import 'package:opinion_easy/core/utils/widgets/app_refresh.dart';
 import 'package:opinion_easy/core/utils/widgets/custom_app_bar.dart';
 import 'package:opinion_easy/core/utils/widgets/loader_widget/topper_widget.dart';
 import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
@@ -189,7 +190,7 @@ class _LeaderboardViewState extends State<LeaderboardView>
         );
       }
       final list = model.data!;
-      return RefreshIndicator(
+      return AppRefresh(
         onRefresh: () => leaderboardController.fetchTodayList(),
         child: _leaderboardContent(
           list.take(3).toList(),
@@ -216,7 +217,7 @@ class _LeaderboardViewState extends State<LeaderboardView>
         );
       }
       final list = model.data!;
-      return RefreshIndicator(
+      return AppRefresh(
         onRefresh: () => leaderboardController.fetchMonthlyList(),
         child: _leaderboardContent(
           list.take(3).toList(),
@@ -243,7 +244,7 @@ class _LeaderboardViewState extends State<LeaderboardView>
         );
       }
       final list = model.data!;
-      return RefreshIndicator(
+      return AppRefresh(
         onRefresh: () => leaderboardController.fetchAllTimeList(),
         child: _leaderboardContent(
           list.take(3).toList(),
