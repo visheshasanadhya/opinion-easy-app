@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:opinion_easy/data/model/notification_model.dart';
 import '../data/service/api_client.dart';
+import '../data/service/internet_monitor.dart';
 
 class NotificationController extends GetxController {
   var notifications = <NotificationModel>[].obs;
@@ -27,6 +28,11 @@ class NotificationController extends GetxController {
 
   /// Fetch notifications (with pagination)
   Future<void> fetchNotifications({bool isRefresh = false}) async {
+    if (InternetMonitor.isOffline) {
+      isLoading.value = false;
+      isRefreshing.value = false;
+      return;
+    }
     try {
       if (isRefresh) {
         currentPage = 1;
@@ -68,6 +74,7 @@ class NotificationController extends GetxController {
         }
       }
     } catch (e) {
+      if (InternetMonitor.isNetworkError(e)) return;
       debugPrint("❌ Exception fetching notifications: $e");
     } finally {
       isLoading.value = false;
@@ -86,6 +93,7 @@ class NotificationController extends GetxController {
 
   /// Fetch unread count
   Future<void> fetchUnreadCount() async {
+    if (InternetMonitor.isOffline) return;
     try {
       final response = await ApiClient.get(
         Uri.parse(ApiEndpoints.unreadNotification),
@@ -102,6 +110,7 @@ class NotificationController extends GetxController {
         }
       }
     } catch (e) {
+      if (InternetMonitor.isNetworkError(e)) return;
       debugPrint("❌ Exception fetching unread count: $e");
     }
   }

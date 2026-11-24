@@ -1,5 +1,6 @@
 import 'package:opinion_easy/data/model/history_model.dart';
 import 'package:opinion_easy/data/service/history_service.dart';
+import 'package:opinion_easy/data/service/internet_monitor.dart';
 import 'package:get/get.dart';
 
 class HistoryController extends GetxController {
@@ -24,6 +25,10 @@ class HistoryController extends GetxController {
   }
 
   Future<void> fetchHistory({bool isRefresh = false}) async {
+    if (InternetMonitor.isOffline) {
+      isLoading.value = false;
+      return;
+    }
     try {
       if (isRefresh) {
         currentPage.value = 1;
@@ -51,6 +56,7 @@ class HistoryController extends GetxController {
       }
       isDataLoaded.value = true;
     } catch (e) {
+      if (InternetMonitor.isNetworkError(e)) return;
       if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
           e.toString().contains("Authentication is required")) {
         return;
@@ -80,6 +86,7 @@ class HistoryController extends GetxController {
         redeemHistory.addAll(redeem);
       }
     } catch (e) {
+      if (InternetMonitor.isNetworkError(e)) return;
       if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
           e.toString().contains("Authentication is required")) {
         return;

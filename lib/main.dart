@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:opinion_easy/core/admob/admob.dart';
-import 'package:opinion_easy/data/service/device_info_service.dart';
 import 'package:opinion_easy/data/service/fcm_service.dart';
 import 'package:opinion_easy/data/service/internet_monitor.dart';
 import 'package:opinion_easy/firebase_options.dart';
@@ -41,7 +40,6 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FCMService.initializeLocalNotifications();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  await DeviceInfoService.init();
   await InternetMonitor.init();
 
   if (!kIsWeb) {

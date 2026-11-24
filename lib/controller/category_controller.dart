@@ -1,5 +1,6 @@
 import 'package:opinion_easy/data/model/categories_model.dart';
 import 'package:opinion_easy/data/service/categories_service.dart';
+import 'package:opinion_easy/data/service/internet_monitor.dart';
 import 'package:get/get.dart';
 
 class CategoryController extends GetxController {
@@ -23,6 +24,10 @@ class CategoryController extends GetxController {
   }
 
   Future<void> fetchCategories() async {
+    if (InternetMonitor.isOffline) {
+      isLoading.value = false;
+      return;
+    }
     try {
       isLoading.value = true;
       var response = await categoriesService.fetchCategories();
@@ -30,6 +35,7 @@ class CategoryController extends GetxController {
         categories.value = response.data ?? [];
       }
     } catch (e) {
+      if (InternetMonitor.isNetworkError(e)) return;
       if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
           e.toString().contains("Authentication is required")) {
         return;

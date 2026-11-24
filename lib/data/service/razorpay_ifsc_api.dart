@@ -14,8 +14,8 @@ class RazorpayIfscApi {
 
       final response = await http.get(uri);
 
-      debugPrint("Razorpay IFSC Api StatusCode => ${response.statusCode}");
-      debugPrint("Razorpay IFSC Api Response   => ${response.body}");
+      // debugPrint("Razorpay IFSC Api StatusCode => ${response.statusCode}");
+      // debugPrint("Razorpay IFSC Api Response   => ${response.body}");
 
       if (response.statusCode == 200) {
         final decoded = jsonDecode(response.body);

@@ -3,6 +3,7 @@ import 'package:opinion_easy/core/utils/widgets/invalid_pincode_bottom_sheet.dar
 import 'package:opinion_easy/data/model/profile_model.dart';
 import 'package:opinion_easy/data/service/postal_pincode_api.dart';
 import 'package:opinion_easy/data/service/profile_service.dart';
+import 'package:opinion_easy/data/service/internet_monitor.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -261,6 +262,10 @@ class ProfileController extends GetxController {
   }
 
   Future<void> fetchProfile() async {
+    if (InternetMonitor.isOffline) {
+      isLoading.value = false;
+      return;
+    }
     try {
       var response = await profileService.fetchProfile();
 
@@ -274,6 +279,7 @@ class ProfileController extends GetxController {
         }
       } else {}
     } catch (e) {
+      if (InternetMonitor.isNetworkError(e)) return;
       if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
           e.toString().contains("Authentication is required")) {
         return;

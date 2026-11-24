@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:opinion_easy/data/model/leaderboard_model.dart';
 import 'package:opinion_easy/data/service/leaderboard_service.dart';
+import 'package:opinion_easy/data/service/internet_monitor.dart';
 
 class LeaderboardController extends GetxController {
   // Loading flags
@@ -32,6 +33,7 @@ class LeaderboardController extends GetxController {
       final result = await leaderboardService.fetchTodayLeaders();
       todayModel.value = result;
     } catch (e) {
+      if (InternetMonitor.isNetworkError(e)) return;
       if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
           e.toString().contains("Authentication is required")) {
         return;
@@ -49,6 +51,7 @@ class LeaderboardController extends GetxController {
       final result = await leaderboardService.fetchMonthlyLeaders();
       monthlyModel.value = result;
     } catch (e) {
+      if (InternetMonitor.isNetworkError(e)) return;
       if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
           e.toString().contains("Authentication is required")) {
         return;
@@ -66,6 +69,7 @@ class LeaderboardController extends GetxController {
       final result = await leaderboardService.fetchAllTimeLeaders();
       allTimeModel.value = result;
     } catch (e) {
+      if (InternetMonitor.isNetworkError(e)) return;
       if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
           e.toString().contains("Authentication is required")) {
         return;
@@ -101,6 +105,7 @@ class LeaderboardController extends GetxController {
       LeaderboardModel result = await leaderboardService.fetchTopperList(whichTopper);
       allTimeModel.value = result;
     } catch (e) {
+      if (InternetMonitor.isNetworkError(e)) return;
       if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
           e.toString().contains("Authentication is required")) {
         return;

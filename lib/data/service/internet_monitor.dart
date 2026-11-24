@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 import '../../core/utils/app_constants.dart';
 
@@ -17,25 +19,22 @@ class InternetMonitor {
   static bool get isOffline => wasOffline;
 
   static Future<void> init() async {
-    try {
-      final results = await Connectivity().checkConnectivity();
-      wasOffline = results.isEmpty || results.every((r) => r == ConnectivityResult.none);
+    final results = await Connectivity().checkConnectivity();
+    wasOffline = results.every((r) => r == ConnectivityResult.none);
 
-      debugPrint('[InternetMonitor] Initial state: ${wasOffline ? "OFFLINE" : "ONLINE"}');
+    debugPrint('[InternetMonitor] Initial state: ${wasOffline ? "OFFLINE" : "ONLINE"}');
 
-      if (wasOffline) {
-        WidgetsBinding.instance.addPostFrameCallback((_) => showOfflineDialog());
-      }
-
-      subscription = Connectivity().onConnectivityChanged.listen(handleChange);
-    } catch (e) {
-      debugPrint('[InternetMonitor] Init error: $e');
+    if (wasOffline) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (timeStamp) => showOfflineDialog(),
+      );
     }
+
+    subscription = Connectivity().onConnectivityChanged.listen(handleChange);
   }
 
   static void handleChange(List<ConnectivityResult> results) {
-    final bool nowOffline =
-        results.isEmpty || results.every((r) => r == ConnectivityResult.none);
+    final bool nowOffline = results.every((r) => r == ConnectivityResult.none);
 
     if (nowOffline && !wasOffline) {
       wasOffline = true;
@@ -58,21 +57,7 @@ class InternetMonitor {
   static void showOfflineDialog() {
     if (dialogVisible) return;
     dialogVisible = true;
-    if (Get.context != null) {
-      Get.dialog(
-        const OfflineDialog(),
-        barrierDismissible: false,
-      );
-    } else {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (dialogVisible && Get.context != null) {
-          Get.dialog(
-            const OfflineDialog(),
-            barrierDismissible: false,
-          );
-        }
-      });
-    }
+    Get.dialog(const OfflineDialog(), barrierDismissible: false);
   }
 
   static void closeOfflineDialog() {
@@ -87,6 +72,21 @@ class InternetMonitor {
     subscription?.cancel();
     subscription = null;
     debugPrint('[InternetMonitor] InternetMonitor disposed');
+  }
+
+  /// Helper to check if an exception is network-related
+  static bool isNetworkError(dynamic e) {
+    if (isOffline) return true;
+    if (e is SocketException || e is http.ClientException) return true;
+    final str = e.toString().toLowerCase();
+    return str.contains('socketexception') ||
+        str.contains('network is unreachable') ||
+        str.contains('clientexception') ||
+        str.contains('failed host lookup') ||
+        str.contains('connection refused') ||
+        str.contains('connection reset') ||
+        str.contains('connection closed') ||
+        str.contains('handshakeexception');
   }
 }
 
@@ -114,7 +114,7 @@ class OfflineDialog extends StatelessWidget {
               Text(
                 'No Internet',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: AppColor.white,
                 ),

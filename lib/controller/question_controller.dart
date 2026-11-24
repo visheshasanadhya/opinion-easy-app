@@ -1,5 +1,6 @@
 import 'package:opinion_easy/data/model/question_model.dart';
 import 'package:opinion_easy/data/service/ques_ans_service.dart';
+import 'package:opinion_easy/data/service/internet_monitor.dart';
 import 'package:opinion_easy/view/home/widgets/confirm_answer_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -53,6 +54,7 @@ class QuestionController extends GetxController {
       final data = await questionService.fetchQuestion(subCategId);
       questions.assignAll(data);
     } catch (e) {
+      if (InternetMonitor.isNetworkError(e)) return;
       if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
           e.toString().contains("Authentication is required")) {
         return;
@@ -155,6 +157,7 @@ class QuestionController extends GetxController {
         Get.snackbar("Oops", response['message'] ?? "Failed to submit answer");
       }
     } catch (e) {
+      if (InternetMonitor.isNetworkError(e)) return;
       if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
           e.toString().contains("Authentication is required")) {
         return;

@@ -1,5 +1,6 @@
 import 'package:opinion_easy/data/model/sub_categ_model.dart';
 import 'package:opinion_easy/data/service/sub_categ_service.dart';
+import 'package:opinion_easy/data/service/internet_monitor.dart';
 import 'package:get/get.dart';
 
 class SubCategController extends GetxController {
@@ -16,6 +17,7 @@ class SubCategController extends GetxController {
 
       Get.toNamed('/sub-categ');
     } catch (e) {
+      if (InternetMonitor.isNetworkError(e)) return;
       if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
           e.toString().contains("Authentication is required")) {
         return;

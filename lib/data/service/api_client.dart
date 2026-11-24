@@ -1,6 +1,9 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'auth_error_handler.dart';
+import 'internet_monitor.dart';
 
 class ApiClient {
   static Future<String?> getToken() async {
@@ -25,12 +28,23 @@ class ApiClient {
     Map<String, String>? headers,
     bool checkAuth = true,
   }) async {
-    final finalHeaders = await getHeaders(extraHeaders: headers);
-    final response = await http.get(url, headers: finalHeaders);
-    if (checkAuth && AuthErrorHandler.checkAuthError(response)) {
-      throw AuthException(response.body);
+    if (InternetMonitor.isOffline) {
+      debugPrint("⚠️ [ApiClient] Suppressed GET $url (Device is offline)");
+      throw const SocketException("Network is unreachable");
     }
-    return response;
+    try {
+      final finalHeaders = await getHeaders(extraHeaders: headers);
+      final response = await http.get(url, headers: finalHeaders);
+      if (checkAuth && AuthErrorHandler.checkAuthError(response)) {
+        throw AuthException(response.body);
+      }
+      return response;
+    } catch (e) {
+      if (InternetMonitor.isNetworkError(e)) {
+        InternetMonitor.showOfflineDialog();
+      }
+      rethrow;
+    }
   }
 
   /// Public GET request: does NOT send or require an auth token,
@@ -39,12 +53,23 @@ class ApiClient {
     Uri url, {
     Map<String, String>? headers,
   }) async {
-    final publicHeaders = {
-      "Content-Type": "application/json",
-      "Accept": "application/json",
-      if (headers != null) ...headers,
-    };
-    return await http.get(url, headers: publicHeaders);
+    if (InternetMonitor.isOffline) {
+      debugPrint("⚠️ [ApiClient] Suppressed GET (public) $url (Device is offline)");
+      throw const SocketException("Network is unreachable");
+    }
+    try {
+      final publicHeaders = {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        if (headers != null) ...headers,
+      };
+      return await http.get(url, headers: publicHeaders);
+    } catch (e) {
+      if (InternetMonitor.isNetworkError(e)) {
+        InternetMonitor.showOfflineDialog();
+      }
+      rethrow;
+    }
   }
 
   static Future<http.Response> post(
@@ -52,12 +77,23 @@ class ApiClient {
     Map<String, String>? headers,
     Object? body,
   }) async {
-    final finalHeaders = await getHeaders(extraHeaders: headers);
-    final response = await http.post(url, headers: finalHeaders, body: body);
-    if (AuthErrorHandler.checkAuthError(response)) {
-      throw AuthException(response.body);
+    if (InternetMonitor.isOffline) {
+      debugPrint("⚠️ [ApiClient] Suppressed POST $url (Device is offline)");
+      throw const SocketException("Network is unreachable");
     }
-    return response;
+    try {
+      final finalHeaders = await getHeaders(extraHeaders: headers);
+      final response = await http.post(url, headers: finalHeaders, body: body);
+      if (AuthErrorHandler.checkAuthError(response)) {
+        throw AuthException(response.body);
+      }
+      return response;
+    } catch (e) {
+      if (InternetMonitor.isNetworkError(e)) {
+        InternetMonitor.showOfflineDialog();
+      }
+      rethrow;
+    }
   }
 
   static Future<http.Response> put(
@@ -65,23 +101,45 @@ class ApiClient {
     Map<String, String>? headers,
     Object? body,
   }) async {
-    final finalHeaders = await getHeaders(extraHeaders: headers);
-    final response = await http.put(url, headers: finalHeaders, body: body);
-    if (AuthErrorHandler.checkAuthError(response)) {
-      throw AuthException(response.body);
+    if (InternetMonitor.isOffline) {
+      debugPrint("⚠️ [ApiClient] Suppressed PUT $url (Device is offline)");
+      throw const SocketException("Network is unreachable");
     }
-    return response;
+    try {
+      final finalHeaders = await getHeaders(extraHeaders: headers);
+      final response = await http.put(url, headers: finalHeaders, body: body);
+      if (AuthErrorHandler.checkAuthError(response)) {
+        throw AuthException(response.body);
+      }
+      return response;
+    } catch (e) {
+      if (InternetMonitor.isNetworkError(e)) {
+        InternetMonitor.showOfflineDialog();
+      }
+      rethrow;
+    }
   }
 
   static Future<http.Response> delete(
     Uri url, {
     Map<String, String>? headers,
   }) async {
-    final finalHeaders = await getHeaders(extraHeaders: headers);
-    final response = await http.delete(url, headers: finalHeaders);
-    if (AuthErrorHandler.checkAuthError(response)) {
-      throw AuthException(response.body);
+    if (InternetMonitor.isOffline) {
+      debugPrint("⚠️ [ApiClient] Suppressed DELETE $url (Device is offline)");
+      throw const SocketException("Network is unreachable");
     }
-    return response;
+    try {
+      final finalHeaders = await getHeaders(extraHeaders: headers);
+      final response = await http.delete(url, headers: finalHeaders);
+      if (AuthErrorHandler.checkAuthError(response)) {
+        throw AuthException(response.body);
+      }
+      return response;
+    } catch (e) {
+      if (InternetMonitor.isNetworkError(e)) {
+        InternetMonitor.showOfflineDialog();
+      }
+      rethrow;
+    }
   }
 }

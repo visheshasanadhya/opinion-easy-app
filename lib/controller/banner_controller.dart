@@ -1,5 +1,6 @@
 import 'package:opinion_easy/data/model/banner_model.dart';
 import 'package:opinion_easy/data/service/banner_service.dart';
+import 'package:opinion_easy/data/service/internet_monitor.dart';
 import 'package:get/get.dart';
 
 class BannerController extends GetxController {
@@ -15,6 +16,10 @@ class BannerController extends GetxController {
   }
 
   Future<void> fetchBanners() async {
+    if (InternetMonitor.isOffline) {
+      isLoading.value = false;
+      return;
+    }
     try {
       isLoading.value = true;
       var response = await bannerService.fetchBanners();
@@ -23,9 +28,9 @@ class BannerController extends GetxController {
         banners.assignAll(response);
       } else {
         banners.clear();
-        Get.snackbar('Oops', 'No banners found');
       }
     } catch (e) {
+      if (InternetMonitor.isNetworkError(e)) return;
       if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
           e.toString().contains("Authentication is required")) {
         return;
