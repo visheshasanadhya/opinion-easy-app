@@ -49,14 +49,6 @@ class ProfileView extends StatelessWidget {
               ),
             ]),
             VS(22),
-            _section("Leaderboard", [
-              _item(
-                Icons.emoji_events_outlined,
-                "Top Monthly Earners",
-                () => Get.toNamed('/monthly-top-performer'),
-              ),
-            ]),
-            VS(22),
             _section("Support & Legal", [
               _item(
                 Icons.info_outline_rounded,
