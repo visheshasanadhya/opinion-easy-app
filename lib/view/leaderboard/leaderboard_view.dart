@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:opinion_easy/controller/today_leader_controller.dart';
-import 'package:opinion_easy/controller/topper_controller.dart';
+import 'package:opinion_easy/controller/leaderboard_controller.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:opinion_easy/core/utils/widgets/loader_widget/topper_widget.dart';
 import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 
 enum LeaderboardSource { bottomNav, profile }
 
-enum LeaderboardType { today, monthly, yearly }
+enum LeaderboardType {
+  today,
+  monthly,
+  allTime;
+
+  static const LeaderboardType yearly = LeaderboardType.allTime;
+}
 
 class LeaderboardView extends StatefulWidget {
   final LeaderboardSource source;
@@ -29,7 +35,9 @@ class _LeaderboardViewState extends State<LeaderboardView>
   final TodayLeaderController todayController = Get.put(
     TodayLeaderController(),
   );
-  final TopperController topperController = Get.put(TopperController());
+  final LeaderboardController leaderboardController = Get.put(
+    LeaderboardController(),
+  );
 
   late LeaderboardType selectedType;
   late TabController _tabController;
@@ -64,7 +72,7 @@ class _LeaderboardViewState extends State<LeaderboardView>
           ? LeaderboardType.today
           : _tabController.index == 1
               ? LeaderboardType.monthly
-              : LeaderboardType.yearly;
+              : LeaderboardType.allTime;
       if (newType != selectedType) {
         setState(() => selectedType = newType);
         _fetchData();
@@ -78,10 +86,10 @@ class _LeaderboardViewState extends State<LeaderboardView>
         todayController.fetchTodayLeaderList("today");
         break;
       case LeaderboardType.monthly:
-        topperController.fetchMonthlyList();
+        leaderboardController.fetchMonthlyList();
         break;
-      case LeaderboardType.yearly:
-        topperController.fetchYearlyList();
+      case LeaderboardType.allTime:
+        leaderboardController.fetchAllTimeList();
         break;
     }
   }
@@ -157,9 +165,9 @@ class _LeaderboardViewState extends State<LeaderboardView>
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.calendar_month_outlined, size: 14),
+                            Icon(Icons.emoji_events_outlined, size: 14),
                             HS(4),
-                            Text("Yearly"),
+                            Text("All-Time Top"),
                           ],
                         ),
                       ),
@@ -176,7 +184,7 @@ class _LeaderboardViewState extends State<LeaderboardView>
         children: [
           _buildTodayTab(),
           _buildMonthlyTab(),
-          _buildYearlyTab(),
+          _buildAllTimeTab(),
         ],
       ),
     );
@@ -208,12 +216,12 @@ class _LeaderboardViewState extends State<LeaderboardView>
 
   Widget _buildMonthlyTab() {
     return Obx(() {
-      if (topperController.isMonthlyLoading.value) {
+      if (leaderboardController.isMonthlyLoading.value) {
         return const Stack(
           children: [Positioned.fill(child: ShimmerTopPerformerView())],
         );
       }
-      final model = topperController.monthlyModel.value;
+      final model = leaderboardController.monthlyModel.value;
       if (model.data == null || model.data!.isEmpty) {
         return _emptyState(
           "No monthly leaders",
@@ -230,19 +238,19 @@ class _LeaderboardViewState extends State<LeaderboardView>
     });
   }
 
-  Widget _buildYearlyTab() {
+  Widget _buildAllTimeTab() {
     return Obx(() {
-      if (topperController.isYearlyLoading.value) {
+      if (leaderboardController.isAllTimeLoading.value) {
         return const Stack(
           children: [Positioned.fill(child: ShimmerTopPerformerView())],
         );
       }
-      final model = topperController.yearlyModel.value;
+      final model = leaderboardController.allTimeModel.value;
       if (model.data == null || model.data!.isEmpty) {
         return _emptyState(
-          "No yearly leaders",
-          "Be the first to lead this year!",
-          Icons.leaderboard_outlined,
+          "No leaders yet",
+          "Be the first on the all-time leaderboard!",
+          Icons.emoji_events_outlined,
         );
       }
       final list = model.data!;
