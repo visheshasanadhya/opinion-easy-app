@@ -32,12 +32,17 @@ class _QuestionViewState extends State<QuestionView> {
   }
 
   @override
+  void dispose() {
+    Get.delete<QuestionController>();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.scaffold,
 
       // ── Native ad pinned at the very bottom ───────────────────────────────
-      // Shrinks to nothing instantly if the ad isn't loaded — no shimmer wait.
       bottomNavigationBar: const SafeArea(
         top: false,
         child: AppNativeAd(height: 300),

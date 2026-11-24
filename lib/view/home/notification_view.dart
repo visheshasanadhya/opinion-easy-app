@@ -16,7 +16,10 @@ class NotificationView extends StatefulWidget {
 }
 
 class _NotificationViewState extends State<NotificationView> {
-  final NotificationController controller = Get.put(NotificationController());
+  final NotificationController controller =
+      Get.isRegistered<NotificationController>()
+          ? Get.find<NotificationController>()
+          : Get.put(NotificationController());
   final ScrollController scrollController = ScrollController();
 
   @override

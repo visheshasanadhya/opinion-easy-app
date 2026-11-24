@@ -19,7 +19,10 @@ class WalletView extends StatefulWidget {
 }
 
 class _WalletViewState extends State<WalletView> {
-  final HistoryController historyController = Get.put(HistoryController());
+  final HistoryController historyController =
+      Get.isRegistered<HistoryController>()
+          ? Get.find<HistoryController>()
+          : Get.put(HistoryController());
   final BottomNavController bottomNavController =
       Get.find<BottomNavController>();
   final ProfileController profileController =

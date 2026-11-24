@@ -4,7 +4,6 @@ import 'package:opinion_easy/view/home/widgets/sub_category_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:opinion_easy/controller/category_controller.dart';
-import 'package:opinion_easy/controller/question_controller.dart';
 import 'package:opinion_easy/core/admob/admob.dart';
 import 'package:opinion_easy/controller/sub_categ_controller.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
@@ -20,7 +19,6 @@ class SubCategView extends StatefulWidget {
 class _SubCategViewState extends State<SubCategView> {
   final CategoryController categoryController = Get.find<CategoryController>();
   final SubCategController subCategController = Get.find<SubCategController>();
-  final QuestionController questionController = Get.put(QuestionController());
 
   @override
   void initState() {
@@ -89,7 +87,6 @@ class _SubCategViewState extends State<SubCategView> {
                 SubCategoryCard(
                   subCategory: subCateg[i],
                   index: i,
-                  questionController: questionController,
                 ),
               );
 

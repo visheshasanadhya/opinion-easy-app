@@ -131,6 +131,8 @@ class _HomeViewState extends State<HomeView> {
               child: hasImage
                   ? CachedNetworkImage(
                       imageUrl: profile.profilePic!,
+                      memCacheWidth: 150,
+                      memCacheHeight: 150,
                       fit: BoxFit.cover,
                       placeholder: (_, __) =>
                           Container(color: AppColor.cardAlt),
@@ -295,6 +297,7 @@ class _HomeViewState extends State<HomeView> {
               borderRadius: BorderRadius.circular(20),
               child: CachedNetworkImage(
                 imageUrl: banner.image ?? '',
+                memCacheWidth: 800,
                 fit: BoxFit.cover,
                 width: double.infinity,
                 placeholder: (_, __) =>
@@ -334,6 +337,7 @@ class _HomeViewState extends State<HomeView> {
                     borderRadius: BorderRadius.circular(20),
                     child: CachedNetworkImage(
                       imageUrl: banner.image ?? '',
+                      memCacheWidth: 800,
                       fit: BoxFit.cover,
                       width: double.infinity,
                       placeholder: (_, __) =>
@@ -449,6 +453,8 @@ class _HomeViewState extends State<HomeView> {
                           borderRadius: BorderRadius.circular(10),
                           child: CachedNetworkImage(
                             imageUrl: category.image ?? '',
+                            memCacheWidth: 150,
+                            memCacheHeight: 150,
                             width: 48,
                             height: 48,
                             fit: BoxFit.contain,

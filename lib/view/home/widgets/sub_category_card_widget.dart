@@ -1,4 +1,3 @@
-import 'package:opinion_easy/controller/question_controller.dart';
 import 'package:opinion_easy/controller/sub_categ_controller.dart';
 import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 import 'package:opinion_easy/view/home/questions_view.dart';
@@ -9,7 +8,6 @@ import 'package:get/get.dart';
 class SubCategoryCard extends StatelessWidget {
   final dynamic subCategory;
   final int index;
-  final QuestionController questionController;
 
   final SubCategController subCategController = Get.find<SubCategController>();
 
@@ -17,7 +15,6 @@ class SubCategoryCard extends StatelessWidget {
     super.key,
     required this.subCategory,
     required this.index,
-    required this.questionController,
   });
 
   @override
@@ -37,10 +34,6 @@ class SubCategoryCard extends StatelessWidget {
             subCategName: subCategory.name.toString(),
             categInt: subCategory.id ?? 0,
           ),
-        );
-        questionController.fetchQuestions(
-          subCategory.name.toString(),
-          subCategory.id.toString(),
         );
       },
       child: Container(

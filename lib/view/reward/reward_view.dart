@@ -203,6 +203,7 @@ class _RewardViewState extends State<RewardView> {
                   ),
                   child: CachedNetworkImage(
                     imageUrl: reward.imageUrl,
+                    memCacheWidth: 400,
                     fit: BoxFit.cover,
                     placeholder: (_, __) => Container(color: AppColor.cardAlt),
                     errorWidget: (_, __, ___) => Container(
