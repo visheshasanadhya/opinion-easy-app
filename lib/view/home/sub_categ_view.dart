@@ -95,11 +95,7 @@ class _SubCategViewState extends State<SubCategView> {
 
               if (i == 1) {
                 children.add(VS(16));
-                children.add(
-                  const AppNativeAd(
-                    key: ValueKey('subcateg_middle_ad'),
-                  ),
-                );
+                children.add(const AppBannerAd());
                 if (i < subCateg.length - 1) children.add(VS(16));
               } else if (i < subCateg.length - 1) {
                 children.add(VS(16));
@@ -108,11 +104,7 @@ class _SubCategViewState extends State<SubCategView> {
 
             if (subCateg.isNotEmpty) {
               children.add(VS(16));
-              children.add(
-                const AppNativeAd(
-                  key: ValueKey('subcateg_end_ad'),
-                ),
-              );
+              children.add(const AppNativeAd());
             }
 
             return ListView(children: children);
