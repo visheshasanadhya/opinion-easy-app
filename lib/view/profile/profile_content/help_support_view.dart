@@ -8,8 +8,8 @@ import 'package:opinion_easy/core/utils/widgets/custom_app_bar.dart';
 import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class HelpView extends StatelessWidget {
-  const HelpView({super.key});
+class HelpSupportView extends StatelessWidget {
+  const HelpSupportView({super.key});
 
   void _launchPhone(String number) async {
     final clean = number.replaceAll(RegExp(r'[^0-9+]'), '');
@@ -216,18 +216,18 @@ class HelpView extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
+          color: AppColor.card,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.08)),
+          border: Border.all(color: AppColor.borderLight),
         ),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.12),
+                color: color.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: color.withOpacity(0.25)),
+                border: Border.all(color: color.withValues(alpha: 0.25)),
               ),
               child: Icon(icon, color: color, size: 26),
             ),

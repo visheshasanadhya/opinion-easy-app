@@ -10,7 +10,7 @@ import 'package:opinion_easy/view/profile/profile_content/about_us_view.dart';
 import 'package:opinion_easy/view/profile/profile_content/bank_details_view.dart';
 import 'package:opinion_easy/view/profile/profile_content/edit_profile.dart';
 import 'package:opinion_easy/view/profile/profile_content/faq_view.dart';
-import 'package:opinion_easy/view/profile/profile_content/help_view.dart';
+import 'package:opinion_easy/view/profile/profile_content/help_support_view.dart';
 import 'package:opinion_easy/view/profile/profile_content/history_view.dart';
 import 'package:opinion_easy/view/profile/profile_content/privacy_policy.dart';
 import 'package:opinion_easy/view/profile/profile_content/refer_and_earn.dart';
@@ -33,7 +33,7 @@ var pagePath = [
   GetPage(name: '/edit-profile', page: () => EditProfileView()),
   GetPage(name: '/privacy-policy', page: () => PrivacyPolicyView()),
   GetPage(name: '/about-us', page: () => AboutUsView()),
-  GetPage(name: '/help', page: () => HelpView()),
+  GetPage(name: '/help', page: () => const HelpSupportView()),
   GetPage(name: '/terms-and-conditions', page: () => TermsAndConditionsView()),
   GetPage(name: '/faq-view', page: () => FAQView()),
   GetPage(name: '/refer-earn', page: () => ReferAndEarnView()),
