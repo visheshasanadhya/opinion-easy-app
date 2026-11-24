@@ -6,13 +6,13 @@ class TopperController extends GetxController {
   var isLoading = false.obs;
 
   var topperModel = TopperModel().obs;
-  final TopPerService topPerService = TopPerService();
+  final TopperService topperService = TopperService();
 
   Future<void> fetchTopperList(String whichTopper) async {
     try {
       isLoading(true);
 
-      TopperModel result = await topPerService.fetchTopperList(whichTopper);
+      TopperModel result = await topperService.fetchTopperList(whichTopper);
 
       topperModel.value = result;
     } catch (e) {

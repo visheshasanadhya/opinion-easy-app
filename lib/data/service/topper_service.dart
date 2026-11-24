@@ -3,7 +3,7 @@ import 'package:opinion_easy/core/api_contstant/api_constant.dart';
 import 'package:opinion_easy/data/model/topper_model.dart';
 import 'api_client.dart';
 
-class TopPerService {
+class TopperService {
   Future<TopperModel> fetchTopperList(String whichTopper) async {
     final url = Uri.parse("${ApiEndpoints.topper}?$whichTopper");
     var response = await ApiClient.get(url);
