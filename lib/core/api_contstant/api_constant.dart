@@ -24,6 +24,8 @@ class ApiEndpoints {
   static String markReadNotification = "$baseUrl/notifications/mark-read";
   static String unreadNotification = "$baseUrl/notifications/unread-count";
   static String bankDetails = "$baseUrl/customer-bank-details";
+  static String terms = "$baseUrl/terms";
+  static String privacy = "$baseUrl/privacy";
 
   // ==================== PAGINATION CONSTANTS ==================== //
   static const int startPagination = 1;

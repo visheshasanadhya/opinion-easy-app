@@ -20,7 +20,7 @@ class SplashView extends StatelessWidget {
             duration: const Duration(seconds: 2),
             curve: Curves.easeInOut,
             child: Image.asset(
-              AppAsset.logo512,
+              AppAsset.OpinionEasy_logo,
               width: 200,
               height: 200,
             ),

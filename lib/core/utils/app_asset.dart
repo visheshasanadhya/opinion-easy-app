@@ -8,7 +8,7 @@ class AppAsset {
   static const String coin = "${getIconPath}coin.png";
   static const String crown = "${getIconPath}crown.png";
   static const String googleLogo = "${getIconPath}google_logo.png";
-  static const String logo512 = "${getIconPath}logo_512.png";
+  static const String OpinionEasy_logo = "${getIconPath}OpinionEasy_logo.png";
 
   // ------------ Images --------------
   static const String referEarn = "${getImagePath}refer_earn.png";

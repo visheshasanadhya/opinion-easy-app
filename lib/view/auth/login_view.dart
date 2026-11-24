@@ -30,7 +30,7 @@ class LoginView extends StatelessWidget {
                       // ── App Logo & Header ───────────────────
                       Center(
                         child: Image.asset(
-                          AppAsset.logo512,
+                          AppAsset.OpinionEasy_logo,
                           height: 100,
                         ),
                       ),

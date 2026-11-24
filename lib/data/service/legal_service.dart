@@ -1,0 +1,25 @@
+import 'dart:convert';
+import 'package:opinion_easy/core/api_contstant/api_constant.dart';
+import 'api_client.dart';
+
+class LegalService {
+  Future<Map<String, dynamic>> fetchTerms() async {
+    final url = Uri.parse(ApiEndpoints.terms);
+    final response = await ApiClient.get(url);
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      return (json['data'] as Map<String, dynamic>?) ?? {};
+    }
+    throw Exception('Failed to load terms');
+  }
+
+  Future<Map<String, dynamic>> fetchPrivacy() async {
+    final url = Uri.parse(ApiEndpoints.privacy);
+    final response = await ApiClient.get(url);
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      return (json['data'] as Map<String, dynamic>?) ?? {};
+    }
+    throw Exception('Failed to load privacy policy');
+  }
+}
