@@ -275,14 +275,29 @@ class ProfileController extends GetxController {
         if (response['status'] == true) {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setBool('is_profile_complete', true);
-          await fetchProfile();
+
+          final String successMsg =
+              response['message']?.toString() ?? 'Profile updated successfully';
+
           Get.snackbar(
-              'Success', response['message'] ?? 'Profile updated successfully');
+            'Success',
+            successMsg,
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: AppColor.green.withValues(alpha: 0.9),
+            colorText: AppColor.white,
+            duration: const Duration(seconds: 2),
+            margin: const EdgeInsets.all(16),
+            borderRadius: 12,
+          );
+
           if (navigateHomeOnSuccess) {
             Get.offAllNamed('/bottom-nav');
           } else {
             Get.back();
           }
+
+          // Refresh profile in background
+          fetchProfile();
           return true;
         } else {
           final errors = response['errors'];
