@@ -27,4 +27,7 @@ class ApiEndpoints {
 
   // ==================== POSTAL PINCODE ==================== //
   static const postalPincode = "https://api.postalpincode.in/pincode/";
+
+  // ==================== RAZORPAY IFSC ==================== //
+  static const razorpayIfsc = "https://ifsc.razorpay.com/";
 }

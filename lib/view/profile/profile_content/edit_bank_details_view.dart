@@ -1,10 +1,8 @@
-// lib/view/bank/bank_form_bottom_sheet.dart
-import 'package:opinion_easy/controller/bank_controller.dart';
-
+// lib/view/profile/profile_content/edit_bank_details_view.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
+import '../../../controller/bank_controller.dart';
 import '../../../core/utils/app_constants.dart';
 
 class BankFormBottomSheet extends StatelessWidget {
@@ -20,6 +18,9 @@ class BankFormBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.88,
+      ),
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
@@ -29,183 +30,307 @@ class BankFormBottomSheet extends StatelessWidget {
       ),
       child: SafeArea(
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
-            child: Obx(
-              () => Form(
-                key: controller.formKey,
-                autovalidateMode: controller.autoValidateMode.value,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // ── Drag handle ──────────────────────
-                    Center(
-                      child: Container(
-                        width: 40,
-                        height: 4,
-                        margin: const EdgeInsets.only(bottom: 20),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(2),
-                        ),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+          child: Obx(
+            () => Form(
+              key: controller.formKey,
+              autovalidateMode: controller.autoValidateMode.value,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // ── Drag Handle ─────────────────────────────
+                  Center(
+                    child: Container(
+                      width: 42,
+                      height: 4.5,
+                      margin: const EdgeInsets.only(bottom: 18),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.25),
+                        borderRadius: BorderRadius.circular(3),
                       ),
                     ),
+                  ),
 
-                    // ── Header ───────────────────────────
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
+                  // ── Header Row ──────────────────────────────
+                  Row(
+                    children: [
+                      Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: AppColor.primaryColor1.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color:
+                                AppColor.primaryColor1.withValues(alpha: 0.35),
+                            width: 1.2,
+                          ),
+                        ),
+                        alignment: Alignment.center,
+                        child: const Icon(
+                          Icons.account_balance_rounded,
+                          color: AppColor.primaryColor1,
+                          size: 24,
+                        ),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              isEdit ? 'Edit Bank Account' : 'Add Bank Account',
+                              style: const TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                                letterSpacing: 0.2,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              isEdit
+                                  ? 'Update your bank account information'
+                                  : 'Enter bank account details for withdrawals',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[400],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => Get.back(),
+                        icon: Container(
+                          width: 32,
+                          height: 32,
                           decoration: BoxDecoration(
-                            color: AppColor.primaryColor1.withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(14),
+                            color: Colors.white.withValues(alpha: 0.08),
+                            shape: BoxShape.circle,
                             border: Border.all(
-                              color: AppColor.primaryColor1.withOpacity(0.3),
+                              color: Colors.white.withValues(alpha: 0.15),
                             ),
                           ),
-                          child: Icon(
-                            Icons.account_balance_rounded,
-                            color: AppColor.primaryColor1,
-                            size: 26,
+                          alignment: Alignment.center,
+                          child: const Icon(
+                            Icons.close_rounded,
+                            color: Colors.white,
+                            size: 18,
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                isEdit
-                                    ? 'Edit Bank Account'
-                                    : 'Add Bank Account',
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                isEdit
-                                    ? 'Update your bank details'
-                                    : 'Enter your bank information',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.grey[500],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () => Get.back(),
-                          icon: Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.06),
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Colors.white.withOpacity(0.1),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 22),
+
+                  // ── Field 1: Account Holder Name ─────────────
+                  _buildBankInputField(
+                    label: "Account Holder Name",
+                    hint: "Account Holder Name",
+                    controller: controller.accountHolderNameController,
+                    focusNode: controller.accountHolderFocus,
+                    keyboardType: TextInputType.name,
+                    textCapitalization: TextCapitalization.words,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')),
+                    ],
+                    iconWidget: const Icon(
+                      Icons.person_outline_rounded,
+                      color: AppColor.primaryColor1,
+                      size: 18,
+                    ),
+                    validator: controller.validateAccountHolderName,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // ── Field 2: Account Number (9 to 18 digits) ─
+                  _buildBankInputField(
+                    label: "Account Number",
+                    hint: "Account Number",
+                    controller: controller.accountNoController,
+                    focusNode: controller.accountNoFocus,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(18),
+                    ],
+                    iconWidget: const Icon(
+                      Icons.badge_outlined,
+                      color: AppColor.primaryColor1,
+                      size: 18,
+                    ),
+                    validator: controller.validateAccountNo,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // ── Field 3: Confirm Account Number ──────────
+                  _buildBankInputField(
+                    label: "Confirm Account Number",
+                    hint: "Confirm Account Number",
+                    controller: controller.confirmAccountNoController,
+                    focusNode: controller.confirmAccountNoFocus,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(18),
+                    ],
+                    iconWidget: const Icon(
+                      Icons.badge_outlined,
+                      color: AppColor.primaryColor1,
+                      size: 18,
+                    ),
+                    validator: controller.validateConfirmAccountNo,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // ── Field 4: IFSC Code (11 alphanumeric, triggers Razorpay lookup)
+                  _buildBankInputField(
+                    label: "IFSC Code",
+                    hint: "IFSC Code (e.g. SBIN0000691)",
+                    controller: controller.ifscController,
+                    focusNode: controller.ifscFocus,
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.characters,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
+                      LengthLimitingTextInputFormatter(11),
+                    ],
+                    onChanged: controller.onIfscChanged,
+                    iconWidget: const Text(
+                      "#",
+                      style: TextStyle(
+                        color: AppColor.primaryColor1,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    suffixWidget: controller.isFetchingIfsc.value
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColor.primaryColor1,
                               ),
                             ),
-                            child: const Icon(
-                              Icons.close_rounded,
-                              color: Colors.white,
-                              size: 18,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 28),
-
-                    // ── Fields ───────────────────────────
-                    _buildTextField(
-                      controller: controller.accountHolderNameController,
-                      label: 'Account Holder Name',
-                      hint: 'Enter full name',
-                      icon: Icons.person_outline_rounded,
-                      validator: controller.validateAccountHolderName,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                          RegExp(r'[a-zA-Z\s]'),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    _buildTextField(
-                      controller: controller.ifscController,
-                      label: 'IFSC Code',
-                      hint: 'HDFC0001234',
-                      icon: Icons.code_rounded,
-                      validator: controller.validateIFSC,
-                      textCapitalization: TextCapitalization.characters,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
-                        LengthLimitingTextInputFormatter(11),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    _buildTextField(
-                      controller: controller.accountNoController,
-                      label: 'Account Number',
-                      hint: '123456789012',
-                      icon: Icons.account_balance_wallet_outlined,
-                      validator: controller.validateAccountNo,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(18),
-                      ],
-                    ),
-
-                    const SizedBox(height: 28),
-
-                    // ── Submit button ────────────────────
-                    Obx(
-                      () => ElevatedButton(
-                        onPressed: controller.isLoading.value
-                            ? null
-                            : () async {
-                                final bool isSuccess = isEdit
-                                    ? await controller.updateBankDetail()
-                                    : await controller.addBankDetail();
-                                if (isSuccess) Get.back();
-                              },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColor.primaryColor1,
-                          disabledBackgroundColor:
-                              AppColor.primaryColor1.withOpacity(0.4),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          elevation: 0,
-                        ),
-                        child: controller.isLoading.value
-                            ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2,
-                                ),
+                          )
+                        : (controller.isIfscValid.value
+                            ? const Icon(
+                                Icons.check_circle_rounded,
+                                color: Color(0xFF00C853),
+                                size: 20,
                               )
-                            : Text(
-                                isEdit ? 'Update Account' : 'Add Account',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.black,
-                                ),
-                              ),
+                            : null),
+                    validator: controller.validateIFSC,
+                  ),
+
+                  // ── Auto-fetched fields (Bank Name, Branch Name, Bank State, Bank City)
+                  if (controller.isIfscValid.value) ...[
+                    const SizedBox(height: 16),
+
+                    // Field 5: Bank Name
+                    _buildBankInputField(
+                      label: "Bank Name",
+                      hint: "Bank Name",
+                      controller: controller.bankNameController,
+                      readOnly: true,
+                      iconWidget: const Icon(
+                        Icons.account_balance_outlined,
+                        color: AppColor.primaryColor1,
+                        size: 18,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Field 6: Branch Name
+                    _buildBankInputField(
+                      label: "Branch Name",
+                      hint: "Branch Name",
+                      controller: controller.branchNameController,
+                      readOnly: true,
+                      iconWidget: const Icon(
+                        Icons.badge_outlined,
+                        color: AppColor.primaryColor1,
+                        size: 18,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Field 7: Bank State
+                    _buildBankInputField(
+                      label: "Bank State",
+                      hint: "Bank State",
+                      controller: controller.bankStateController,
+                      readOnly: true,
+                      iconWidget: const Icon(
+                        Icons.location_on_outlined,
+                        color: AppColor.primaryColor1,
+                        size: 18,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Field 8: Bank City
+                    _buildBankInputField(
+                      label: "Bank City",
+                      hint: "Bank City",
+                      controller: controller.bankCityController,
+                      readOnly: true,
+                      iconWidget: const Icon(
+                        Icons.location_on_outlined,
+                        color: AppColor.primaryColor1,
+                        size: 18,
                       ),
                     ),
                   ],
-                ),
+
+                  const SizedBox(height: 24),
+
+                  // ── Bottom Action Button: ADD BANK / UPDATE BANK ──
+                  ElevatedButton(
+                    onPressed: controller.isLoading.value
+                        ? null
+                        : () async {
+                            final bool isSuccess = isEdit
+                                ? await controller.updateBankDetail()
+                                : await controller.addBankDetail();
+                            if (isSuccess) Get.back();
+                          },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColor.primaryColor1,
+                      disabledBackgroundColor:
+                          AppColor.primaryColor1.withValues(alpha: 0.4),
+                      foregroundColor: AppColor.card,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: controller.isLoading.value
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: AppColor.card,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : Text(
+                            isEdit ? 'UPDATE BANK' : 'ADD BANK',
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              color: AppColor.card,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -214,71 +339,113 @@ class BankFormBottomSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
+  Widget _buildBankInputField({
     required String label,
     required String hint,
-    required IconData icon,
-    required String? Function(String?)? validator,
-    TextInputType? keyboardType,
-    List<TextInputFormatter>? inputFormatters,
+    required TextEditingController controller,
+    required Widget iconWidget,
+    FocusNode? focusNode,
+    TextInputType keyboardType = TextInputType.text,
     TextCapitalization textCapitalization = TextCapitalization.none,
+    List<TextInputFormatter>? inputFormatters,
+    bool readOnly = false,
+    ValueChanged<String>? onChanged,
+    Widget? suffixWidget,
+    String? Function(String?)? validator,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Label
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: Colors.white70,
-            letterSpacing: 0.3,
+            color: Colors.white.withValues(alpha: 0.85),
+            letterSpacing: 0.2,
           ),
         ),
         const SizedBox(height: 8),
-        TextFormField(
-          controller: controller,
-          validator: validator,
-          keyboardType: keyboardType,
-          inputFormatters: inputFormatters,
-          textCapitalization: textCapitalization,
-          style: const TextStyle(color: Colors.white, fontSize: 15),
-          cursorColor: AppColor.primaryColor1,
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: TextStyle(color: Colors.grey[600], fontSize: 14),
-            prefixIcon: Icon(icon, color: AppColor.primaryColor1, size: 20),
-            filled: true,
-            fillColor: const Color(0xFF1E1E1E),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
+
+        // Input Field Card
+        Container(
+          decoration: BoxDecoration(
+            color: readOnly ? const Color(0xFF1D2132) : const Color(0xFF1C1F2A),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: readOnly
+                  ? const Color(0xFF2C3249)
+                  : Colors.white.withValues(alpha: 0.1),
+              width: 1,
             ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(
-                color: AppColor.primaryColor1,
-                width: 1.5,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          child: Row(
+            children: [
+              // Golden Leading Icon Badge
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColor.primaryColor1.withValues(alpha: 0.5),
+                    width: 1.2,
+                  ),
+                  color: const Color(0xFF2A2E44),
+                ),
+                alignment: Alignment.center,
+                child: iconWidget,
               ),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: Colors.redAccent, width: 1),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
-            ),
-            errorStyle: const TextStyle(color: Colors.redAccent),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 15,
-            ),
+              const SizedBox(width: 12),
+
+              // TextFormField
+              Expanded(
+                child: TextFormField(
+                  controller: controller,
+                  focusNode: focusNode,
+                  readOnly: readOnly,
+                  keyboardType: keyboardType,
+                  textCapitalization: textCapitalization,
+                  inputFormatters: inputFormatters,
+                  onChanged: onChanged,
+                  validator: validator,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14.5,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  cursorColor: AppColor.primaryColor1,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    hintText: hint,
+                    hintStyle: TextStyle(
+                      color: Colors.grey[500],
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    focusedErrorBorder: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 13),
+                    errorStyle: const TextStyle(
+                      color: Colors.redAccent,
+                      fontSize: 11,
+                      height: 0.8,
+                    ),
+                  ),
+                ),
+              ),
+
+              if (suffixWidget != null) ...[
+                const SizedBox(width: 8),
+                suffixWidget,
+                const SizedBox(width: 4),
+              ],
+            ],
           ),
         ),
       ],

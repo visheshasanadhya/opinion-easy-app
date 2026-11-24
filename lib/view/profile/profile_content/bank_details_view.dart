@@ -284,6 +284,21 @@ class BankDetailsView extends StatelessWidget {
                     letterSpacing: 0.3,
                   ),
                 ),
+                if (bankDetail.bankName != null &&
+                    bankDetail.bankName!.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    bankDetail.branchName != null &&
+                            bankDetail.branchName!.isNotEmpty
+                        ? '${bankDetail.bankName} (${bankDetail.branchName})'
+                        : bankDetail.bankName!,
+                    style: const TextStyle(
+                      color: AppColor.primaryColor1,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
 
                 const SizedBox(height: 16),
                 Divider(color: Colors.white.withOpacity(0.06), height: 1),
