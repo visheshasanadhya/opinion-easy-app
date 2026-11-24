@@ -6,6 +6,7 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController? controller;
   final String? title;
   final String? hintText;
+  final String? errorText;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final BoxConstraints? prefixIconConstraints;
@@ -38,6 +39,7 @@ class CustomTextField extends StatelessWidget {
     this.controller,
     this.title,
     this.hintText,
+    this.errorText,
     this.prefixIcon,
     this.suffixIcon,
     this.prefixIconConstraints,
@@ -113,6 +115,7 @@ class CustomTextField extends StatelessWidget {
         fillColor: fillColor ??
             (readOnly ? AppColor.cardLight : AppColor.cardAlt),
         hintText: hintText,
+        errorText: errorText,
         hintStyle: hintStyle ??
             AppText.captionSm.copyWith(color: AppColor.textGrey),
         prefixIcon: prefixIcon,

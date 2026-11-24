@@ -54,11 +54,21 @@ class ProfileController extends GetxController {
     stateController = _ensureFresh(stateController);
     pincodeController = _ensureFresh(pincodeController);
     referralController = _ensureFresh(referralController);
+    phoneController.removeListener(_onPhoneChanged);
+    phoneController.addListener(_onPhoneChanged);
   }
+
+  final RxnString phoneError = RxnString(null);
 
   final RxBool isVerifyingPincode = false.obs;
   final RxBool isPincodeValid = false.obs;
   String _lastCheckedPincode = "";
+
+  void _onPhoneChanged() {
+    if (phoneError.value != null) {
+      phoneError.value = null;
+    }
+  }
 
   @override
   void onInit() {
@@ -67,6 +77,8 @@ class ProfileController extends GetxController {
     _loadInitialPrefs();
     pincodeController.removeListener(_onPincodeChanged);
     pincodeController.addListener(_onPincodeChanged);
+    phoneController.removeListener(_onPhoneChanged);
+    phoneController.addListener(_onPhoneChanged);
     fetchProfile();
   }
 
@@ -233,6 +245,7 @@ class ProfileController extends GetxController {
 
   Future<bool> updateProfile({bool navigateHomeOnSuccess = false}) async {
     try {
+      phoneError.value = null;
       if (profileKey.currentState!.validate()) {
         isLoading.value = true;
 
@@ -267,10 +280,30 @@ class ProfileController extends GetxController {
           }
           return true;
         } else {
-          final errorMsg = response['message'] ??
+          final errors = response['errors'];
+          if (errors != null && errors is Map && errors['phone'] != null) {
+            final pErrs = errors['phone'];
+            phoneError.value = (pErrs is List && pErrs.isNotEmpty)
+                ? pErrs.first.toString()
+                : pErrs.toString();
+          } else if (response['message'] != null &&
+              response['message'].toString().toLowerCase().contains('phone')) {
+            phoneError.value = response['message'].toString();
+          }
+
+          final errorMsg = phoneError.value ??
+              response['message'] ??
               response['details']?['reason'] ??
               'Failed to update profile';
-          Get.snackbar('Error', errorMsg.toString());
+
+          Get.snackbar(
+            'Error',
+            errorMsg.toString(),
+            backgroundColor: AppColor.red.withValues(alpha: 0.85),
+            colorText: AppColor.white,
+            snackPosition: SnackPosition.BOTTOM,
+            duration: const Duration(seconds: 3),
+          );
           return false;
         }
       }
