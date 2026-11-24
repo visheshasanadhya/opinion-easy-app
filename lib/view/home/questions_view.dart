@@ -167,151 +167,359 @@ class _QuestionViewState extends State<QuestionView> {
                     ),
                     VS(18),
 
-                    // ── Yes / No buttons ───────────────────────────────────
+                    // ── Choice / Action Section ────────────────────────────
                     Obx(() {
+                      final currentQ = controller.questions[index];
+                      final bool hasAnswered = currentQ.isAnswered;
+                      final String? chosenAnswer = currentQ.userAnswer;
+                      final bool isYes = chosenAnswer?.toLowerCase() == 'yes';
                       final isDisabled = controller.isSubmitting.value;
-                      return Row(
+
+                      if (hasAnswered) {
+                        // ── User already answered: Show locked choice card & Poll results ─
+                        return Column(
+                          children: [
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColor.cardAlt,
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(
+                                  color: isYes
+                                      ? AppColor.green.withValues(alpha: 0.35)
+                                      : AppColor.red.withValues(alpha: 0.35),
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 32,
+                                    height: 32,
+                                    decoration: BoxDecoration(
+                                      color: (isYes
+                                              ? AppColor.green
+                                              : AppColor.red)
+                                          .withValues(alpha: 0.15),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: Icon(
+                                      isYes
+                                          ? Icons.check_circle_rounded
+                                          : Icons.cancel_rounded,
+                                      color: isYes
+                                          ? AppColor.green
+                                          : AppColor.red,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  HS(12),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'YOUR OPINION',
+                                        style: AppText.micro.copyWith(
+                                          color: AppColor.textGrey,
+                                          letterSpacing: 0.8,
+                                        ),
+                                      ),
+                                      VS(2),
+                                      Text(
+                                        isYes ? 'YES' : 'NO',
+                                        style: AppText.body.copyWith(
+                                          color: isYes
+                                              ? AppColor.green
+                                              : AppColor.red,
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const Spacer(),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: AppColor.cardLight,
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                        color: AppColor.borderFaint,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(
+                                          Icons.lock_outline_rounded,
+                                          size: 12,
+                                          color: AppColor.textMuted,
+                                        ),
+                                        HS(4),
+                                        Text(
+                                          'Submitted',
+                                          style: AppText.captionSm.copyWith(
+                                            fontSize: 11,
+                                            color: AppColor.textMuted,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            VS(16),
+
+                            // ── Poll Result Widget (VISIBLE because answered) ─────
+                            PollResultWidget(
+                              yesCount: currentQ.pollResult?.yesCount ??
+                                  currentQ.yesCount,
+                              noCount: currentQ.pollResult?.noCount ??
+                                  currentQ.noCount,
+                              yesPercentage: currentQ.pollResult?.yesPercentage,
+                              noPercentage: currentQ.pollResult?.noPercentage,
+                              winChoice: currentQ.pollResult?.winChoice,
+                            ),
+                            VS(16),
+
+                            // ── Navigation Buttons (Back / Next / Finish) ───────
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                if (controller.currentIndex.value > 0)
+                                  TextButton.icon(
+                                    onPressed: () =>
+                                        controller.previousQuestion(),
+                                    icon: const Icon(
+                                      Icons.arrow_back_ios_new_rounded,
+                                      size: 16,
+                                      color: AppColor.white,
+                                    ),
+                                    label: Text(
+                                      'Back',
+                                      style: AppText.captionSm.copyWith(
+                                        color: AppColor.white,
+                                      ),
+                                    ),
+                                  )
+                                else
+                                  const Spacer(),
+                                if (controller.currentIndex.value <
+                                    controller.questions.length - 1)
+                                  ElevatedButton.icon(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColor.white,
+                                      foregroundColor: AppColor.black,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                        vertical: 12,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12),
+                                      ),
+                                      elevation: 0,
+                                    ),
+                                    onPressed: () => controller.nextQuestion(
+                                      isSkipped: true,
+                                    ),
+                                    icon: Text(
+                                      'Next Question',
+                                      style: AppText.bodySm.copyWith(
+                                        color: AppColor.black,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    label: const Icon(
+                                      Icons.arrow_forward_ios_rounded,
+                                      size: 14,
+                                      color: AppColor.black,
+                                    ),
+                                  )
+                                else
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColor.white,
+                                      foregroundColor: AppColor.black,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 24,
+                                        vertical: 12,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12),
+                                      ),
+                                      elevation: 0,
+                                    ),
+                                    onPressed: () =>
+                                        Get.offNamed('/thank-you'),
+                                    child: Text(
+                                      'Finish',
+                                      style: AppText.bodySm.copyWith(
+                                        color: AppColor.black,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ],
+                        );
+                      }
+
+                      // ── User has NOT answered yet: Show Yes / No buttons & Back / Skip ──
+                      return Column(
                         children: [
-                          Expanded(
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                minimumSize: const Size(double.infinity, 52),
-                                backgroundColor: isDisabled
-                                    ? AppColor.green.withValues(alpha: 0.4)
-                                    : AppColor.green,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                                elevation: 0,
-                              ),
-                              onPressed: isDisabled
-                                  ? null
-                                  : () => controller.confirmSubmission('Yes'),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.check_circle_outline_rounded,
-                                    color: AppColor.white.withValues(
-                                      alpha: isDisabled ? 0.6 : 1,
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    minimumSize:
+                                        const Size(double.infinity, 52),
+                                    backgroundColor: isDisabled
+                                        ? AppColor.green.withValues(alpha: 0.4)
+                                        : AppColor.green,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
                                     ),
-                                    size: 22,
+                                    elevation: 0,
                                   ),
-                                  HS(6),
-                                  Text(
-                                    'Yes',
-                                    style: AppText.body.copyWith(
-                                      color: AppColor.white.withValues(
-                                        alpha: isDisabled ? 0.6 : 1,
+                                  onPressed: isDisabled
+                                      ? null
+                                      : () =>
+                                          controller.confirmSubmission('Yes'),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.check_circle_outline_rounded,
+                                        color: AppColor.white.withValues(
+                                          alpha: isDisabled ? 0.6 : 1,
+                                        ),
+                                        size: 22,
                                       ),
-                                      fontSize: 18,
-                                    ),
+                                      HS(6),
+                                      Text(
+                                        'Yes',
+                                        style: AppText.body.copyWith(
+                                          color: AppColor.white.withValues(
+                                            alpha: isDisabled ? 0.6 : 1,
+                                          ),
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
+                              HS(14),
+                              Expanded(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    minimumSize:
+                                        const Size(double.infinity, 52),
+                                    backgroundColor: isDisabled
+                                        ? AppColor.red.withValues(alpha: 0.4)
+                                        : AppColor.red,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                    elevation: 0,
+                                  ),
+                                  onPressed: isDisabled
+                                      ? null
+                                      : () =>
+                                          controller.confirmSubmission('No'),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.cancel_outlined,
+                                        color: AppColor.white.withValues(
+                                          alpha: isDisabled ? 0.6 : 1,
+                                        ),
+                                        size: 22,
+                                      ),
+                                      HS(6),
+                                      Text(
+                                        'No',
+                                        style: AppText.body.copyWith(
+                                          color: AppColor.white.withValues(
+                                            alpha: isDisabled ? 0.6 : 1,
+                                          ),
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          HS(14),
-                          Expanded(
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                minimumSize: const Size(double.infinity, 52),
-                                backgroundColor: isDisabled
-                                    ? AppColor.red.withValues(alpha: 0.4)
-                                    : AppColor.red,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
+                          VS(8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              if (controller.currentIndex.value > 0)
+                                TextButton.icon(
+                                  onPressed: controller.isSubmitting.value
+                                      ? null
+                                      : () => controller.previousQuestion(),
+                                  icon: const Icon(
+                                    Icons.arrow_back_ios_new_rounded,
+                                    size: 16,
+                                    color: AppColor.white,
+                                  ),
+                                  label: Text(
+                                    'Back',
+                                    style: AppText.captionSm.copyWith(
+                                      color: AppColor.white,
+                                    ),
+                                  ),
+                                )
+                              else
+                                const Spacer(),
+                              if (controller.currentIndex.value <
+                                  controller.questions.length - 1)
+                                TextButton.icon(
+                                  onPressed: controller.isSubmitting.value
+                                      ? null
+                                      : () => controller.nextQuestion(
+                                            isSkipped: true,
+                                          ),
+                                  icon: Text(
+                                    'Skip',
+                                    style: AppText.captionSm.copyWith(
+                                      color: AppColor.white,
+                                    ),
+                                  ),
+                                  label: const Icon(
+                                    Icons.arrow_forward_ios_rounded,
+                                    size: 16,
+                                    color: AppColor.white,
+                                  ),
+                                  style: TextButton.styleFrom(
+                                    padding: EdgeInsets.zero,
+                                    alignment: Alignment.centerRight,
+                                  ),
                                 ),
-                                elevation: 0,
-                              ),
-                              onPressed: isDisabled
-                                  ? null
-                                  : () => controller.confirmSubmission('No'),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.cancel_outlined,
-                                    color: AppColor.white.withValues(
-                                      alpha: isDisabled ? 0.6 : 1,
-                                    ),
-                                    size: 22,
-                                  ),
-                                  HS(6),
-                                  Text(
-                                    'No',
-                                    style: AppText.body.copyWith(
-                                      color: AppColor.white.withValues(
-                                        alpha: isDisabled ? 0.6 : 1,
-                                      ),
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            ],
                           ),
                         ],
                       );
                     }),
-                    VS(8),
-
-                    // ── Back / Skip ────────────────────────────────────────
-                    Obx(
-                      () => Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          if (controller.currentIndex.value > 0)
-                            TextButton.icon(
-                              onPressed: controller.isSubmitting.value
-                                  ? null
-                                  : () => controller.previousQuestion(),
-                              icon: const Icon(
-                                Icons.arrow_back_ios_new_rounded,
-                                size: 16,
-                                color: AppColor.white,
-                              ),
-                              label: Text(
-                                'Back',
-                                style: AppText.captionSm.copyWith(
-                                  color: AppColor.white,
-                                ),
-                              ),
-                            )
-                          else
-                            const Spacer(),
-                          if (controller.currentIndex.value <
-                              controller.questions.length - 1)
-                            TextButton.icon(
-                              onPressed: controller.isSubmitting.value
-                                  ? null
-                                  : () =>
-                                      controller.nextQuestion(isSkipped: true),
-                              icon: Text(
-                                'Skip',
-                                style: AppText.captionSm.copyWith(
-                                  color: AppColor.white,
-                                ),
-                              ),
-                              label: const Icon(
-                                Icons.arrow_forward_ios_rounded,
-                                size: 16,
-                                color: AppColor.white,
-                              ),
-                              style: TextButton.styleFrom(
-                                padding: EdgeInsets.zero,
-                                alignment: Alignment.centerRight,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                    VS(12),
-
-                    PollResultWidget(
-                      yesCount: question.yesCount,
-                      noCount: question.noCount,
-                    ),
                     VS(40),
                   ],
                 ),

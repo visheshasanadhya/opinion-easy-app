@@ -41,6 +41,17 @@ class QuestionController extends GetxController {
 
       final data = await questionService.fetchQuestion(subCategId);
       questions.assignAll(data);
+
+      // If user has already answered some questions, jump to the first unanswered one
+      final firstUnanswered = questions.indexWhere((q) => !q.isAnswered);
+      if (firstUnanswered > 0) {
+        currentIndex.value = firstUnanswered;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (pageController.hasClients) {
+            pageController.jumpToPage(firstUnanswered);
+          }
+        });
+      }
     } catch (e) {
       if (InternetMonitor.isNetworkError(e)) return;
       if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
@@ -127,16 +138,31 @@ class QuestionController extends GetxController {
       if (response["status"] == "success") {
         answeredQuestionsCount.value++;
 
+        // Extract poll result & user answer from response data
+        final pollJson = response['data']?['poll_result'];
+        final updatedPoll = pollJson != null && pollJson is Map<String, dynamic>
+            ? PollResult.fromJson(pollJson)
+            : null;
+        final updatedUserAns =
+            response['data']?['user_answer']?.toString() ?? answer;
+
+        // Instantly update current question in reactive list so poll_result_widget & user choice render immediately
+        questions[currentIndex.value] = currentQuestion.copyWith(
+          userAnswer: updatedUserAns,
+          pollResult: updatedPoll,
+        );
+
         Get.snackbar(
           "Success",
           response["message"] ?? "Answer submitted!",
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.green.withValues(alpha: 0.8),
           colorText: Colors.white,
-          duration: const Duration(seconds: 1),
+          duration: const Duration(milliseconds: 1500),
         );
 
-        await Future.delayed(const Duration(milliseconds: 1200));
+        // Allow user 1.8 seconds to see their choice & updated poll results before auto-advancing
+        await Future.delayed(const Duration(milliseconds: 1800));
         nextQuestion();
       } else {
         Get.snackbar("Oops", response['message'] ?? "Failed to submit answer");

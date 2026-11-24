@@ -7,6 +7,9 @@ import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 class PollResultWidget extends StatefulWidget {
   final int yesCount;
   final int noCount;
+  final double? yesPercentage;
+  final double? noPercentage;
+  final String? winChoice;
   final String? title;
   final EdgeInsetsGeometry? margin;
 
@@ -14,6 +17,9 @@ class PollResultWidget extends StatefulWidget {
     super.key,
     required this.yesCount,
     required this.noCount,
+    this.yesPercentage,
+    this.noPercentage,
+    this.winChoice,
     this.title,
     this.margin,
   });
@@ -28,11 +34,27 @@ class _PollResultWidgetState extends State<PollResultWidget>
   late final Animation<double> _anim;
 
   int get _total => widget.yesCount + widget.noCount;
-  double get _yesPct => _total == 0 ? 0.0 : widget.yesCount / _total;
-  double get _noPct => _total == 0 ? 0.0 : widget.noCount / _total;
 
-  int get _yesPercent => (_yesPct * 100).round();
-  int get _noPercent => _total == 0 ? 0 : (100 - _yesPercent);
+  // Win / Lose ratios for progress bar (0.0 to 1.0)
+  double get _yesRatio {
+    if (widget.yesPercentage != null) {
+      return (widget.yesPercentage! / 100.0).clamp(0.0, 1.0);
+    }
+    return _total == 0 ? 0.0 : (widget.yesCount / _total);
+  }
+
+  double get _noRatio {
+    if (widget.noPercentage != null) {
+      return (widget.noPercentage! / 100.0).clamp(0.0, 1.0);
+    }
+    return _total == 0 ? 0.0 : (widget.noCount / _total);
+  }
+
+  int get _yesPercent =>
+      widget.yesPercentage?.round() ?? (_yesRatio * 100).round();
+  int get _noPercent =>
+      widget.noPercentage?.round() ??
+      (_total == 0 ? 0 : (100 - _yesPercent));
 
   @override
   void initState() {
@@ -52,7 +74,9 @@ class _PollResultWidgetState extends State<PollResultWidget>
   void didUpdateWidget(covariant PollResultWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.yesCount != widget.yesCount ||
-        oldWidget.noCount != widget.noCount) {
+        oldWidget.noCount != widget.noCount ||
+        oldWidget.yesPercentage != widget.yesPercentage ||
+        oldWidget.noPercentage != widget.noPercentage) {
       _ctrl.forward(from: 0.0);
     }
   }
@@ -152,8 +176,8 @@ class _PollResultWidgetState extends State<PollResultWidget>
             animation: _anim,
             builder: (context, _) {
               final progress = _anim.value;
-              final curYesFactor = (_yesPct * progress).clamp(0.0, 1.0);
-              final curNoFactor = (_noPct * progress).clamp(0.0, 1.0);
+              final curYesFactor = (_yesRatio * progress).clamp(0.0, 1.0);
+              final curNoFactor = (_noRatio * progress).clamp(0.0, 1.0);
 
               return ClipRRect(
                 borderRadius: BorderRadius.circular(100),
@@ -189,7 +213,7 @@ class _PollResultWidgetState extends State<PollResultWidget>
                                       borderRadius: BorderRadius.horizontal(
                                         left: const Radius.circular(100),
                                         right: Radius.circular(
-                                          _noPct == 0 ? 100 : 2,
+                                          _noRatio == 0 ? 100 : 2,
                                         ),
                                       ),
                                     ),
@@ -209,7 +233,7 @@ class _PollResultWidgetState extends State<PollResultWidget>
                                       borderRadius: BorderRadius.horizontal(
                                         right: const Radius.circular(100),
                                         left: Radius.circular(
-                                          _yesPct == 0 ? 100 : 2,
+                                          _yesRatio == 0 ? 100 : 2,
                                         ),
                                       ),
                                     ),
