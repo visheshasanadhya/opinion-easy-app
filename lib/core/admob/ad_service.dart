@@ -1,25 +1,129 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:opinion_easy/core/admob/ad_units.dart';
-import 'package:opinion_easy/core/admob/ads_controller.dart';
 
-typedef AdService = AdPreloadService;
+typedef AdPreloadService = AdService;
 
-class AdPreloadService extends GetxService with WidgetsBindingObserver {
-  // ── Controllers ──────────────────────────────────────────────
-  final AdsController subCategMiddle = AdsController();
-  final AdsController subCategEnd = AdsController();
-  final AdsController appOpenController = AdsController();
+class AdService extends GetxService with WidgetsBindingObserver {
+  static AdService get to => Get.find<AdService>();
 
-  final List<AdsController> _questionPool = [];
-  static const int _poolSize = 2;
-
+  // ── App Open Ad ──────────────────────────────────────────────
+  AppOpenAd? _appOpenAd;
+  bool _isAppOpenLoading = false;
+  DateTime? _lastAppOpenShowTime;
   static const int _appOpenFrequencyCapMinutes = 4;
-  DateTime? _lastAdShowTime;
   bool isAppOpenSuppressed = false;
 
   void setAppOpenSuppressed(bool suppressed) {
     isAppOpenSuppressed = suppressed;
+  }
+
+  void preloadAppOpenAd() {
+    if (_appOpenAd != null || _isAppOpenLoading) return;
+    _isAppOpenLoading = true;
+
+    AppOpenAd.load(
+      adUnitId: AdUnits.appOpen,
+      request: const AdRequest(),
+      adLoadCallback: AppOpenAdLoadCallback(
+        onAdLoaded: (ad) {
+          _appOpenAd = ad;
+          _isAppOpenLoading = false;
+        },
+        onAdFailedToLoad: (error) {
+          _appOpenAd = null;
+          _isAppOpenLoading = false;
+        },
+      ),
+    );
+  }
+
+  void showAppOpenAdIfAvailable({VoidCallback? onAdDismissed}) {
+    if (isAppOpenSuppressed) {
+      onAdDismissed?.call();
+      return;
+    }
+
+    if (_appOpenAd == null) {
+      preloadAppOpenAd();
+      onAdDismissed?.call();
+      return;
+    }
+
+    if (_lastAppOpenShowTime != null &&
+        DateTime.now().difference(_lastAppOpenShowTime!).inMinutes <
+            _appOpenFrequencyCapMinutes) {
+      onAdDismissed?.call();
+      return;
+    }
+
+    _appOpenAd!.fullScreenContentCallback = FullScreenContentCallback(
+      onAdDismissedFullScreenContent: (ad) {
+        ad.dispose();
+        _appOpenAd = null;
+        _lastAppOpenShowTime = DateTime.now();
+        preloadAppOpenAd();
+        onAdDismissed?.call();
+      },
+      onAdFailedToShowFullScreenContent: (ad, error) {
+        ad.dispose();
+        _appOpenAd = null;
+        preloadAppOpenAd();
+        onAdDismissed?.call();
+      },
+    );
+
+    _appOpenAd!.show();
+  }
+
+  // ── Interstitial Ad ──────────────────────────────────────────
+  InterstitialAd? _interstitialAd;
+  bool _isInterstitialLoading = false;
+
+  void preloadInterstitial() {
+    if (_interstitialAd != null || _isInterstitialLoading) return;
+    _isInterstitialLoading = true;
+
+    InterstitialAd.load(
+      adUnitId: AdUnits.questionInterstitial,
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          _interstitialAd = ad;
+          _isInterstitialLoading = false;
+        },
+        onAdFailedToLoad: (error) {
+          _interstitialAd = null;
+          _isInterstitialLoading = false;
+        },
+      ),
+    );
+  }
+
+  void showInterstitial({required VoidCallback onComplete}) {
+    if (_interstitialAd == null) {
+      preloadInterstitial();
+      onComplete();
+      return;
+    }
+
+    _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+      onAdDismissedFullScreenContent: (ad) {
+        ad.dispose();
+        _interstitialAd = null;
+        preloadInterstitial();
+        onComplete();
+      },
+      onAdFailedToShowFullScreenContent: (ad, error) {
+        ad.dispose();
+        _interstitialAd = null;
+        preloadInterstitial();
+        onComplete();
+      },
+    );
+
+    _interstitialAd!.show();
   }
 
   // ── Lifecycle ────────────────────────────────────────────────
@@ -27,8 +131,8 @@ class AdPreloadService extends GetxService with WidgetsBindingObserver {
   void onInit() {
     super.onInit();
     WidgetsBinding.instance.addObserver(this);
-    appOpenController.loadAppOpenAd(adUnitId: AdUnits.appOpen);
-    _fillPool();
+    preloadAppOpenAd();
+    preloadInterstitial();
   }
 
   @override
@@ -38,82 +142,13 @@ class AdPreloadService extends GetxService with WidgetsBindingObserver {
     }
   }
 
-  // ── App Open Flow ────────────────────────────────────────────
-  void showAppOpenAdIfAvailable({VoidCallback? onAdDismissed}) {
-    if (isAppOpenSuppressed) {
-      onAdDismissed?.call();
-      return;
-    }
-
-    if (!appOpenController.isAppOpenLoaded.value ||
-        appOpenController.appOpenAd == null) {
-      appOpenController.loadAppOpenAd(adUnitId: AdUnits.appOpen);
-      onAdDismissed?.call();
-      return;
-    }
-
-    if (_lastAdShowTime != null &&
-        DateTime.now().difference(_lastAdShowTime!).inMinutes <
-            _appOpenFrequencyCapMinutes) {
-      onAdDismissed?.call();
-      return;
-    }
-
-    appOpenController.showAppOpenAd(
-      onAdDismissed: () {
-        _lastAdShowTime = DateTime.now();
-        appOpenController.loadAppOpenAd(adUnitId: AdUnits.appOpen);
-        onAdDismissed?.call();
-      },
-    );
-  }
-
-  // ── Native Subcategory Placements ────────────────────────────
-  void refreshSubCategAds() {
-    if (!subCategMiddle.isNativeLoaded.value && subCategMiddle.nativeAd == null) {
-      subCategMiddle.loadNativeAd(adUnitId: AdUnits.subCategMiddleNative);
-    }
-    if (!subCategEnd.isNativeLoaded.value && subCategEnd.nativeAd == null) {
-      subCategEnd.loadNativeAd(adUnitId: AdUnits.subCategEndNative);
-    }
-  }
-
-  // ── Native Question Pool ─────────────────────────────────────
-  AdsController consumeFromPool() {
-    for (int i = 0; i < _questionPool.length; i++) {
-      final ctrl = _questionPool[i];
-      if (ctrl.isNativeLoaded.value && ctrl.nativeAd != null) {
-        _questionPool.removeAt(i);
-        _fillPool();
-        return ctrl;
-      }
-    }
-
-    final fresh = AdsController();
-    fresh.loadNativeAd(adUnitId: AdUnits.questionPageNative);
-    _fillPool();
-    return fresh;
-  }
-
-  void _fillPool() {
-    while (_questionPool.length < _poolSize) {
-      final ctrl = AdsController();
-      _questionPool.add(ctrl);
-      ctrl.loadNativeAd(adUnitId: AdUnits.questionPageNative);
-    }
-  }
-
-  // ── Disposal ─────────────────────────────────────────────────
   @override
   void onClose() {
     WidgetsBinding.instance.removeObserver(this);
-    subCategMiddle.dispose();
-    subCategEnd.dispose();
-    appOpenController.dispose();
-    for (final ctrl in _questionPool) {
-      ctrl.dispose();
-    }
-    _questionPool.clear();
+    _appOpenAd?.dispose();
+    _appOpenAd = null;
+    _interstitialAd?.dispose();
+    _interstitialAd = null;
     super.onClose();
   }
 }

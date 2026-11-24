@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/foundation.dart';
 import 'package:opinion_easy/controller/banner_controller.dart';
 import 'package:opinion_easy/controller/category_controller.dart';
 import 'package:opinion_easy/controller/nav_controller.dart';
@@ -33,11 +32,8 @@ class _HomeViewState extends State<HomeView> {
   late final BannerController bannerController;
   late final ProfileController profileController;
   late final NotificationController notificationController;
-  late final AdPreloadService _preload;
-  late final AdsController adsController;
 
   final RxInt _currentBanner = 0.obs;
-  bool _isAdLoadedOnce = false;
 
   @override
   void initState() {
@@ -48,24 +44,7 @@ class _HomeViewState extends State<HomeView> {
     bannerController = Get.put(BannerController());
     profileController = Get.put(ProfileController());
     notificationController = Get.put(NotificationController());
-    if (!kIsWeb) {
-      _preload = Get.find<AdPreloadService>();
-      adsController = Get.put(AdsController(), tag: 'home_ad');
-    }
     _initializeFCM();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isAdLoadedOnce) {
-      _isAdLoadedOnce = true;
-      if (!kIsWeb) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          adsController.loadAdaptiveBanner(context);
-        });
-      }
-    }
   }
 
   void _initializeFCM() async {
@@ -127,10 +106,7 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ),
             ),
-            if (!kIsWeb)
-              DarkBannerAdWidget(
-                controller: adsController,
-              ),
+            const AppBannerAd(),
           ],
         ),
       ),
@@ -455,7 +431,6 @@ class _HomeViewState extends State<HomeView> {
                     category.id ?? 0,
                     category.name.toString(),
                   );
-                  if (!kIsWeb) _preload.refreshSubCategAds();
                 },
                 borderRadius: BorderRadius.circular(AppDeco.radius),
                 child: Padding(

@@ -21,39 +21,16 @@ class _SubCategViewState extends State<SubCategView> {
   final CategoryController categoryController = Get.find<CategoryController>();
   final SubCategController subCategController = Get.find<SubCategController>();
   final QuestionController questionController = Get.put(QuestionController());
-  final AdPreloadService _preload = Get.find<AdPreloadService>();
-
-  late final AdsController middleNativeAdsController;
-  late final AdsController endNativeAdsController;
-
-  bool _showMiddleShimmer = true;
-  bool _showEndShimmer = true;
 
   @override
   void initState() {
     super.initState();
-    middleNativeAdsController = _preload.subCategMiddle;
-    endNativeAdsController = _preload.subCategEnd;
-
-    _preload.refreshSubCategAds();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       subCategController.fetchSubCateg(
         categoryController.categId,
         categoryController.categName.toString(),
       );
-    });
-
-    Future.delayed(const Duration(seconds: 10), () {
-      if (mounted && !middleNativeAdsController.isNativeLoaded.value) {
-        setState(() => _showMiddleShimmer = false);
-      }
-    });
-    Future.delayed(const Duration(seconds: 10), () {
-      if (mounted && !endNativeAdsController.isNativeLoaded.value) {
-        setState(() => _showEndShimmer = false);
-      }
     });
   }
 
@@ -119,10 +96,9 @@ class _SubCategViewState extends State<SubCategView> {
               if (i == 1) {
                 children.add(VS(16));
                 children.add(
-                  DarkNativeAdWidget(
+                  AppNativeAd(
                     key: const ValueKey('subcateg_middle_ad'),
-                    controller: middleNativeAdsController,
-                    showShimmer: _showMiddleShimmer,
+                    adUnitId: AdUnits.subCategMiddleNative,
                   ),
                 );
                 if (i < subCateg.length - 1) children.add(VS(16));
@@ -134,10 +110,9 @@ class _SubCategViewState extends State<SubCategView> {
             if (subCateg.isNotEmpty) {
               children.add(VS(16));
               children.add(
-                DarkNativeAdWidget(
+                AppNativeAd(
                   key: const ValueKey('subcateg_end_ad'),
-                  controller: endNativeAdsController,
-                  showShimmer: _showEndShimmer,
+                  adUnitId: AdUnits.subCategEndNative,
                 ),
               );
             }

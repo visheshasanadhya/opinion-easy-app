@@ -50,7 +50,7 @@ Future<void> main() async {
         tagForChildDirectedTreatment: TagForChildDirectedTreatment.no,
       ),
     );
-    Get.put<AdPreloadService>(AdPreloadService());
+    Get.put<AdService>(AdService());
   }
 
   GestureBinding.instance.resamplingEnabled = true;

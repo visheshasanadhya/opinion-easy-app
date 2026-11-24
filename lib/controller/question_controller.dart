@@ -16,16 +16,6 @@ class QuestionController extends GetxController {
   var isSubmitting = false.obs;
   var answeredQuestionsCount = 0.obs;
 
-  // Interstitial — preloaded on init, shown every 10 answered questions
-  AdsController? _interstitialController;
-
-  @override
-  void onInit() {
-    super.onInit();
-    _interstitialController = AdsController();
-    _interstitialController?.loadInterstitialAd(); // uses AdUnits default
-  }
-
   @override
   void onClose() {
     currentIndex.value = 0;
@@ -34,8 +24,6 @@ class QuestionController extends GetxController {
 
     if (pageController.hasClients) pageController.jumpToPage(0);
     pageController.dispose();
-
-    _interstitialController?.disposeInterstitial();
     super.onClose();
   }
 
@@ -103,11 +91,8 @@ class QuestionController extends GetxController {
     if (Get.isDialogOpen ?? false) Get.back();
 
     if (_shouldShowInterstitial() && !isSkipped) {
-      _interstitialController?.showInterstitialAd(
-        onAdDismissed: () {
-          _moveToNextQuestion();
-          _interstitialController?.loadInterstitialAd(); // preload next
-        },
+      AdService.to.showInterstitial(
+        onComplete: _moveToNextQuestion,
       );
     } else {
       _moveToNextQuestion();

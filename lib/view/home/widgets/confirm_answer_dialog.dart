@@ -41,53 +41,7 @@ class ConfirmAnswerDialog extends StatefulWidget {
 }
 
 class _ConfirmAnswerDialogState extends State<ConfirmAnswerDialog> {
-  late final AdsController _topAdController;
-  late final AdsController _bottomAdController;
-
-  bool _showTopLoading = true;
-  bool _showBottomLoading = true;
   bool _isConfirming = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _topAdController = AdsController();
-    _bottomAdController = AdsController();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      _topAdController.loadAdaptiveBanner(
-        context,
-        adUnitId: AdUnits.dialogTopBanner,
-      );
-      _bottomAdController.loadAdaptiveBanner(
-        context,
-        adUnitId: AdUnits.dialogBottomBanner,
-      );
-    });
-
-    Future.delayed(const Duration(seconds: 5), () {
-      if (mounted &&
-          (!_topAdController.isLoaded.value ||
-              _topAdController.bannerAd == null)) {
-        setState(() => _showTopLoading = false);
-      }
-    });
-    Future.delayed(const Duration(seconds: 5), () {
-      if (mounted &&
-          (!_bottomAdController.isLoaded.value ||
-              _bottomAdController.bannerAd == null)) {
-        setState(() => _showBottomLoading = false);
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _topAdController.disposeBanner();
-    _bottomAdController.disposeBanner();
-    super.dispose();
-  }
 
   void _handleCancel() {
     if (Get.isDialogOpen ?? false) Get.back();
@@ -123,10 +77,7 @@ class _ConfirmAnswerDialogState extends State<ConfirmAnswerDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               // ── Top banner ───────────────────────────
-              _bannerSlot(
-                controller: _topAdController,
-                showLoading: _showTopLoading,
-              ),
+              AppBannerAd(adUnitId: AdUnits.dialogTopBanner),
               const SizedBox(height: 20),
 
               // ── Icon ─────────────────────────────────
@@ -268,26 +219,11 @@ class _ConfirmAnswerDialogState extends State<ConfirmAnswerDialog> {
               const SizedBox(height: 18),
 
               // ── Bottom banner ────────────────────────
-              _bannerSlot(
-                controller: _bottomAdController,
-                showLoading: _showBottomLoading,
-              ),
+              AppBannerAd(adUnitId: AdUnits.dialogBottomBanner),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  // ── Ad banner slot ─────────────────────────────────────────
-
-  Widget _bannerSlot({
-    required AdsController controller,
-    required bool showLoading,
-  }) {
-    return DarkBannerAdWidget(
-      controller: controller,
-      showShimmer: showLoading,
     );
   }
 

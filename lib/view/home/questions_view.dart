@@ -24,22 +24,11 @@ class QuestionView extends StatefulWidget {
 
 class _QuestionViewState extends State<QuestionView> {
   final QuestionController controller = Get.put(QuestionController());
-  final AdPreloadService _preload = Get.find<AdPreloadService>();
-
-  /// Single native ad shared across ALL pages — consumed once from pool.
-  late final AdsController _sharedNativeAd;
 
   @override
   void initState() {
     super.initState();
-    _sharedNativeAd = _preload.consumeFromPool();
     controller.fetchQuestions(widget.subCategName, widget.categInt.toString());
-  }
-
-  @override
-  void dispose() {
-    _sharedNativeAd.disposeNative();
-    super.dispose();
   }
 
   @override
@@ -49,19 +38,10 @@ class _QuestionViewState extends State<QuestionView> {
 
       // ── Native ad pinned at the very bottom ───────────────────────────────
       // Shrinks to nothing instantly if the ad isn't loaded — no shimmer wait.
-      bottomNavigationBar: Obx(() {
-        if (!_sharedNativeAd.isNativeLoaded.value) {
-          return const SizedBox.shrink();
-        }
-        return SafeArea(
-          top: false,
-          child: DarkNativeAdWidget(
-            controller: _sharedNativeAd,
-            height: 300,
-            showShimmer: false, // no shimmer — we only render when ready
-          ),
-        );
-      }),
+      bottomNavigationBar: const SafeArea(
+        top: false,
+        child: AppNativeAd(height: 300),
+      ),
 
       appBar: CustomAppBar(
         centerTitle: false,
