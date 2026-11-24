@@ -62,7 +62,7 @@ class LegalController extends GetxController {
       termsContent.value = data['content'] ?? '';
       termsUpdatedAt.value = data['updated_at'] ?? '';
     } catch (_) {
-      // keep offline/fallback content
+      // failed to fetch terms
     } finally {
       isTermsLoading.value = false;
     }
@@ -76,7 +76,7 @@ class LegalController extends GetxController {
       privacyContent.value = data['content'] ?? '';
       privacyUpdatedAt.value = data['updated_at'] ?? '';
     } catch (_) {
-      // keep offline/fallback content
+      // failed to fetch terms
     } finally {
       isPrivacyLoading.value = false;
     }
@@ -96,7 +96,7 @@ class LegalController extends GetxController {
         );
       }
     } catch (_) {
-      // keep offline/fallback content
+      // failed to fetch terms
     } finally {
       isAboutLoading.value = false;
     }
@@ -122,7 +122,7 @@ class LegalController extends GetxController {
           'We value your feedback — helping us improve your experience every day.';
       helpUpdatedAt.value = data['updated_at'] ?? '';
     } catch (_) {
-      // keep offline/fallback content
+      // failed to fetch terms
     } finally {
       isHelpLoading.value = false;
     }

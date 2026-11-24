@@ -7,13 +7,6 @@ import '../../../core/utils/widgets/custom_app_bar.dart';
 class AboutUsView extends StatelessWidget {
   const AboutUsView({super.key});
 
-  static const String _fallbackContent =
-      "At Opinion Easy, we aim to transform the way people express their thoughts by offering a simple, engaging, and technology-driven platform for sharing daily opinions.\n\n"
-      "Our mission is to empower users with smart opinion-sharing features, transparent results, and a rewarding point system that makes participation both exciting and meaningful. Every day, thousands of users engage with thought-provoking questions, expressing their perspectives and turning everyday interactions into valuable rewards.\n\n"
-      "When your opinion aligns with the most popular public outcome, you earn points and redeem exclusive rewards, vouchers, and cash payouts. This system encourages healthy participation, fair competition, and keeps our vibrant community active and motivated.\n\n"
-      "Over time, we have built a strong and vibrant community where opinions are shared daily across cricket, entertainment, politics, technology, and trending news.\n\n"
-      "We take immense pride in our secure systems, verified payouts, and reliable performance—ensuring complete transparency and trust. At Opinion Easy, every opinion truly matters.";
-
   @override
   Widget build(BuildContext context) {
     final LegalController controller = Get.put(LegalController());
@@ -37,9 +30,47 @@ class AboutUsView extends StatelessWidget {
               );
             }
 
-            final content = controller.aboutContent.value.isNotEmpty
-                ? controller.aboutContent.value
-                : _fallbackContent;
+            if (controller.aboutContent.value.isEmpty) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.info_outline_rounded,
+                        size: 56,
+                        color: Colors.grey.shade600,
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        "About Us information not available",
+                        style: TextStyle(
+                          color: Colors.grey.shade400,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton.icon(
+                        onPressed: controller.fetchAboutUs,
+                        icon: const Icon(Icons.refresh, size: 18),
+                        label: const Text("Retry"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColor.primaryColor1,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+
+            final content = controller.aboutContent.value;
 
             return RefreshIndicator(
               color: AppColor.primaryColor1,
