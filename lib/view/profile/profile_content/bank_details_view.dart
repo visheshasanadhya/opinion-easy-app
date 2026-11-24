@@ -314,6 +314,15 @@ class BankDetailsView extends StatelessWidget {
 
                 // ── IFSC ───────────────────────────────────
                 _detailRow(label: 'IFSC / SWIFT CODE', value: bankDetail.ifsc),
+
+                if (bankDetail.upiId != null &&
+                    bankDetail.upiId!.trim().isNotEmpty) ...[
+                  const SizedBox(height: 14),
+                  _detailRow(
+                    label: 'UPI ID',
+                    value: bankDetail.upiId!,
+                  ),
+                ],
               ],
             ),
           ),

@@ -23,6 +23,7 @@ class BankDetailsController extends GetxController {
   final accountNoController = TextEditingController();
   final confirmAccountNoController = TextEditingController();
   final ifscController = TextEditingController();
+  final upiIdController = TextEditingController();
 
   // Auto-populated Controllers from Razorpay IFSC API
   final bankNameController = TextEditingController();
@@ -35,6 +36,7 @@ class BankDetailsController extends GetxController {
   final accountNoFocus = FocusNode();
   final confirmAccountNoFocus = FocusNode();
   final ifscFocus = FocusNode();
+  final upiIdFocus = FocusNode();
 
   final formKey = GlobalKey<FormState>();
   final autoValidateMode = AutovalidateMode.disabled.obs;
@@ -60,6 +62,7 @@ class BankDetailsController extends GetxController {
     accountNoController.dispose();
     confirmAccountNoController.dispose();
     ifscController.dispose();
+    upiIdController.dispose();
     bankNameController.dispose();
     branchNameController.dispose();
     bankStateController.dispose();
@@ -69,6 +72,7 @@ class BankDetailsController extends GetxController {
     accountNoFocus.dispose();
     confirmAccountNoFocus.dispose();
     ifscFocus.dispose();
+    upiIdFocus.dispose();
 
     super.onClose();
   }
@@ -296,6 +300,7 @@ class BankDetailsController extends GetxController {
     accountNoController.text = bankDetail.accountNo;
     confirmAccountNoController.text = bankDetail.accountNo;
     ifscController.text = bankDetail.ifsc;
+    upiIdController.text = bankDetail.upiId ?? "";
     bankNameController.text = bankDetail.bankName ?? "";
     branchNameController.text = bankDetail.branchName ?? "";
     bankStateController.text = bankDetail.state ?? "";
@@ -313,6 +318,7 @@ class BankDetailsController extends GetxController {
     accountNoController.clear();
     confirmAccountNoController.clear();
     ifscController.clear();
+    upiIdController.clear();
     bankNameController.clear();
     branchNameController.clear();
     bankStateController.clear();
@@ -331,6 +337,8 @@ class BankDetailsController extends GetxController {
       'account_holder_name': accountHolderNameController.text.trim(),
       'ifsc': ifscController.text.trim().toUpperCase(),
       'account_no': accountNoController.text.trim(),
+      if (upiIdController.text.trim().isNotEmpty)
+        'upi_id': upiIdController.text.trim(),
       if (bankNameController.text.trim().isNotEmpty)
         'bank_name': bankNameController.text.trim(),
       if (branchNameController.text.trim().isNotEmpty)
@@ -406,6 +414,18 @@ class BankDetailsController extends GetxController {
     }
     if (!isIfscValid.value) {
       return 'Please enter a valid verified IFSC code';
+    }
+    return null;
+  }
+
+  /// UPI ID Validator (Optional: valid VPA format e.g. name@okhdfcbank)
+  String? validateUpiId(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return null; // UPI ID is optional
+    }
+    final upi = value.trim();
+    if (!RegExp(r'^[\w.\-_]{2,256}@[a-zA-Z]{2,64}$').hasMatch(upi)) {
+      return 'Enter a valid UPI ID (e.g. name@okhdfcbank)';
     }
     return null;
   }

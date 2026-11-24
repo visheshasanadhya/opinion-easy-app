@@ -228,6 +228,28 @@ class BankFormBottomSheet extends StatelessWidget {
                             : null),
                     validator: controller.validateIFSC,
                   ),
+                  const SizedBox(height: 16),
+
+                  // ── Field 5: UPI ID (Optional) ─────────────
+                  _buildBankInputField(
+                    label: "UPI ID (Optional)",
+                    hint: "e.g. username@okhdfcbank",
+                    controller: controller.upiIdController,
+                    focusNode: controller.upiIdFocus,
+                    keyboardType: TextInputType.emailAddress,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                        RegExp(r'[a-zA-Z0-9.\-_@]'),
+                      ),
+                      LengthLimitingTextInputFormatter(50),
+                    ],
+                    iconWidget: const Icon(
+                      Icons.alternate_email_rounded,
+                      color: AppColor.primaryColor1,
+                      size: 18,
+                    ),
+                    validator: controller.validateUpiId,
+                  ),
 
                   // ── Auto-fetched fields (Bank Name, Branch Name, Bank State, Bank City)
                   if (controller.isIfscValid.value) ...[
