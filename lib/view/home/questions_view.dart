@@ -55,8 +55,7 @@ class _QuestionViewState extends State<QuestionView> {
         return SafeArea(
           top: false,
           child: DarkNativeAdWidget(
-            isLoaded: _sharedNativeAd.isNativeLoaded,
-            nativeAd: _sharedNativeAd.nativeAd,
+            controller: _sharedNativeAd,
             height: 300,
             showShimmer: false, // no shimmer — we only render when ready
           ),

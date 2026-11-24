@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:opinion_easy/core/admob/ads_controller.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:opinion_easy/core/utils/widgets/app_shimmer.dart';
 
 // ── Native Ad Widget ─────────────────────────────────────────
 class DarkNativeAdWidget extends StatelessWidget {
-  final RxBool isLoaded;
+  final RxBool? isLoaded;
   final NativeAd? nativeAd;
+  final AdsController? controller;
   final double height;
   final bool showShimmer;
 
   const DarkNativeAdWidget({
     super.key,
-    required this.isLoaded,
-    required this.nativeAd,
+    this.isLoaded,
+    this.nativeAd,
+    this.controller,
     this.height = 320,
     this.showShimmer = true,
   });
@@ -22,16 +25,19 @@ class DarkNativeAdWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      final loaded = isLoaded.value && nativeAd != null;
+      final bool loaded = controller != null
+          ? (controller!.isNativeLoaded.value && controller!.nativeAd != null)
+          : ((isLoaded?.value ?? false) && nativeAd != null);
+      final NativeAd? ad = controller != null ? controller!.nativeAd : nativeAd;
 
-      if (loaded) {
+      if (loaded && ad != null) {
         return _DarkAdCard(
           height: height,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(14),
             child: AdWidget(
-              ad: nativeAd!,
-              key: ValueKey('native_${nativeAd.hashCode}'),
+              ad: ad,
+              key: ValueKey('native_${ad.hashCode}'),
             ),
           ),
         );
@@ -46,15 +52,17 @@ class DarkNativeAdWidget extends StatelessWidget {
 
 // ── Adaptive Banner Widget ───────────────────────────────────
 class DarkBannerAdWidget extends StatelessWidget {
-  final RxBool isLoaded;
+  final RxBool? isLoaded;
   final BannerAd? bannerAd;
+  final AdsController? controller;
   final bool showShimmer;
   final double shimmerHeight;
 
   const DarkBannerAdWidget({
     super.key,
-    required this.isLoaded,
-    required this.bannerAd,
+    this.isLoaded,
+    this.bannerAd,
+    this.controller,
     this.showShimmer = false,
     this.shimmerHeight = 50,
   });
@@ -62,11 +70,16 @@ class DarkBannerAdWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      if (isLoaded.value && bannerAd != null) {
+      final bool loaded = controller != null
+          ? (controller!.isLoaded.value && controller!.bannerAd != null)
+          : ((isLoaded?.value ?? false) && bannerAd != null);
+      final BannerAd? ad = controller != null ? controller!.bannerAd : bannerAd;
+
+      if (loaded && ad != null) {
         return Center(
           child: Container(
-            width: bannerAd!.size.width.toDouble(),
-            height: bannerAd!.size.height.toDouble(),
+            width: ad.size.width.toDouble(),
+            height: ad.size.height.toDouble(),
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: AppColor.card,
@@ -77,7 +90,10 @@ class DarkBannerAdWidget extends StatelessWidget {
                 ),
               ),
             ),
-            child: AdWidget(ad: bannerAd!),
+            child: AdWidget(
+              key: ValueKey('banner_${ad.hashCode}'),
+              ad: ad,
+            ),
           ),
         );
       }
@@ -93,28 +109,40 @@ class DarkBannerAdWidget extends StatelessWidget {
 
 // ── Medium Rectangle Widget (300×250) ────────────────────────
 class DarkRectangleAdWidget extends StatelessWidget {
-  final RxBool isLoaded;
+  final RxBool? isLoaded;
   final BannerAd? rectangleAd;
+  final AdsController? controller;
   final bool showShimmer;
 
   const DarkRectangleAdWidget({
     super.key,
-    required this.isLoaded,
-    required this.rectangleAd,
+    this.isLoaded,
+    this.rectangleAd,
+    this.controller,
     this.showShimmer = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      if (isLoaded.value && rectangleAd != null) {
+      final bool loaded = controller != null
+          ? (controller!.isRectangleLoaded.value &&
+              controller!.rectangleAd != null)
+          : ((isLoaded?.value ?? false) && rectangleAd != null);
+      final BannerAd? ad =
+          controller != null ? controller!.rectangleAd : rectangleAd;
+
+      if (loaded && ad != null) {
         return Center(
           child: _DarkAdCard(
             height: 250,
             width: 300,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(14),
-              child: AdWidget(ad: rectangleAd!),
+              child: AdWidget(
+                key: ValueKey('rectangle_${ad.hashCode}'),
+                ad: ad,
+              ),
             ),
           ),
         );

@@ -163,7 +163,8 @@ class _BottomNavState extends State<BottomNav>
                               color: isSelected
                                   ? AppColor.white
                                   : AppColor.transparent,
-                              borderRadius: BorderRadius.circular(AppDeco.radius),
+                              borderRadius:
+                                  BorderRadius.circular(AppDeco.radius),
                             ),
                             child: Icon(
                               _navItems[i].icon,

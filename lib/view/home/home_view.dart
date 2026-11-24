@@ -129,8 +129,7 @@ class _HomeViewState extends State<HomeView> {
             ),
             if (!kIsWeb)
               DarkBannerAdWidget(
-                isLoaded: adsController.isLoaded,
-                bannerAd: adsController.bannerAd,
+                controller: adsController,
               ),
           ],
         ),

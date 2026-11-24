@@ -121,8 +121,7 @@ class _SubCategViewState extends State<SubCategView> {
                 children.add(
                   DarkNativeAdWidget(
                     key: const ValueKey('subcateg_middle_ad'),
-                    isLoaded: middleNativeAdsController.isNativeLoaded,
-                    nativeAd: middleNativeAdsController.nativeAd,
+                    controller: middleNativeAdsController,
                     showShimmer: _showMiddleShimmer,
                   ),
                 );
@@ -137,8 +136,7 @@ class _SubCategViewState extends State<SubCategView> {
               children.add(
                 DarkNativeAdWidget(
                   key: const ValueKey('subcateg_end_ad'),
-                  isLoaded: endNativeAdsController.isNativeLoaded,
-                  nativeAd: endNativeAdsController.nativeAd,
+                  controller: endNativeAdsController,
                   showShimmer: _showEndShimmer,
                 ),
               );

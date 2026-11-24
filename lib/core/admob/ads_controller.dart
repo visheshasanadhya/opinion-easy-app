@@ -97,41 +97,48 @@ class AdsController extends GetxController {
     );
     if (size == null) return;
 
-    await bannerAd?.dispose();
-    bannerAd = null;
     isLoaded.value = false;
+    final oldAd = bannerAd;
+    bannerAd = null;
+    await oldAd?.dispose();
 
-    bannerAd = BannerAd(
+    final newBanner = BannerAd(
       adUnitId: unitId,
       size: size,
       request: _adRequest,
       listener: BannerAdListener(
-        onAdLoaded: (_) {
+        onAdLoaded: (ad) {
+          bannerAd = ad as BannerAd;
           isLoaded.value = true;
           _bannerRetryCount = 0;
         },
         onAdFailedToLoad: (ad, error) {
           ad.dispose();
-          bannerAd = null;
-          isLoaded.value = false;
+          if (bannerAd == ad) {
+            bannerAd = null;
+            isLoaded.value = false;
+          }
           if (_bannerRetryCount < _maxRetries) {
             _bannerRetryCount++;
             _bannerRetryTimer = Timer(
               Duration(seconds: 1 << _bannerRetryCount),
-              () => context.mounted ? loadAdaptiveBanner(context, adUnitId: unitId) : null,
+              () => context.mounted
+                  ? loadAdaptiveBanner(context, adUnitId: unitId)
+                  : null,
             );
           }
         },
       ),
     );
-    await bannerAd!.load();
+    await newBanner.load();
   }
 
   void disposeBanner() {
     _bannerRetryTimer?.cancel();
-    bannerAd?.dispose();
-    bannerAd = null;
     isLoaded.value = false;
+    final oldAd = bannerAd;
+    bannerAd = null;
+    oldAd?.dispose();
     _bannerRetryCount = 0;
   }
 
@@ -140,23 +147,27 @@ class AdsController extends GetxController {
     final unitId = adUnitId ?? AdUnits.resultRectangle;
     _rectangleRetryTimer?.cancel();
 
-    rectangleAd?.dispose();
-    rectangleAd = null;
     isRectangleLoaded.value = false;
+    final oldAd = rectangleAd;
+    rectangleAd = null;
+    oldAd?.dispose();
 
-    rectangleAd = BannerAd(
+    final newRectangle = BannerAd(
       adUnitId: unitId,
       size: AdSize.mediumRectangle,
       request: _adRequest,
       listener: BannerAdListener(
-        onAdLoaded: (_) {
+        onAdLoaded: (ad) {
+          rectangleAd = ad as BannerAd;
           isRectangleLoaded.value = true;
           _rectangleRetryCount = 0;
         },
         onAdFailedToLoad: (ad, error) {
           ad.dispose();
-          rectangleAd = null;
-          isRectangleLoaded.value = false;
+          if (rectangleAd == ad) {
+            rectangleAd = null;
+            isRectangleLoaded.value = false;
+          }
           if (_rectangleRetryCount < _maxRetries) {
             _rectangleRetryCount++;
             _rectangleRetryTimer = Timer(
@@ -166,14 +177,16 @@ class AdsController extends GetxController {
           }
         },
       ),
-    )..load();
+    );
+    newRectangle.load();
   }
 
   void disposeRectangle() {
     _rectangleRetryTimer?.cancel();
-    rectangleAd?.dispose();
-    rectangleAd = null;
     isRectangleLoaded.value = false;
+    final oldAd = rectangleAd;
+    rectangleAd = null;
+    oldAd?.dispose();
     _rectangleRetryCount = 0;
   }
 
@@ -183,23 +196,27 @@ class AdsController extends GetxController {
     if (isNativeLoaded.value && nativeAd != null) return;
 
     _nativeRetryTimer?.cancel();
-    nativeAd?.dispose();
-    nativeAd = null;
     isNativeLoaded.value = false;
+    final oldAd = nativeAd;
+    nativeAd = null;
+    oldAd?.dispose();
 
-    nativeAd = NativeAd(
+    final newNative = NativeAd(
       adUnitId: unitId,
       request: _adRequest,
       nativeTemplateStyle: darkNativeStyle,
       listener: NativeAdListener(
-        onAdLoaded: (_) {
+        onAdLoaded: (ad) {
+          nativeAd = ad as NativeAd;
           isNativeLoaded.value = true;
           _nativeRetryCount = 0;
         },
         onAdFailedToLoad: (ad, error) {
           ad.dispose();
-          nativeAd = null;
-          isNativeLoaded.value = false;
+          if (nativeAd == ad) {
+            nativeAd = null;
+            isNativeLoaded.value = false;
+          }
           if (_nativeRetryCount < _maxRetries) {
             _nativeRetryCount++;
             _nativeRetryTimer = Timer(
@@ -210,14 +227,15 @@ class AdsController extends GetxController {
         },
       ),
     );
-    nativeAd!.load();
+    newNative.load();
   }
 
   void disposeNative() {
     _nativeRetryTimer?.cancel();
-    nativeAd?.dispose();
-    nativeAd = null;
     isNativeLoaded.value = false;
+    final oldAd = nativeAd;
+    nativeAd = null;
+    oldAd?.dispose();
     _nativeRetryCount = 0;
   }
 
