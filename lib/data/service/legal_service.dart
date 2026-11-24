@@ -5,7 +5,7 @@ import 'api_client.dart';
 class LegalService {
   Future<Map<String, dynamic>> fetchTerms() async {
     final url = Uri.parse(ApiEndpoints.terms);
-    final response = await ApiClient.get(url);
+    final response = await ApiClient.getPublic(url);
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       return (json['data'] as Map<String, dynamic>?) ?? {};
@@ -15,7 +15,7 @@ class LegalService {
 
   Future<Map<String, dynamic>> fetchPrivacy() async {
     final url = Uri.parse(ApiEndpoints.privacy);
-    final response = await ApiClient.get(url);
+    final response = await ApiClient.getPublic(url);
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       return (json['data'] as Map<String, dynamic>?) ?? {};
@@ -25,7 +25,7 @@ class LegalService {
 
   Future<Map<String, dynamic>> fetchAboutUs() async {
     final url = Uri.parse(ApiEndpoints.aboutUs);
-    final response = await ApiClient.get(url);
+    final response = await ApiClient.getPublic(url);
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       return (json['data'] as Map<String, dynamic>?) ?? {};
@@ -35,7 +35,7 @@ class LegalService {
 
   Future<Map<String, dynamic>> fetchHelpSupport() async {
     final url = Uri.parse(ApiEndpoints.helpSupport);
-    final response = await ApiClient.get(url);
+    final response = await ApiClient.getPublic(url);
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       return (json['data'] as Map<String, dynamic>?) ?? {};

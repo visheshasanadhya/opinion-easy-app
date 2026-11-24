@@ -23,13 +23,28 @@ class ApiClient {
   static Future<http.Response> get(
     Uri url, {
     Map<String, String>? headers,
+    bool checkAuth = true,
   }) async {
     final finalHeaders = await getHeaders(extraHeaders: headers);
     final response = await http.get(url, headers: finalHeaders);
-    if (AuthErrorHandler.checkAuthError(response)) {
+    if (checkAuth && AuthErrorHandler.checkAuthError(response)) {
       throw AuthException(response.body);
     }
     return response;
+  }
+
+  /// Public GET request: does NOT send or require an auth token,
+  /// and does NOT trigger authentication redirect on 401.
+  static Future<http.Response> getPublic(
+    Uri url, {
+    Map<String, String>? headers,
+  }) async {
+    final publicHeaders = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      if (headers != null) ...headers,
+    };
+    return await http.get(url, headers: publicHeaders);
   }
 
   static Future<http.Response> post(

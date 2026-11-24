@@ -6,7 +6,7 @@ import 'api_client.dart';
 class FaqService {
   Future<List<FAQsModel>> fetchFaqs() async {
     final url = Uri.parse(ApiEndpoints.faqs);
-    var response = await ApiClient.get(url);
+    var response = await ApiClient.getPublic(url);
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = jsonDecode(response.body)['data'];
