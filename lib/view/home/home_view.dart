@@ -48,8 +48,6 @@ class _HomeViewState extends State<HomeView> {
     bannerController = Get.put(BannerController());
     profileController = Get.put(ProfileController());
     notificationController = Get.put(NotificationController());
-    //_preload = Get.find<AdPreloadService>();
-    // adsController = Get.put(AdsController(), tag: 'home_ad');
     if (!kIsWeb) {
       _preload = Get.find<AdPreloadService>();
       adsController = Get.put(AdsController(), tag: 'home_ad');
@@ -129,10 +127,6 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ),
             ),
-            // DarkBannerAdWidget(
-            //   isLoaded: adsController.isLoaded,
-            //   bannerAd: adsController.bannerAd,
-            // ),
             if (!kIsWeb)
               DarkBannerAdWidget(
                 isLoaded: adsController.isLoaded,
@@ -462,10 +456,7 @@ class _HomeViewState extends State<HomeView> {
                     category.id ?? 0,
                     category.name.toString(),
                   );
-                  // In _buildCategories() onTap
                   if (!kIsWeb) _preload.refreshSubCategAds();
-
-                  // _preload.refreshSubCategAds();
                 },
                 borderRadius: BorderRadius.circular(AppDeco.radius),
                 child: Padding(
