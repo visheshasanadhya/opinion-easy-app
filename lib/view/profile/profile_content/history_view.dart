@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 import '../../../core/utils/app_constants.dart';
 import '../../../core/utils/widgets/custom_app_bar.dart';
+import '../../../core/utils/widgets/app_loader.dart';
 
 class HistoryView extends StatefulWidget {
   const HistoryView({super.key});
@@ -38,9 +39,7 @@ class _HistoryViewState extends State<HistoryView> {
           if (historyController.isLoading.value &&
               historyController.history.isEmpty &&
               historyController.redeemHistory.isEmpty) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColor.primaryColor1),
-            );
+            return const AppLoader();
           }
 
           if (historyController.history.isEmpty &&
@@ -129,11 +128,7 @@ class _HistoryViewState extends State<HistoryView> {
                   const SliverToBoxAdapter(
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 24),
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          color: AppColor.primaryColor1,
-                        ),
-                      ),
+                      child: AppLoader(),
                     ),
                   ),
 

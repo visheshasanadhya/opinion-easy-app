@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:opinion_easy/controller/notification_controller.dart';
 import 'package:opinion_easy/core/utils/widgets/custom_app_bar.dart';
+import 'package:opinion_easy/core/utils/widgets/app_loader.dart';
 
 class NotificationView extends StatefulWidget {
   const NotificationView({super.key});
@@ -50,14 +51,7 @@ class _NotificationViewState extends State<NotificationView> {
             return controller.isMarking.value
                 ? const Padding(
                     padding: EdgeInsets.only(right: 16),
-                    child: SizedBox(
-                      width: 22,
-                      height: 22,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.5,
-                        color: Color(0xFF4A90E2),
-                      ),
-                    ),
+                    child: AppLoader(size: 22, strokeWidth: 2.5),
                   )
                 : Padding(
                     padding: const EdgeInsets.only(right: 12),
@@ -153,9 +147,7 @@ class _NotificationViewState extends State<NotificationView> {
       body: SafeArea(
         child: Obx(() {
           if (controller.isLoading.value && controller.notifications.isEmpty) {
-            return const Center(
-              child: CircularProgressIndicator(color: Color(0xFF4A90E2)),
-            );
+            return const AppLoader();
           }
 
           if (controller.notifications.isEmpty && !controller.isLoading.value) {
@@ -177,12 +169,7 @@ class _NotificationViewState extends State<NotificationView> {
                 if (index == controller.notifications.length) {
                   return const Padding(
                     padding: EdgeInsets.all(16.0),
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Color(0xFF4A90E2),
-                      ),
-                    ),
+                    child: AppLoader(size: 24, strokeWidth: 2),
                   );
                 }
 

@@ -4,6 +4,7 @@ import 'package:opinion_easy/data/model/bank_details_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/utils/widgets/custom_app_bar.dart';
+import '../../../core/utils/widgets/app_loader.dart';
 import '../../../controller/bank_controller.dart';
 import 'edit_bank_details_view.dart';
 
@@ -22,9 +23,7 @@ class BankDetailsView extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.isLoading.value && controller.bankDetails.isEmpty) {
-          return const Center(
-            child: CircularProgressIndicator(color: AppColor.primaryColor1),
-          );
+          return const AppLoader();
         }
 
         return RefreshIndicator(

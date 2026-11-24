@@ -4,6 +4,7 @@ import 'package:opinion_easy/controller/profile_controller.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:opinion_easy/core/utils/widgets/custom_app_bar.dart';
 import 'package:opinion_easy/core/utils/widgets/app_refresh.dart';
+import 'package:opinion_easy/core/utils/widgets/app_loader.dart';
 import 'package:opinion_easy/core/utils/widgets/btn_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -45,12 +46,7 @@ class WalletView extends StatelessWidget {
             historyController.redeemHistory.isEmpty;
 
         if (loading && noData) {
-          return const Center(
-            child: CircularProgressIndicator(
-              color: AppColor.white,
-              strokeWidth: 2,
-            ),
-          );
+          return const AppLoader();
         }
 
         return AppRefresh(
@@ -161,12 +157,7 @@ class WalletView extends StatelessWidget {
           const SliverToBoxAdapter(
             child: Padding(
               padding: EdgeInsets.all(24),
-              child: Center(
-                child: CircularProgressIndicator(
-                  color: AppColor.white,
-                  strokeWidth: 2,
-                ),
-              ),
+              child: AppLoader(),
             ),
           ),
         const SliverToBoxAdapter(child: VS(30)),

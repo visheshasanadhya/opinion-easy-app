@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controller/legal_controller.dart';
+import '../../../core/utils/widgets/app_loader.dart';
 import '../../../core/utils/widgets/custom_app_bar.dart';
 
 class PrivacyPolicyView extends StatelessWidget {
@@ -26,11 +27,7 @@ class PrivacyPolicyView extends StatelessWidget {
             child: Obx(() {
               if (controller.isPrivacyLoading.value &&
                   controller.privacyContent.value.isEmpty) {
-                return Center(
-                  child: CircularProgressIndicator(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                );
+                return const AppLoader();
               }
 
               if (controller.privacyContent.value.isEmpty) {

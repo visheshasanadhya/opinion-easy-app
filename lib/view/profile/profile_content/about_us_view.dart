@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controller/legal_controller.dart';
+import '../../../core/utils/widgets/app_loader.dart';
 import '../../../core/utils/widgets/custom_app_bar.dart';
 
 class AboutUsView extends StatelessWidget {
@@ -22,11 +23,7 @@ class AboutUsView extends StatelessWidget {
           return Obx(() {
             if (controller.isAboutLoading.value &&
                 controller.aboutContent.value.isEmpty) {
-              return Center(
-                child: CircularProgressIndicator(
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              );
+              return const AppLoader();
             }
 
             if (controller.aboutContent.value.isEmpty) {
