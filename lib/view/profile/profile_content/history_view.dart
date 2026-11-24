@@ -1,11 +1,11 @@
-import 'package:opinion_easy/controller/history_controller.dart';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../../core/utils/widgets/custom_app_bar.dart';
-import '../../../core/utils/widgets/app_loader.dart';
-import '../../../core/utils/widgets/app_refresh.dart';
+import 'package:opinion_easy/controller/history_controller.dart';
+import 'package:opinion_easy/core/utils/app_constants.dart';
+import 'package:opinion_easy/core/utils/widgets/app_loader.dart';
+import 'package:opinion_easy/core/utils/widgets/app_refresh.dart';
+import 'package:opinion_easy/core/utils/widgets/custom_app_bar.dart';
+import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 
 class HistoryView extends StatefulWidget {
   const HistoryView({super.key});
@@ -32,8 +32,8 @@ class _HistoryViewState extends State<HistoryView> {
     });
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F7FE),
-      appBar: CustomAppBar(title: "Activity History"),
+      backgroundColor: AppColor.scaffold,
+      appBar: const CustomAppBar(title: "Activity History"),
       body: SafeArea(
         child: Obx(() {
           if (historyController.isLoading.value &&
@@ -44,22 +44,22 @@ class _HistoryViewState extends State<HistoryView> {
 
           if (historyController.history.isEmpty &&
               historyController.redeemHistory.isEmpty) {
-            return Center(
+            return const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
                     Icons.history_edu_rounded,
                     size: 64,
-                    color: Colors.grey[300],
+                    color: AppColor.textDisabled,
                   ),
-                  const SizedBox(height: 16),
+                  VS(16),
                   Text(
                     "No transaction history",
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Colors.grey[500],
+                      color: AppColor.textMuted,
                     ),
                   ),
                 ],
@@ -85,7 +85,7 @@ class _HistoryViewState extends State<HistoryView> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: Colors.black87,
+                          color: AppColor.textWhite,
                         ),
                       ),
                     ),
@@ -108,7 +108,7 @@ class _HistoryViewState extends State<HistoryView> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: Colors.black87,
+                          color: AppColor.textWhite,
                         ),
                       ),
                     ),
@@ -149,16 +149,16 @@ class _HistoryViewState extends State<HistoryView> {
     String statusText;
 
     if (isPending) {
-      statusColor = Colors.grey;
+      statusColor = AppColor.textGrey;
       statusText = "PENDING";
     } else if (isDismissed) {
-      statusColor = Colors.orange;
+      statusColor = AppColor.orange;
       statusText = "REFUNDED";
     } else if (isWin) {
-      statusColor = Colors.green;
+      statusColor = AppColor.green;
       statusText = "WON";
     } else {
-      statusColor = Colors.red;
+      statusColor = AppColor.red;
       statusText = "LOST";
     }
 
@@ -166,15 +166,9 @@ class _HistoryViewState extends State<HistoryView> {
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColor.cardAlt,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        border: Border.all(color: AppColor.borderLight),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,13 +183,13 @@ class _HistoryViewState extends State<HistoryView> {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xffF2D8FF),
+                  color: AppColor.purple.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   history.category ?? "General",
                   style: const TextStyle(
-                    color: Colors.purple,
+                    color: AppColor.purple,
                     fontWeight: FontWeight.w600,
                     fontSize: 12,
                   ),
@@ -209,7 +203,7 @@ class _HistoryViewState extends State<HistoryView> {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.1),
+                  color: statusColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -228,8 +222,8 @@ class _HistoryViewState extends State<HistoryView> {
             history.question ?? "No question",
             style: const TextStyle(
               fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: Colors.black87,
+              fontWeight: FontWeight.w600,
+              color: AppColor.textWhite,
               height: 1.4,
             ),
           ),
@@ -237,9 +231,9 @@ class _HistoryViewState extends State<HistoryView> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.grey[50],
+              color: AppColor.cardLight,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey[200]!),
+              border: Border.all(color: AppColor.borderFaint),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -247,11 +241,11 @@ class _HistoryViewState extends State<HistoryView> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "Your Answer",
                       style: TextStyle(
                         fontSize: 11,
-                        color: Colors.grey[500],
+                        color: AppColor.textMuted,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -261,7 +255,7 @@ class _HistoryViewState extends State<HistoryView> {
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                        color: AppColor.textWhite,
                       ),
                     ),
                   ],
@@ -280,15 +274,15 @@ class _HistoryViewState extends State<HistoryView> {
                         fontSize: 16,
                         fontWeight: FontWeight.w800,
                         color: (history.points ?? 0) > 0 || isDismissed
-                            ? Colors.green
-                            : Colors.red,
+                            ? AppColor.green
+                            : AppColor.red,
                       ),
                     ),
-                    Text(
+                    const Text(
                       "Pts",
                       style: TextStyle(
                         fontSize: 11,
-                        color: Colors.grey[500],
+                        color: AppColor.textMuted,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -307,38 +301,32 @@ class _HistoryViewState extends State<HistoryView> {
     Color statusColor;
     switch (redeem.status?.toLowerCase()) {
       case 'approved':
-        statusColor = Colors.green;
+        statusColor = AppColor.green;
         break;
       case 'rejected':
-        statusColor = Colors.red;
+        statusColor = AppColor.red;
         break;
       default:
-        statusColor = Colors.orange;
+        statusColor = AppColor.orange;
     }
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColor.cardAlt,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        border: Border.all(color: AppColor.borderLight),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.orange.withOpacity(0.1),
+              color: AppColor.orange.withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.card_giftcard, color: Colors.orange),
+            child: const Icon(Icons.card_giftcard, color: AppColor.orange),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -350,7 +338,7 @@ class _HistoryViewState extends State<HistoryView> {
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
-                    color: Colors.black87,
+                    color: AppColor.textWhite,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -360,7 +348,7 @@ class _HistoryViewState extends State<HistoryView> {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.1),
+                    color: statusColor.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
@@ -377,7 +365,10 @@ class _HistoryViewState extends State<HistoryView> {
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
                       redeem.remarks,
-                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColor.textGrey,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -393,14 +384,14 @@ class _HistoryViewState extends State<HistoryView> {
                 style: const TextStyle(
                   fontWeight: FontWeight.w800,
                   fontSize: 16,
-                  color: Colors.black87,
+                  color: AppColor.textWhite,
                 ),
               ),
-              Text(
+              const Text(
                 "Pts",
                 style: TextStyle(
                   fontSize: 11,
-                  color: Colors.grey[500],
+                  color: AppColor.textMuted,
                   fontWeight: FontWeight.w500,
                 ),
               ),

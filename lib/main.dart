@@ -12,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'core/theme/app_theme.dart';
+import 'core/utils/app_constants.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -32,7 +33,7 @@ Future<void> main() async {
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: Color(0xFF0D0D0D),
+      systemNavigationBarColor: AppColor.scaffold,
       systemNavigationBarIconBrightness: Brightness.light,
     ),
   );

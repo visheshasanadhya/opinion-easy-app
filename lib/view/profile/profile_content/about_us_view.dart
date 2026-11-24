@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controller/legal_controller.dart';
+import '../../../core/utils/app_constants.dart';
 import '../../../core/utils/widgets/app_loader.dart';
 import '../../../core/utils/widgets/app_refresh.dart';
 import '../../../core/utils/widgets/custom_app_bar.dart';
@@ -13,7 +14,7 @@ class AboutUsView extends StatelessWidget {
     final LegalController controller = Get.put(LegalController());
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: AppColor.scaffold,
       appBar: const CustomAppBar(title: "About Us"),
       body: LayoutBuilder(
         builder: (context, constraints) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:opinion_easy/controller/legal_controller.dart';
+import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:opinion_easy/core/utils/widgets/app_loader.dart';
 import 'package:opinion_easy/core/utils/widgets/app_refresh.dart';
 import 'package:opinion_easy/core/utils/widgets/custom_app_bar.dart';
@@ -45,7 +46,7 @@ class HelpView extends StatelessWidget {
     final LegalController controller = Get.put(LegalController());
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: AppColor.scaffold,
       appBar: const CustomAppBar(title: "Help & Support"),
       body: Obx(() {
         if (controller.isHelpLoading.value &&

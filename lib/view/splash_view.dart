@@ -1,6 +1,6 @@
 // splash_screen.dart
 import 'package:opinion_easy/controller/splash_controller.dart';
-import 'package:opinion_easy/core/utils/app_asset.dart';
+import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,7 +12,7 @@ class SplashView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColor.scaffold,
       body: Center(
         child: Obx(
           () => AnimatedScale(

@@ -289,6 +289,7 @@ import 'dart:ui';
 
 import 'home/widgets/back_press_exit_handler.dart';
 import 'leaderboard/leaderboard_view.dart';
+import '../core/utils/app_constants.dart';
 
 class BottomNav extends StatefulWidget {
   final int selectedIndex;
@@ -390,6 +391,7 @@ class _BottomNavState extends State<BottomNav>
         child: Stack(
           children: [
             Scaffold(
+              backgroundColor: AppColor.scaffold,
               body: pages[bottomNavController.selectedIndex.value],
               bottomNavigationBar: _buildNavBar(),
             ),
@@ -412,9 +414,9 @@ class _BottomNavState extends State<BottomNav>
       final selected = bottomNavController.selectedIndex.value;
       return Container(
         decoration: BoxDecoration(
-          color: const Color(0xFF0D0D0D),
+          color: AppColor.scaffold,
           border: Border(
-            top: BorderSide(color: Colors.white.withOpacity(0.08), width: 1),
+            top: BorderSide(color: AppColor.borderLight, width: 1),
           ),
         ),
         child: SafeArea(

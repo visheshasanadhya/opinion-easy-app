@@ -7,7 +7,7 @@ class AppTheme {
   static ThemeData darkTheme(BuildContext context) {
     return ThemeData(
       brightness: Brightness.dark,
-      scaffoldBackgroundColor: const Color(0xFF0D0D0D),
+      scaffoldBackgroundColor: AppColor.scaffold,
       colorScheme: const ColorScheme.dark(
         primary: AppColor.primaryColor1,
         surface: Color(0xFF141414),

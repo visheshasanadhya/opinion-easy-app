@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:opinion_easy/core/utils/app_constants.dart';
 
 class DeactivatedView extends StatelessWidget {
   const DeactivatedView({super.key});
@@ -7,7 +8,7 @@ class DeactivatedView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: AppColor.scaffold,
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -16,10 +17,10 @@ class DeactivatedView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Icon or illustration
-                Icon(
+                const Icon(
                   Icons.lock_outline_rounded,
-                  size: 100,
-                  color: Colors.redAccent.shade200,
+                  size: 90,
+                  color: AppColor.red,
                 ),
                 const SizedBox(height: 24),
 
@@ -30,7 +31,7 @@ class DeactivatedView extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    color: AppColor.textWhite,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -40,8 +41,8 @@ class DeactivatedView extends StatelessWidget {
                   "Your account has been deactivated by the admin.\nPlease contact the administrator for assistance.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black54,
+                    fontSize: 15,
+                    color: AppColor.textGrey,
                     height: 1.5,
                   ),
                 ),
@@ -56,8 +57,8 @@ class DeactivatedView extends StatelessWidget {
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent.shade200,
-                    foregroundColor: Colors.white,
+                    backgroundColor: AppColor.red,
+                    foregroundColor: AppColor.white,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 28,
                       vertical: 14,
@@ -67,17 +68,6 @@ class DeactivatedView extends StatelessWidget {
                     ),
                   ),
                 ),
-
-                const SizedBox(height: 20),
-
-                // Logout / Go Back Button (optional)
-                // TextButton(
-                //   onPressed: () => Get.offAllNamed('/login'),
-                //   child: const Text(
-                //     "Back to Login",
-                //     style: TextStyle(fontSize: 15, color: Colors.blueAccent),
-                //   ),
-                // ),
               ],
             ),
           ),
