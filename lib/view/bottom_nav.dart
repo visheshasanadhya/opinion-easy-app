@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:opinion_easy/controller/nav_controller.dart';
+import 'package:opinion_easy/controller/profile_controller.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 import 'package:opinion_easy/view/home/home_view.dart';
@@ -42,6 +43,9 @@ class _BottomNavState extends State<BottomNav>
     WidgetsBinding.instance.addObserver(this);
 
     bottomNavController = Get.put(BottomNavController());
+    if (!Get.isRegistered<ProfileController>()) {
+      Get.put(ProfileController(), permanent: true);
+    }
 
     pages = [
       HomeView(),

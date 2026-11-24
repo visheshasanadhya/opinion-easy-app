@@ -42,7 +42,9 @@ class _HomeViewState extends State<HomeView> {
     bottomNavController = Get.find<BottomNavController>();
     subCategController = Get.put(SubCategController());
     bannerController = Get.put(BannerController());
-    profileController = Get.put(ProfileController());
+    profileController = Get.isRegistered<ProfileController>()
+        ? Get.find<ProfileController>()
+        : Get.put(ProfileController(), permanent: true);
     notificationController = Get.put(NotificationController());
     _initializeFCM();
   }

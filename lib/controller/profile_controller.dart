@@ -23,15 +23,38 @@ class ProfileController extends GetxController {
 
   final ProfileService profileService = ProfileService();
 
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
-  final TextEditingController addressController = TextEditingController();
-  final TextEditingController districtController = TextEditingController();
-  final TextEditingController cityController = TextEditingController();
-  final TextEditingController stateController = TextEditingController();
-  final TextEditingController pincodeController = TextEditingController();
-  final TextEditingController referralController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController districtController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
+  TextEditingController stateController = TextEditingController();
+  TextEditingController pincodeController = TextEditingController();
+  TextEditingController referralController = TextEditingController();
+
+  TextEditingController _ensureFresh(TextEditingController ctrl) {
+    try {
+      void dummy() {}
+      ctrl.addListener(dummy);
+      ctrl.removeListener(dummy);
+      return ctrl;
+    } catch (_) {
+      return TextEditingController();
+    }
+  }
+
+  void ensureControllersActive() {
+    nameController = _ensureFresh(nameController);
+    emailController = _ensureFresh(emailController);
+    phoneController = _ensureFresh(phoneController);
+    addressController = _ensureFresh(addressController);
+    districtController = _ensureFresh(districtController);
+    cityController = _ensureFresh(cityController);
+    stateController = _ensureFresh(stateController);
+    pincodeController = _ensureFresh(pincodeController);
+    referralController = _ensureFresh(referralController);
+  }
 
   final RxBool isVerifyingPincode = false.obs;
   final RxBool isPincodeValid = false.obs;
@@ -40,7 +63,9 @@ class ProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    ensureControllersActive();
     _loadInitialPrefs();
+    pincodeController.removeListener(_onPincodeChanged);
     pincodeController.addListener(_onPincodeChanged);
     fetchProfile();
   }
@@ -102,6 +127,7 @@ class ProfileController extends GetxController {
 
   // Function to populate controllers with fetched data
   void setProfileData(Data? data) async {
+    ensureControllersActive();
     final prefs = await SharedPreferences.getInstance();
     nameController.text = (data?.name?.isNotEmpty == true)
         ? data!.name!
@@ -295,6 +321,7 @@ class ProfileController extends GetxController {
       isLoading.value = true;
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('token');
+      Get.delete<ProfileController>(force: true);
       Get.offAllNamed('/login');
     } catch (e) {
       isLoading.value = false;
@@ -305,15 +332,6 @@ class ProfileController extends GetxController {
   @override
   void onClose() {
     pincodeController.removeListener(_onPincodeChanged);
-    nameController.dispose();
-    emailController.dispose();
-    phoneController.dispose();
-    addressController.dispose();
-    districtController.dispose();
-    cityController.dispose();
-    stateController.dispose();
-    pincodeController.dispose();
-    referralController.dispose();
     selectedImage.value = null;
     selectedState.value = "Uttar Pradesh";
     selectedDob.value = '';

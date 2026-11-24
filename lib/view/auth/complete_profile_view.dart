@@ -27,6 +27,7 @@ class CompleteProfileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = profileController;
+    controller.ensureControllersActive();
 
     return Scaffold(
       backgroundColor: AppColor.scaffold,
@@ -218,7 +219,7 @@ class CompleteProfileView extends StatelessWidget {
                     );
                     if (picked != null) {
                       controller.selectedDob.value =
-                          DateFormat('yyyy-MM-dd').format(picked);
+                          DateFormat('dd-MM-yyyy').format(picked);
                     }
                   },
                   child: Obx(

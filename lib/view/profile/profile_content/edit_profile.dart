@@ -28,6 +28,7 @@ class EditProfileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = profileController;
+    controller.ensureControllersActive();
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -201,7 +202,7 @@ class EditProfileView extends StatelessWidget {
                     );
                     if (picked != null) {
                       controller.selectedDob.value = DateFormat(
-                        'yyyy-MM-dd',
+                        'dd-MM-yyyy',
                       ).format(picked);
                     }
                   },
