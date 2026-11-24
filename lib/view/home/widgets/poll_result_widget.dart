@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:opinion_easy/core/utils/app_constants.dart';
+import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 
-// ── Drop-in poll result card ───────────────────────────────────────────────
+// ── Drop-in Poll Result Card ────────────────────────────────────────────────
 
 class PollResultWidget extends StatefulWidget {
   final int yesCount;
   final int noCount;
+  final String? title;
+  final EdgeInsetsGeometry? margin;
 
   const PollResultWidget({
     super.key,
     required this.yesCount,
     required this.noCount,
+    this.title,
+    this.margin,
   });
 
   @override
@@ -19,21 +25,36 @@ class PollResultWidget extends StatefulWidget {
 class _PollResultWidgetState extends State<PollResultWidget>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
-  late final Animation<double> _yesFill;
+  late final Animation<double> _anim;
 
-  double get _total => (widget.yesCount + widget.noCount).toDouble();
-  double get _yesPct => _total == 0 ? 0 : widget.yesCount / _total;
-  double get _noPct => _total == 0 ? 0 : widget.noCount / _total;
+  int get _total => widget.yesCount + widget.noCount;
+  double get _yesPct => _total == 0 ? 0.0 : widget.yesCount / _total;
+  double get _noPct => _total == 0 ? 0.0 : widget.noCount / _total;
+
+  int get _yesPercent => (_yesPct * 100).round();
+  int get _noPercent => _total == 0 ? 0 : (100 - _yesPercent);
 
   @override
   void initState() {
     super.initState();
     _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: const Duration(milliseconds: 800),
     );
-    _yesFill = CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic);
+    _anim = CurvedAnimation(
+      parent: _ctrl,
+      curve: Curves.easeOutCubic,
+    );
     _ctrl.forward();
+  }
+
+  @override
+  void didUpdateWidget(covariant PollResultWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.yesCount != widget.yesCount ||
+        oldWidget.noCount != widget.noCount) {
+      _ctrl.forward(from: 0.0);
+    }
   }
 
   @override
@@ -44,114 +65,182 @@ class _PollResultWidgetState extends State<PollResultWidget>
 
   @override
   Widget build(BuildContext context) {
-    final int yesPercent = (_yesPct * 100).round();
-    final int noPercent = (_noPct * 100).round();
-
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      margin: widget.margin,
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E1E1E),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+        color: AppColor.card,
+        borderRadius: BorderRadius.circular(AppDeco.radiusLg),
+        border: Border.all(color: AppColor.borderFaint),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.35),
-            blurRadius: 10,
+            color: AppColor.black.withValues(alpha: 0.35),
+            blurRadius: 12,
             offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          // ── Header ─────────────────────────────────────────
+          // ── Header Row ──────────────────────────────────────────────
           Row(
             children: [
-              const Icon(
-                Icons.bar_chart_rounded,
-                size: 16,
-                color: Color(0xFF9E9E9E),
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: AppColor.white.withValues(alpha: 0.06),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: AppColor.borderFaint),
+                ),
+                alignment: Alignment.center,
+                child: const Icon(
+                  Icons.bar_chart_rounded,
+                  size: 18,
+                  color: AppColor.textGrey,
+                ),
               ),
-              const SizedBox(width: 6),
+              HS(10),
               Text(
-                'Poll Results',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white.withValues(alpha: 0.55),
-                  letterSpacing: 0.3,
+                widget.title ?? 'Poll Results',
+                style: AppText.bodySm.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: AppColor.white,
+                  letterSpacing: 0.2,
                 ),
               ),
               const Spacer(),
-              Text(
-                '${widget.yesCount + widget.noCount} votes',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.white.withValues(alpha: 0.35),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: AppColor.cardAlt,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: AppColor.borderLight),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.how_to_vote_outlined,
+                      size: 13,
+                      color: AppColor.textGrey,
+                    ),
+                    HS(5),
+                    Text(
+                      _total == 0
+                          ? '0 votes'
+                          : '$_total ${_total == 1 ? 'vote' : 'votes'}',
+                      style: AppText.captionSm.copyWith(
+                        color: AppColor.textGrey,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
 
-          const SizedBox(height: 14),
+          VS(16),
 
-          // ── Progress bar ───────────────────────────────────
+          // ── Dual Segmented Animated Progress Bar ─────────────────────
           AnimatedBuilder(
-            animation: _ctrl,
-            builder: (_, __) {
+            animation: _anim,
+            builder: (context, _) {
+              final progress = _anim.value;
+              final curYesFactor = (_yesPct * progress).clamp(0.0, 1.0);
+              final curNoFactor = (_noPct * progress).clamp(0.0, 1.0);
+
               return ClipRRect(
                 borderRadius: BorderRadius.circular(100),
-                child: Stack(
-                  children: [
-                    // Background (NO side)
-                    Container(
-                      height: 10,
-                      width: double.infinity,
-                      color: const Color(0xFFE53935).withValues(alpha: 0.25),
-                    ),
-                    // YES fill
-                    FractionallySizedBox(
-                      widthFactor: _yesFill.value * _yesPct,
-                      child: Container(
-                        height: 10,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF43A047),
-                          borderRadius: BorderRadius.circular(100),
+                child: Container(
+                  height: 12,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: AppColor.cardAlt,
+                    borderRadius: BorderRadius.circular(100),
+                    border: Border.all(color: AppColor.borderFaint),
+                  ),
+                  child: _total == 0
+                      ? Center(
+                          child: Text(
+                            'No votes recorded yet',
+                            style: AppText.captionSm.copyWith(
+                              fontSize: 9,
+                              color: AppColor.textMuted,
+                            ),
+                          ),
+                        )
+                      : Stack(
+                          children: [
+                            // Left YES bar (Green)
+                            if (curYesFactor > 0)
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: FractionallySizedBox(
+                                  widthFactor: curYesFactor,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: AppColor.green,
+                                      borderRadius: BorderRadius.horizontal(
+                                        left: const Radius.circular(100),
+                                        right: Radius.circular(
+                                          _noPct == 0 ? 100 : 2,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                            // Right NO bar (Red)
+                            if (curNoFactor > 0)
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: FractionallySizedBox(
+                                  widthFactor: curNoFactor,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: AppColor.red,
+                                      borderRadius: BorderRadius.horizontal(
+                                        right: const Radius.circular(100),
+                                        left: Radius.circular(
+                                          _yesPct == 0 ? 100 : 2,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
-                      ),
-                    ),
-                  ],
                 ),
               );
             },
           ),
 
-          const SizedBox(height: 12),
+          VS(14),
 
-          // ── Yes / No labels ────────────────────────────────
+          // ── Stat Cards (YES / NO) ────────────────────────────────────
           Row(
             children: [
-              // YES
               Expanded(
-                child: _VoteLabel(
-                  icon: Icons.check_circle_rounded,
-                  color: const Color(0xFF43A047),
-                  label: 'YES',
-                  percent: yesPercent,
+                child: _VoteCard(
+                  isYes: true,
+                  percent: _yesPercent,
                   count: widget.yesCount,
-                  alignment: CrossAxisAlignment.start,
                 ),
               ),
-              // NO
+              HS(12),
               Expanded(
-                child: _VoteLabel(
-                  icon: Icons.cancel_rounded,
-                  color: const Color(0xFFE53935),
-                  label: 'NO',
-                  percent: noPercent,
+                child: _VoteCard(
+                  isYes: false,
+                  percent: _noPercent,
                   count: widget.noCount,
-                  alignment: CrossAxisAlignment.end,
                 ),
               ),
             ],
@@ -162,70 +251,81 @@ class _PollResultWidgetState extends State<PollResultWidget>
   }
 }
 
-// ── Internal label widget ──────────────────────────────────────────────────
-class _VoteLabel extends StatelessWidget {
-  final IconData icon;
-  final Color color;
-  final String label;
+// ── Internal Vote Stat Card Widget ──────────────────────────────────────────
+
+class _VoteCard extends StatelessWidget {
+  final bool isYes;
   final int percent;
   final int count;
-  final CrossAxisAlignment alignment;
 
-  const _VoteLabel({
-    required this.icon,
-    required this.color,
-    required this.label,
+  const _VoteCard({
+    required this.isYes,
     required this.percent,
     required this.count,
-    required this.alignment,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isRight = alignment == CrossAxisAlignment.end;
-    return Column(
-      crossAxisAlignment: alignment,
-      children: [
-        Row(
-          mainAxisAlignment:
-              isRight ? MainAxisAlignment.end : MainAxisAlignment.start,
-          children: [
-            if (!isRight) ...[
-              Icon(icon, size: 15, color: color),
-              const SizedBox(width: 5),
-            ],
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                color: color,
-                letterSpacing: 0.5,
+    final Color themeColor = isYes ? AppColor.green : AppColor.red;
+    final IconData icon =
+        isYes ? Icons.check_circle_rounded : Icons.cancel_rounded;
+    final String label = isYes ? 'YES' : 'NO';
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColor.cardAlt,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: themeColor.withValues(alpha: 0.22),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment:
+            isYes ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+        children: [
+          Row(
+            mainAxisAlignment:
+                isYes ? MainAxisAlignment.start : MainAxisAlignment.end,
+            children: [
+              if (isYes) ...[
+                Icon(icon, size: 16, color: themeColor),
+                HS(6),
+              ],
+              Text(
+                label,
+                style: AppText.labelSm.copyWith(
+                  color: themeColor,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.5,
+                ),
               ),
-            ),
-            if (isRight) ...[
-              const SizedBox(width: 5),
-              Icon(icon, size: 15, color: color),
+              if (!isYes) ...[
+                HS(6),
+                Icon(icon, size: 16, color: themeColor),
+              ],
             ],
-          ],
-        ),
-        const SizedBox(height: 3),
-        Text(
-          '$percent%',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w800,
-            color: color,
           ),
-        ),
-        Text(
-          '$count votes',
-          style: TextStyle(
-            fontSize: 11,
-            color: Colors.white.withValues(alpha: 0.35),
+          VS(6),
+          Text(
+            '$percent%',
+            style: AppText.h2.copyWith(
+              color: themeColor,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -0.5,
+            ),
           ),
-        ),
-      ],
+          VS(2),
+          Text(
+            '$count ${count == 1 ? 'vote' : 'votes'}',
+            style: AppText.captionSm.copyWith(
+              color: AppColor.textMuted,
+              fontSize: 11,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
