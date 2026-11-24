@@ -4,7 +4,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:opinion_easy/core/utils/widgets/app_shimmer.dart';
 
-// ── Native Ad Widget (Dark-Themed Template) ──────────────────────────────────
+// ── Native Ad Widget ─────────────────────────────────────────
 class DarkNativeAdWidget extends StatelessWidget {
   final RxBool isLoaded;
   final NativeAd? nativeAd;
@@ -44,7 +44,7 @@ class DarkNativeAdWidget extends StatelessWidget {
   }
 }
 
-// ── Adaptive Banner Widget (Bottom & Dialog Placements) ───────────────────────
+// ── Adaptive Banner Widget ───────────────────────────────────
 class DarkBannerAdWidget extends StatelessWidget {
   final RxBool isLoaded;
   final BannerAd? bannerAd;
@@ -91,7 +91,7 @@ class DarkBannerAdWidget extends StatelessWidget {
   }
 }
 
-// ── Medium Rectangle Widget (300×250) ─────────────────────────────────────────
+// ── Medium Rectangle Widget (300×250) ────────────────────────
 class DarkRectangleAdWidget extends StatelessWidget {
   final RxBool isLoaded;
   final BannerAd? rectangleAd;
@@ -127,7 +127,7 @@ class DarkRectangleAdWidget extends StatelessWidget {
   }
 }
 
-// ── Internal Shared Dark Card Container ──────────────────────────────────────
+// ── Shared Dark Container ────────────────────────────────────
 class _DarkAdCard extends StatelessWidget {
   final Widget child;
   final double height;

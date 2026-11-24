@@ -1,41 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:opinion_easy/core/admob/ad_units.dart';
-import 'package:opinion_easy/core/admob/admob.dart';
+import 'package:opinion_easy/core/admob/ads_controller.dart';
 
-/// Enterprise Ad Preload Service managing foreground App Open Ads,
-/// high-value Native Ad pooling, and frequency capping.
+typedef AdService = AdPreloadService;
+
 class AdPreloadService extends GetxService with WidgetsBindingObserver {
-  // ── Singleton Controllers for Fixed Placements ───────────────
+  // ── Controllers ──────────────────────────────────────────────
   final AdsController subCategMiddle = AdsController();
   final AdsController subCategEnd = AdsController();
   final AdsController appOpenController = AdsController();
 
-  // ── Question Native Ad Pool ──────────────────────────────────
   final List<AdsController> _questionPool = [];
-  static const int _poolSize = 2; // Optimal size: prevents wasted ad requests
+  static const int _poolSize = 2;
 
-  // ── App Open Frequency Capping ───────────────────────────────
   static const int _appOpenFrequencyCapMinutes = 4;
   DateTime? _lastAdShowTime;
-
-  /// Flag to suppress App Open Ads during sensitive workflows
-  /// (e.g. Google Sign-in, camera photo pick, or payment webviews)
   bool isAppOpenSuppressed = false;
 
   void setAppOpenSuppressed(bool suppressed) {
     isAppOpenSuppressed = suppressed;
-    debugPrint('ℹ️ [AdPreloadService] App open suppression: $suppressed');
   }
 
   // ── Lifecycle ────────────────────────────────────────────────
-
   @override
   void onInit() {
     super.onInit();
     WidgetsBinding.instance.addObserver(this);
-
-    // Initial preload for launch
     appOpenController.loadAppOpenAd(adUnitId: AdUnits.appOpen);
     _fillPool();
   }
@@ -47,20 +38,15 @@ class AdPreloadService extends GetxService with WidgetsBindingObserver {
     }
   }
 
-  // ── Public API ───────────────────────────────────────────────
-
-  /// Shows the App Open Ad with frequency cap, suppression, and readiness checks.
+  // ── App Open Flow ────────────────────────────────────────────
   void showAppOpenAdIfAvailable({VoidCallback? onAdDismissed}) {
     if (isAppOpenSuppressed) {
-      debugPrint('ℹ️ [AdPreloadService] App Open Ad suppressed by active flow');
       onAdDismissed?.call();
       return;
     }
 
     if (!appOpenController.isAppOpenLoaded.value ||
         appOpenController.appOpenAd == null) {
-      debugPrint('ℹ️ [AdPreloadService] App Open Ad not ready yet');
-      // Request preload for next time
       appOpenController.loadAppOpenAd(adUnitId: AdUnits.appOpen);
       onAdDismissed?.call();
       return;
@@ -69,7 +55,6 @@ class AdPreloadService extends GetxService with WidgetsBindingObserver {
     if (_lastAdShowTime != null &&
         DateTime.now().difference(_lastAdShowTime!).inMinutes <
             _appOpenFrequencyCapMinutes) {
-      debugPrint('ℹ️ [AdPreloadService] App Open Ad skipped (frequency cap active)');
       onAdDismissed?.call();
       return;
     }
@@ -77,14 +62,13 @@ class AdPreloadService extends GetxService with WidgetsBindingObserver {
     appOpenController.showAppOpenAd(
       onAdDismissed: () {
         _lastAdShowTime = DateTime.now();
-        // Preload next ad ready for the next session
         appOpenController.loadAppOpenAd(adUnitId: AdUnits.appOpen);
         onAdDismissed?.call();
       },
     );
   }
 
-  /// Refreshes Native ads for Subcategory view
+  // ── Native Subcategory Placements ────────────────────────────
   void refreshSubCategAds() {
     subCategMiddle.disposeNative();
     subCategMiddle.loadNativeAd(adUnitId: AdUnits.subCategMiddleNative);
@@ -93,8 +77,7 @@ class AdPreloadService extends GetxService with WidgetsBindingObserver {
     subCategEnd.loadNativeAd(adUnitId: AdUnits.subCategEndNative);
   }
 
-  /// Returns a ready native-ad controller from the pool, or creates a fresh one.
-  /// Automatically refills the pool to maintain instant responsiveness.
+  // ── Native Question Pool ─────────────────────────────────────
   AdsController consumeFromPool() {
     for (int i = 0; i < _questionPool.length; i++) {
       final ctrl = _questionPool[i];
@@ -105,14 +88,11 @@ class AdPreloadService extends GetxService with WidgetsBindingObserver {
       }
     }
 
-    // No ready ad in pool yet: instantiate and load directly
     final fresh = AdsController();
     fresh.loadNativeAd(adUnitId: AdUnits.questionPageNative);
     _fillPool();
     return fresh;
   }
-
-  // ── Private Pool Management ──────────────────────────────────
 
   void _fillPool() {
     while (_questionPool.length < _poolSize) {
@@ -122,6 +102,7 @@ class AdPreloadService extends GetxService with WidgetsBindingObserver {
     }
   }
 
+  // ── Disposal ─────────────────────────────────────────────────
   @override
   void onClose() {
     WidgetsBinding.instance.removeObserver(this);

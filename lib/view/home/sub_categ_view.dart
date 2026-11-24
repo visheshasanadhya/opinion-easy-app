@@ -6,8 +6,6 @@ import 'package:get/get.dart';
 import 'package:opinion_easy/controller/category_controller.dart';
 import 'package:opinion_easy/controller/question_controller.dart';
 import 'package:opinion_easy/core/admob/admob.dart';
-import 'package:opinion_easy/core/admob/ad_preload_service.dart';
-import 'package:opinion_easy/core/admob/dark_ad_widget.dart';
 import 'package:opinion_easy/controller/sub_categ_controller.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:opinion_easy/core/utils/widgets/app_shimmer.dart';

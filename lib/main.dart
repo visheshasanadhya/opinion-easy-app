@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
-import 'package:opinion_easy/core/admob/ad_preload_service.dart';
+import 'package:opinion_easy/core/admob/admob.dart';
 import 'package:opinion_easy/data/service/fcm_service.dart';
 import 'package:opinion_easy/firebase_options.dart';
 import 'package:opinion_easy/routes/page_path.dart';

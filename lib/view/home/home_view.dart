@@ -8,8 +8,6 @@ import 'package:opinion_easy/controller/notification_controller.dart';
 import 'package:opinion_easy/controller/profile_controller.dart';
 import 'package:opinion_easy/controller/sub_categ_controller.dart';
 import 'package:opinion_easy/core/admob/admob.dart';
-import 'package:opinion_easy/core/admob/ad_preload_service.dart';
-import 'package:opinion_easy/core/admob/dark_ad_widget.dart';
 import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 import 'package:opinion_easy/data/model/banner_model.dart';
 import 'package:opinion_easy/data/service/fcm_service.dart';

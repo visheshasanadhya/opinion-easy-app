@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:opinion_easy/core/admob/admob.dart';
-import 'package:opinion_easy/core/admob/ad_units.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:opinion_easy/core/utils/widgets/app_shimmer.dart';
 import 'package:opinion_easy/data/model/question_model.dart';
