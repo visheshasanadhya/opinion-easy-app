@@ -123,35 +123,57 @@ class _LeaderboardViewState extends State<LeaderboardView>
                     labelColor: AppColor.black,
                     unselectedLabelColor: AppColor.white,
                     labelStyle: AppText.labelSm,
-                    unselectedLabelStyle: AppText.label,
+                    unselectedLabelStyle: AppText.labelSm,
+                    labelPadding: EdgeInsets.zero,
                     tabs: const [
                       Tab(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(Icons.today_outlined, size: 14),
                             HS(4),
-                            Text("Today"),
+                            Flexible(
+                              child: Text(
+                                "Today",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
                           ],
                         ),
                       ),
                       Tab(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(Icons.date_range_outlined, size: 14),
                             HS(4),
-                            Text("Monthly"),
+                            Flexible(
+                              child: Text(
+                                "Monthly",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
                           ],
                         ),
                       ),
                       Tab(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(Icons.emoji_events_outlined, size: 14),
                             HS(4),
-                            Text("All-Time Top"),
+                            Flexible(
+                              child: Text(
+                                "All-Time",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -372,7 +394,7 @@ class _LeaderboardViewState extends State<LeaderboardView>
                     border: Border.all(color: borderColor, width: 3.5),
                     boxShadow: [
                       BoxShadow(
-                        color: shadowColor.withOpacity(0.4),
+                        color: shadowColor.withValues(alpha: 0.4),
                         blurRadius: 18,
                         spreadRadius: 1,
                         offset: const Offset(0, 4),
@@ -444,9 +466,10 @@ class _LeaderboardViewState extends State<LeaderboardView>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
-              color: borderColor.withOpacity(0.15),
+              color: borderColor.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: borderColor.withOpacity(0.4), width: 1),
+              border: Border.all(
+                  color: borderColor.withValues(alpha: 0.4), width: 1),
             ),
             child: Text(
               "${user.points ?? 0} pts",
