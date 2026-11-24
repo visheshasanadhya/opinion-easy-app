@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:opinion_easy/controller/today_leader_controller.dart';
 import 'package:opinion_easy/controller/leaderboard_controller.dart';
 import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:opinion_easy/core/utils/widgets/loader_widget/topper_widget.dart';
@@ -32,9 +31,6 @@ class LeaderboardView extends StatefulWidget {
 
 class _LeaderboardViewState extends State<LeaderboardView>
     with SingleTickerProviderStateMixin {
-  final TodayLeaderController todayController = Get.put(
-    TodayLeaderController(),
-  );
   final LeaderboardController leaderboardController = Get.put(
     LeaderboardController(),
   );
@@ -83,7 +79,7 @@ class _LeaderboardViewState extends State<LeaderboardView>
   void _fetchData() {
     switch (selectedType) {
       case LeaderboardType.today:
-        todayController.fetchTodayLeaderList("today");
+        leaderboardController.fetchTodayList();
         break;
       case LeaderboardType.monthly:
         leaderboardController.fetchMonthlyList();
@@ -192,12 +188,12 @@ class _LeaderboardViewState extends State<LeaderboardView>
 
   Widget _buildTodayTab() {
     return Obx(() {
-      if (todayController.isLoading.value) {
+      if (leaderboardController.isTodayLoading.value) {
         return const Stack(
           children: [Positioned.fill(child: ShimmerTopPerformerView())],
         );
       }
-      final model = todayController.todayLeaderModel.value;
+      final model = leaderboardController.todayModel.value;
       if (model.data == null || model.data!.isEmpty) {
         return _emptyState(
           "No leaders today",
@@ -206,10 +202,13 @@ class _LeaderboardViewState extends State<LeaderboardView>
         );
       }
       final list = model.data!;
-      return _leaderboardContent(
-        list.take(3).toList(),
-        list.length > 3 ? list.sublist(3) : [],
-        model.currentUser,
+      return RefreshIndicator(
+        onRefresh: () => leaderboardController.fetchTodayList(),
+        child: _leaderboardContent(
+          list.take(3).toList(),
+          list.length > 3 ? list.sublist(3) : [],
+          model.currentUser,
+        ),
       );
     });
   }
@@ -230,10 +229,13 @@ class _LeaderboardViewState extends State<LeaderboardView>
         );
       }
       final list = model.data!;
-      return _leaderboardContent(
-        list.take(3).toList(),
-        list.length > 3 ? list.sublist(3) : [],
-        model.currentUser,
+      return RefreshIndicator(
+        onRefresh: () => leaderboardController.fetchMonthlyList(),
+        child: _leaderboardContent(
+          list.take(3).toList(),
+          list.length > 3 ? list.sublist(3) : [],
+          model.currentUser,
+        ),
       );
     });
   }
@@ -254,10 +256,13 @@ class _LeaderboardViewState extends State<LeaderboardView>
         );
       }
       final list = model.data!;
-      return _leaderboardContent(
-        list.take(3).toList(),
-        list.length > 3 ? list.sublist(3) : [],
-        model.currentUser,
+      return RefreshIndicator(
+        onRefresh: () => leaderboardController.fetchAllTimeList(),
+        child: _leaderboardContent(
+          list.take(3).toList(),
+          list.length > 3 ? list.sublist(3) : [],
+          model.currentUser,
+        ),
       );
     });
   }
@@ -479,6 +484,7 @@ class _LeaderboardViewState extends State<LeaderboardView>
         border: Border.all(color: AppColor.borderFaint),
       ),
       child: ListView.separated(
+        physics: const AlwaysScrollableScrollPhysics(),
         padding: EdgeInsets.fromLTRB(
           20,
           24,

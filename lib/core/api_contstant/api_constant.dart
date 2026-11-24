@@ -17,6 +17,8 @@ class ApiEndpoints {
   static String rewards = "$baseUrl/rewards";
   static String history = "$baseUrl/customer-answers";
   static String topper = "$baseUrl/top-customers";
+  static String leaderboard = "$baseUrl/top-customers";
+  static String topCustomers = "$baseUrl/top-customers";
   static String todayLeader = "$baseUrl/today-leaders";
   static String redeem = "$baseUrl/redeem-request";
   static String fcm = "$baseUrl/fcm-token";

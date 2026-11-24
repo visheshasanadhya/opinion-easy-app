@@ -1,28 +1,53 @@
-import 'package:opinion_easy/data/model/topper_model.dart';
-import 'package:opinion_easy/data/service/topper_service.dart';
 import 'package:get/get.dart';
+import 'package:opinion_easy/data/model/leaderboard_model.dart';
+import 'package:opinion_easy/data/service/leaderboard_service.dart';
 
 class LeaderboardController extends GetxController {
+  // Loading flags
   var isLoading = false.obs;
+  var isTodayLoading = false.obs;
   var isMonthlyLoading = false.obs;
   var isAllTimeLoading = false.obs;
 
-  var topperModel = TopperModel().obs;
-  var monthlyModel = TopperModel().obs;
-  var allTimeModel = TopperModel().obs;
+  // Models for each period
+  var todayModel = LeaderboardModel().obs;
+  var monthlyModel = LeaderboardModel().obs;
+  var allTimeModel = LeaderboardModel().obs;
 
-  // Backward compatibility getters
+  // Service
+  final LeaderboardService leaderboardService = LeaderboardService();
+
+  // Backward compatibility aliases
+  Rx<LeaderboardModel> get topperModel => allTimeModel;
+  Rx<LeaderboardModel> get todayLeaderModel => todayModel;
+  Rx<LeaderboardModel> get yearlyModel => allTimeModel;
   RxBool get isYearlyLoading => isAllTimeLoading;
-  Rx<TopperModel> get yearlyModel => allTimeModel;
+  LeaderboardService get topperService => leaderboardService;
+  LeaderboardService get todayLeaderService => leaderboardService;
 
-  final TopperService topperService = TopperService();
+  /// Fetch today's leaderboard
+  Future<void> fetchTodayList() async {
+    try {
+      isTodayLoading(true);
+      final result = await leaderboardService.fetchTodayLeaders();
+      todayModel.value = result;
+    } catch (e) {
+      if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
+          e.toString().contains("Authentication is required")) {
+        return;
+      }
+      Get.snackbar('Error', e.toString());
+    } finally {
+      isTodayLoading(false);
+    }
+  }
 
+  /// Fetch monthly leaderboard
   Future<void> fetchMonthlyList() async {
     try {
       isMonthlyLoading(true);
-      final result = await topperService.fetchTopperList("month");
+      final result = await leaderboardService.fetchMonthlyLeaders();
       monthlyModel.value = result;
-      topperModel.value = result;
     } catch (e) {
       if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
           e.toString().contains("Authentication is required")) {
@@ -34,12 +59,12 @@ class LeaderboardController extends GetxController {
     }
   }
 
+  /// Fetch all-time top performers
   Future<void> fetchAllTimeList() async {
     try {
       isAllTimeLoading(true);
-      final result = await topperService.fetchTopperList("all");
+      final result = await leaderboardService.fetchAllTimeLeaders();
       allTimeModel.value = result;
-      topperModel.value = result;
     } catch (e) {
       if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
           e.toString().contains("Authentication is required")) {
@@ -51,10 +76,18 @@ class LeaderboardController extends GetxController {
     }
   }
 
-  // Backward compatibility alias
+  // Backward compatibility alias: fetchYearlyList
   Future<void> fetchYearlyList() => fetchAllTimeList();
 
+  // Backward compatibility alias: fetchTodayLeaderList
+  Future<void> fetchTodayLeaderList(String whichLeader) => fetchTodayList();
+
+  // Backward compatibility alias: fetchTopperList
   Future<void> fetchTopperList(String whichTopper) async {
+    if (whichTopper == "today") {
+      await fetchTodayList();
+      return;
+    }
     if (whichTopper == "month") {
       await fetchMonthlyList();
       return;
@@ -65,8 +98,8 @@ class LeaderboardController extends GetxController {
     }
     try {
       isLoading(true);
-      TopperModel result = await topperService.fetchTopperList(whichTopper);
-      topperModel.value = result;
+      LeaderboardModel result = await leaderboardService.fetchTopperList(whichTopper);
+      allTimeModel.value = result;
     } catch (e) {
       if (e.toString().contains("AUTHENTICATION_REQUIRED") ||
           e.toString().contains("Authentication is required")) {
@@ -81,4 +114,5 @@ class LeaderboardController extends GetxController {
 
 /// Backward compatibility aliases
 typedef TopperController = LeaderboardController;
+typedef TodayLeaderController = LeaderboardController;
 typedef Leaderboard = LeaderboardController;
