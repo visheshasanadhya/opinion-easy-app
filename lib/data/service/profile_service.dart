@@ -17,8 +17,9 @@ class ProfileService {
     String pincode,
     String district,
     File? imageFile,
-    String dob,
-  ) async {
+    String dob, {
+    String? referralCode,
+  }) async {
     final prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
 
@@ -38,17 +39,25 @@ class ProfileService {
     // DO NOT set Content-Type manually for MultipartRequest
 
     // Add text fields
-    request.fields.addAll({
+    final fields = <String, String>{
       'name': name,
       'email': email,
       'phone': phone,
       'state': state,
       'city': city,
       'address': address,
-      'district': district,
       'pincode': pincode,
       'dob': dob,
-    });
+    };
+
+    if (district.isNotEmpty) {
+      fields['district'] = district;
+    }
+    if (referralCode != null && referralCode.trim().isNotEmpty) {
+      fields['referral_code'] = referralCode.trim();
+    }
+
+    request.fields.addAll(fields);
 
     // Add profile image if selected
     if (imageFile != null) {

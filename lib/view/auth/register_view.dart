@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:opinion_easy/controller/profile_controller.dart';
@@ -11,7 +12,11 @@ class RegisterView extends StatelessWidget {
 
   RegisterView({super.key});
 
-  InputDecoration _inputDecoration(String hint, {Widget? prefix}) {
+  InputDecoration _inputDecoration(
+    String hint, {
+    Widget? prefix,
+    Widget? suffix,
+  }) {
     return InputDecoration(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       hintText: hint,
@@ -20,6 +25,10 @@ class RegisterView extends StatelessWidget {
       fillColor: AppColor.cardAlt,
       prefixIcon: prefix,
       prefixIconConstraints: prefix != null
+          ? const BoxConstraints(minWidth: 0, minHeight: 0)
+          : null,
+      suffixIcon: suffix,
+      suffixIconConstraints: suffix != null
           ? const BoxConstraints(minWidth: 0, minHeight: 0)
           : null,
       border: OutlineInputBorder(
@@ -300,76 +309,134 @@ class RegisterView extends StatelessWidget {
                 ),
                 VS(16),
 
-                // ── State ─────────────────────────────────
-                _label("State"),
+                // ── Pincode (Auto-fetches City & State) ──
+                _label("Pincode"),
                 Obx(
-                  () => DropdownButtonFormField<String>(
-                    dropdownColor: AppColor.card,
+                  () => TextFormField(
+                    controller: controller.pincodeController,
                     style: AppText.bodyMd,
-                    iconEnabledColor: AppColor.textGrey,
-                    decoration: _inputDecoration("Select State"),
-                    initialValue: controller.selectedState.value.isEmpty
-                        ? null
-                        : controller.selectedState.value,
-                    hint: Text("Select State", style: AppText.captionSm),
-                    onChanged: (v) => controller.selectedState.value = v ?? '',
-                    items: controller.states
-                        .map((s) => DropdownMenuItem(value: s, child: Text(s)))
-                        .toList(),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(6),
+                    ],
+                    decoration: _inputDecoration(
+                      "Enter 6-digit pincode",
+                      prefix: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 14),
+                        child: Icon(
+                          Icons.location_on_outlined,
+                          color: AppColor.white,
+                          size: 20,
+                        ),
+                      ),
+                      suffix: controller.isVerifyingPincode.value
+                          ? const Padding(
+                              padding: EdgeInsets.all(14),
+                              child: SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: AppColor.white,
+                                ),
+                              ),
+                            )
+                          : controller.isPincodeValid.value
+                              ? const Padding(
+                                  padding: EdgeInsets.all(14),
+                                  child: Icon(
+                                    Icons.check_circle,
+                                    color: AppColor.green,
+                                    size: 20,
+                                  ),
+                                )
+                              : null,
+                    ),
+                    validator: (v) {
+                      if (v != null && v.isNotEmpty && v.length < 6) {
+                        return 'Enter 6-digit pincode';
+                      }
+                      return null;
+                    },
                   ),
                 ),
                 VS(16),
 
-                // ── District ──────────────────────────────
-                _label("District"),
-                TextFormField(
-                  controller: controller.districtController,
-                  style: AppText.bodyMd,
-                  decoration: _inputDecoration("Enter District"),
-                ),
-                VS(16),
+                // ── State & City (Auto-populated from Pincode) ──
+                Obx(() {
+                  if (controller.isPincodeValid.value ||
+                      controller.stateController.text.isNotEmpty ||
+                      controller.cityController.text.isNotEmpty) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _label("City"),
+                                  TextFormField(
+                                    controller: controller.cityController,
+                                    readOnly: true,
+                                    style: AppText.bodyMd,
+                                    decoration: _inputDecoration("City"),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            HS(12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _label("State"),
+                                  TextFormField(
+                                    controller: controller.stateController,
+                                    readOnly: true,
+                                    style: AppText.bodyMd,
+                                    decoration: _inputDecoration("State"),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        VS(16),
+                      ],
+                    );
+                  }
+                  return const SizedBox.shrink();
+                }),
 
-                // ── City & Pincode ────────────────────────
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _label("City"),
-                          TextFormField(
-                            controller: controller.cityController,
-                            style: AppText.bodyMd,
-                            decoration: _inputDecoration("City"),
-                          ),
-                        ],
+                // ── Referral Code (Optional) ────────────
+                _label("Referral Code"),
+                TextFormField(
+                  controller: controller.referralController,
+                  cursorColor: AppColor.white,
+                  style: AppText.bodyMd,
+                  textCapitalization: TextCapitalization.characters,
+                  decoration: _inputDecoration(
+                    "Enter Referral Code (optional)",
+                    prefix: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 14),
+                      child: Icon(
+                        Icons.card_giftcard_outlined,
+                        color: AppColor.white,
+                        size: 20,
                       ),
                     ),
-                    HS(12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _label("Pincode"),
-                          TextFormField(
-                            controller: controller.pincodeController,
-                            style: AppText.bodyMd,
-                            decoration: _inputDecoration("6-digit code"),
-                            keyboardType: TextInputType.number,
-                            validator: (v) {
-                              if (v != null &&
-                                  v.isNotEmpty &&
-                                  !RegExp(r'^\d{6}$').hasMatch(v)) {
-                                return 'Invalid 6-digit code';
-                              }
-                              return null;
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                  ),
+                ),
+                VS(6),
+                Text(
+                  "Enter friend's code to get 500 bonus points on signup.",
+                  style: AppText.captionSm.copyWith(
+                    color: AppColor.textGrey,
+                  ),
                 ),
                 VS(32),
 

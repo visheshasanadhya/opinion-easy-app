@@ -10,43 +10,6 @@ class LoginView extends StatelessWidget {
 
   LoginView({super.key});
 
-  InputDecoration _fieldDecoration(String hint) {
-    return InputDecoration(
-      hintText: hint,
-      hintStyle: AppText.captionSm,
-      filled: true,
-      fillColor: AppColor.cardAlt,
-      prefixIcon: const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 14),
-        child: Icon(
-          Icons.card_giftcard_outlined,
-          color: AppColor.white,
-          size: 20,
-        ),
-      ),
-      prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
-      border: OutlineInputBorder(
-        borderSide: BorderSide(color: AppColor.borderLight),
-        borderRadius: BorderRadius.circular(AppDeco.radiusSm),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: AppColor.borderLight),
-        borderRadius: BorderRadius.circular(AppDeco.radiusSm),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: AppColor.white, width: 1.5),
-        borderRadius: BorderRadius.circular(AppDeco.radiusSm),
-      ),
-    );
-  }
-
-  Widget _label(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Text(text, style: AppText.hint),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,34 +38,7 @@ class LoginView extends StatelessWidget {
                       Text("Welcome to Opinion Easy", style: AppText.h3),
                       VS(4),
                       Text("Earning Reward and Gift", style: AppText.caption),
-                      VS(36),
-
-                      // ── Referral Code (Optional) ────────────
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: _label("Referral Code"),
-                      ),
-                      TextFormField(
-                        controller: googleAuthController.referralController,
-                        cursorColor: AppColor.white,
-                        style: AppText.bodyMd,
-                        textCapitalization: TextCapitalization.characters,
-                        decoration: _fieldDecoration(
-                          "Enter Referral Code (optional)",
-                        ),
-                      ),
-                      VS(8),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Enter friend's code to get 500 bonus points on signup.",
-                          style: AppText.captionSm.copyWith(
-                            color: AppColor.textGrey,
-                          ),
-                        ),
-                      ),
-
-                      VS(28),
+                      VS(40),
 
                       // ── Sign In with Google Button ──────────
                       Obx(

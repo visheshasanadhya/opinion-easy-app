@@ -24,4 +24,7 @@ class ApiEndpoints {
   static String markReadNotification = "$baseUrl/notifications/mark-read";
   static String unreadNotification = "$baseUrl/notifications/unread-count";
   static String bankDetails = "$baseUrl/customer-bank-details";
+
+  // ==================== POSTAL PINCODE ==================== //
+  static const postalPincode = "https://api.postalpincode.in/pincode/";
 }

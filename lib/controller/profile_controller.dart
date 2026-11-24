@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'package:opinion_easy/core/utils/widgets/invalid_pincode_bottom_sheet.dart';
 import 'package:opinion_easy/data/model/profile_model.dart';
+import 'package:opinion_easy/data/service/postal_pincode_api.dart';
 import 'package:opinion_easy/data/service/profile_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -26,12 +28,61 @@ class ProfileController extends GetxController {
   final TextEditingController addressController = TextEditingController();
   final TextEditingController districtController = TextEditingController();
   final TextEditingController cityController = TextEditingController();
+  final TextEditingController stateController = TextEditingController();
   final TextEditingController pincodeController = TextEditingController();
+  final TextEditingController referralController = TextEditingController();
+
+  final RxBool isVerifyingPincode = false.obs;
+  final RxBool isPincodeValid = false.obs;
+  String _lastCheckedPincode = "";
 
   @override
-  onInit() {
+  void onInit() {
     super.onInit();
+    pincodeController.addListener(_onPincodeChanged);
     fetchProfile();
+  }
+
+  void _onPincodeChanged() {
+    final pin = pincodeController.text.trim();
+    if (pin.length < 6) {
+      if (isPincodeValid.value ||
+          stateController.text.isNotEmpty ||
+          cityController.text.isNotEmpty) {
+        isPincodeValid.value = false;
+        stateController.clear();
+        cityController.clear();
+        _lastCheckedPincode = "";
+      }
+    } else if (pin.length == 6 && pin != _lastCheckedPincode) {
+      verifyPincode(pin);
+    }
+  }
+
+  Future<void> verifyPincode(String pin) async {
+    isVerifyingPincode.value = true;
+    _lastCheckedPincode = pin;
+
+    final result = await PostalPincodeApi.verifyPincode(pin);
+    isVerifyingPincode.value = false;
+
+    if (result.isSuccess && (result.state ?? "").isNotEmpty) {
+      stateController.text = result.state!;
+      cityController.text = result.city ?? "";
+      selectedState.value = result.state!;
+      isPincodeValid.value = true;
+    } else {
+      isPincodeValid.value = false;
+      stateController.clear();
+      cityController.clear();
+
+      InvalidPincodeBottomSheet.show(
+        onDismissed: () {
+          pincodeController.clear();
+          _lastCheckedPincode = "";
+        },
+      );
+    }
   }
 
   // Function to populate controllers with fetched data
@@ -49,11 +100,17 @@ class ProfileController extends GetxController {
     selectedState.value = (data?.address?.state?.isNotEmpty == true)
         ? data!.address!.state!
         : 'Uttar Pradesh';
+    stateController.text = data?.address?.state ?? '';
     selectedDob.value = data?.dob ?? '';
     cityController.text = data?.address?.city ?? '';
     addressController.text = data?.address?.address ?? '';
     districtController.text = data?.address?.district ?? '';
     pincodeController.text = data?.address?.pincode ?? '';
+
+    if (pincodeController.text.trim().length == 6) {
+      isPincodeValid.value = true;
+      _lastCheckedPincode = pincodeController.text.trim();
+    }
   }
 
   List<String> states = <String>[
@@ -137,17 +194,22 @@ class ProfileController extends GetxController {
       if (profileKey.currentState!.validate()) {
         isLoading.value = true;
 
+        final stateValue = stateController.text.trim().isNotEmpty
+            ? stateController.text.trim()
+            : selectedState.value;
+
         var response = await profileService.updateProfile(
           nameController.text.trim(),
           emailController.text.trim(),
           phoneController.text.trim(),
-          selectedState.value,
+          stateValue,
           cityController.text.trim(),
           addressController.text.trim(),
           pincodeController.text.trim(),
           districtController.text.trim(),
           selectedImage.value,
           selectedDob.value,
+          referralCode: referralController.text.trim(),
         );
 
         if (response['status'] == true) {
@@ -212,13 +274,16 @@ class ProfileController extends GetxController {
 
   @override
   void onClose() {
+    pincodeController.removeListener(_onPincodeChanged);
     nameController.dispose();
     emailController.dispose();
     phoneController.dispose();
     addressController.dispose();
     districtController.dispose();
     cityController.dispose();
+    stateController.dispose();
     pincodeController.dispose();
+    referralController.dispose();
     selectedImage.value = null;
     selectedState.value = "Uttar Pradesh";
     selectedDob.value = '';
