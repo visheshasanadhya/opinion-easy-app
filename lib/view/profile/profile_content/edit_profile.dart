@@ -10,7 +10,10 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class EditProfileView extends StatelessWidget {
-  final ProfileController profileController = Get.put(ProfileController());
+  final ProfileController profileController =
+      Get.isRegistered<ProfileController>()
+          ? Get.find<ProfileController>()
+          : Get.put(ProfileController());
 
   EditProfileView({super.key});
 

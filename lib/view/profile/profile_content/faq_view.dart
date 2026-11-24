@@ -7,7 +7,10 @@ import '../../../core/utils/widgets/app_refresh.dart';
 import '../../../core/utils/widgets/custom_app_bar.dart';
 
 class FAQView extends StatelessWidget {
-  final FaqController faqController = Get.put(FaqController());
+  final FaqController faqController =
+      Get.isRegistered<FaqController>()
+          ? Get.find<FaqController>()
+          : Get.put(FaqController());
 
   FAQView({super.key});
 

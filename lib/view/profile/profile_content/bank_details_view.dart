@@ -9,12 +9,32 @@ import '../../../core/utils/widgets/app_refresh.dart';
 import '../../../controller/bank_controller.dart';
 import 'edit_bank_details_view.dart';
 
-class BankDetailsView extends StatelessWidget {
+class BankDetailsView extends StatefulWidget {
   const BankDetailsView({super.key});
 
   @override
+  State<BankDetailsView> createState() => _BankDetailsViewState();
+}
+
+class _BankDetailsViewState extends State<BankDetailsView> {
+  late final BankDetailsController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.isRegistered<BankDetailsController>()
+        ? Get.find<BankDetailsController>()
+        : Get.put(BankDetailsController());
+  }
+
+  @override
+  void dispose() {
+    Get.delete<BankDetailsController>();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final controller = Get.put(BankDetailsController());
 
     return Scaffold(
       backgroundColor: AppColor.scaffold,

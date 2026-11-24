@@ -10,7 +10,10 @@ import 'package:opinion_easy/core/utils/widgets/custom_text_field.dart';
 import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 
 class CompleteProfileView extends StatelessWidget {
-  final ProfileController profileController = Get.put(ProfileController());
+  final ProfileController profileController =
+      Get.isRegistered<ProfileController>()
+          ? Get.find<ProfileController>()
+          : Get.put(ProfileController());
 
   CompleteProfileView({super.key});
 

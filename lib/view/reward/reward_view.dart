@@ -16,8 +16,14 @@ class RewardView extends StatefulWidget {
 }
 
 class _RewardViewState extends State<RewardView> {
-  final RewardController rewardController = Get.put(RewardController());
-  final ProfileController profileController = Get.put(ProfileController());
+  final RewardController rewardController =
+      Get.isRegistered<RewardController>()
+          ? Get.find<RewardController>()
+          : Get.put(RewardController());
+  final ProfileController profileController =
+      Get.isRegistered<ProfileController>()
+          ? Get.find<ProfileController>()
+          : Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {

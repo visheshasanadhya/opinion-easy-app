@@ -11,7 +11,10 @@ class PrivacyPolicyView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final LegalController controller = Get.put(LegalController());
+    final LegalController controller =
+        Get.isRegistered<LegalController>()
+            ? Get.find<LegalController>()
+            : Get.put(LegalController());
 
     return Scaffold(
       backgroundColor: AppColor.scaffold,
