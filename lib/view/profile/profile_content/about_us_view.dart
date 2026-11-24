@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controller/legal_controller.dart';
-import '../../../core/utils/app_constants.dart';
 import '../../../core/utils/widgets/custom_app_bar.dart';
 
 class AboutUsView extends StatelessWidget {
@@ -12,7 +11,7 @@ class AboutUsView extends StatelessWidget {
     final LegalController controller = Get.put(LegalController());
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0D0D0D),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: const CustomAppBar(title: "About Us"),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -23,9 +22,9 @@ class AboutUsView extends StatelessWidget {
           return Obx(() {
             if (controller.isAboutLoading.value &&
                 controller.aboutContent.value.isEmpty) {
-              return const Center(
+              return Center(
                 child: CircularProgressIndicator(
-                  color: AppColor.primaryColor1,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               );
             }
@@ -57,8 +56,9 @@ class AboutUsView extends StatelessWidget {
                         icon: const Icon(Icons.refresh, size: 18),
                         label: const Text("Retry"),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColor.primaryColor1,
-                          foregroundColor: Colors.white,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          foregroundColor: Colors.black,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -73,7 +73,7 @@ class AboutUsView extends StatelessWidget {
             final content = controller.aboutContent.value;
 
             return RefreshIndicator(
-              color: AppColor.primaryColor1,
+              color: Theme.of(context).colorScheme.primary,
               onRefresh: controller.fetchAboutUs,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -84,7 +84,7 @@ class AboutUsView extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Page Title & Subtitle (No gradient header box)
+                        // Page Title & Subtitle
                         Text(
                           controller.aboutTitle.value,
                           style: TextStyle(
@@ -138,7 +138,7 @@ class AboutUsView extends StatelessWidget {
                           width: double.infinity,
                           padding: const EdgeInsets.all(22),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF141414),
+                            color: Theme.of(context).colorScheme.surface,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
                               color: Colors.white.withOpacity(0.08),
@@ -158,7 +158,7 @@ class AboutUsView extends StatelessWidget {
                         const SizedBox(height: 20),
 
                         // Stats row
-                        _buildStatsRow(controller),
+                        _buildStatsRow(controller, context),
 
                         const SizedBox(height: 40),
                       ],
@@ -173,7 +173,9 @@ class AboutUsView extends StatelessWidget {
     );
   }
 
-  Widget _buildStatsRow(LegalController controller) {
+  Widget _buildStatsRow(LegalController controller, BuildContext context) {
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
     if (controller.aboutStats.isNotEmpty) {
       return Row(
         children: controller.aboutStats.map((stat) {
@@ -189,7 +191,13 @@ class AboutUsView extends StatelessWidget {
           return Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: _statCard(icon: icon, label: label, value: value),
+              child: _statCard(
+                icon: icon,
+                label: label,
+                value: value,
+                context: context,
+                primaryColor: primaryColor,
+              ),
             ),
           );
         }).toList(),
@@ -202,18 +210,24 @@ class AboutUsView extends StatelessWidget {
           icon: Icons.people_alt_rounded,
           label: "Community",
           value: "Thousands",
+          context: context,
+          primaryColor: primaryColor,
         ),
         const SizedBox(width: 10),
         _statCard(
           icon: Icons.verified_rounded,
           label: "Trusted",
           value: "Platform",
+          context: context,
+          primaryColor: primaryColor,
         ),
         const SizedBox(width: 10),
         _statCard(
           icon: Icons.stars_rounded,
           label: "Rewarding",
           value: "Daily",
+          context: context,
+          primaryColor: primaryColor,
         ),
       ],
     );
@@ -223,17 +237,19 @@ class AboutUsView extends StatelessWidget {
     required IconData icon,
     required String label,
     required String value,
+    required BuildContext context,
+    required Color primaryColor,
   }) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFF161616),
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.white.withOpacity(0.08)),
       ),
       child: Column(
         children: [
-          Icon(icon, color: AppColor.primaryColor1, size: 22),
+          Icon(icon, color: primaryColor, size: 22),
           const SizedBox(height: 8),
           Text(
             value,

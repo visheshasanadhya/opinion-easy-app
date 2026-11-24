@@ -1,8 +1,6 @@
 import 'package:opinion_easy/controller/faq_controller.dart';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../core/utils/app_constants.dart';
 import '../../../core/utils/widgets/custom_app_bar.dart';
 
 class FAQView extends StatelessWidget {
@@ -13,16 +11,18 @@ class FAQView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColor.scaffold,
-      appBar: CustomAppBar(title: "FAQ'S"),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: const CustomAppBar(title: "FAQ'S"),
       body: Padding(
         padding: const EdgeInsets.all(18.0),
         child: Obx(() {
           final faqs = faqController.faqs;
 
           if (faqController.isLoading.value) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColor.primaryColor1),
+            return Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.primary,
+              ),
             );
           }
 
@@ -46,14 +46,18 @@ class FAQView extends StatelessWidget {
             );
           }
 
-          return ListView.separated(
-            itemCount: faqs.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
-            itemBuilder: (context, index) {
-              final item = faqs[index];
-
-              return _FAQTile(item: item);
-            },
+          return RefreshIndicator(
+            color: Theme.of(context).colorScheme.primary,
+            onRefresh: faqController.fetchFaqs,
+            child: ListView.separated(
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: faqs.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 12),
+              itemBuilder: (context, index) {
+                final item = faqs[index];
+                return _FAQTile(item: item);
+              },
+            ),
           );
         }),
       ),
@@ -74,22 +78,25 @@ class _FAQTileState extends State<_FAQTile> {
 
   @override
   Widget build(BuildContext context) {
+    final surfaceColor = Theme.of(context).colorScheme.surface;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 250),
       curve: Curves.easeInOut,
       decoration: BoxDecoration(
-        color: const Color(0xFF141414),
+        color: surfaceColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: _expanded
-              ? AppColor.primaryColor1.withOpacity(0.4)
+              ? primaryColor.withOpacity(0.4)
               : Colors.white.withOpacity(0.07),
           width: 1,
         ),
         boxShadow: _expanded
             ? [
                 BoxShadow(
-                  color: AppColor.primaryColor1.withOpacity(0.08),
+                  color: primaryColor.withOpacity(0.08),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -108,52 +115,51 @@ class _FAQTileState extends State<_FAQTile> {
             onExpansionChanged: (val) => setState(() => _expanded = val),
             tilePadding: const EdgeInsets.symmetric(
               horizontal: 18,
-              vertical: 6,
+              vertical: 4,
             ),
-            childrenPadding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
-            // Custom trailing icon
-            trailing: AnimatedRotation(
-              turns: _expanded ? 0.5 : 0,
-              duration: const Duration(milliseconds: 250),
-              child: Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: _expanded
-                      ? AppColor.primaryColor1.withOpacity(0.15)
-                      : Colors.white.withOpacity(0.06),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  color: _expanded ? AppColor.primaryColor1 : Colors.grey[400],
-                  size: 20,
-                ),
+            childrenPadding: const EdgeInsets.fromLTRB(18, 0, 18, 16),
+            leading: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: _expanded
+                    ? primaryColor.withOpacity(0.15)
+                    : Colors.white.withOpacity(0.06),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                Icons.help_outline_rounded,
+                color: _expanded ? primaryColor : Colors.grey[400],
+                size: 20,
               ),
             ),
             title: Text(
               widget.item.question ?? "",
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
-                color: Colors.white,
-                height: 1.4,
+                color: _expanded ? Colors.white : Colors.grey[200],
+              ),
+            ),
+            trailing: AnimatedRotation(
+              turns: _expanded ? 0.5 : 0,
+              duration: const Duration(milliseconds: 200),
+              child: Icon(
+                Icons.keyboard_arrow_down_rounded,
+                color: _expanded ? primaryColor : Colors.grey[500],
+                size: 24,
               ),
             ),
             children: [
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.04),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.white.withOpacity(0.06)),
-                ),
+              const Divider(color: Colors.white10, height: 1),
+              const SizedBox(height: 12),
+              Align(
+                alignment: Alignment.centerLeft,
                 child: Text(
                   widget.item.answer ?? "",
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey[400],
                     height: 1.6,
+                    color: Colors.grey[300],
                     fontWeight: FontWeight.w400,
                   ),
                 ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:opinion_easy/controller/legal_controller.dart';
-import 'package:opinion_easy/core/utils/app_constants.dart';
 import 'package:opinion_easy/core/utils/widgets/custom_app_bar.dart';
 import 'package:opinion_easy/core/utils/widgets/spacing_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -44,18 +43,20 @@ class HelpView extends StatelessWidget {
     final LegalController controller = Get.put(LegalController());
 
     return Scaffold(
-      backgroundColor: AppColor.scaffold,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: const CustomAppBar(title: "Help & Support"),
       body: Obx(() {
         if (controller.isHelpLoading.value &&
             controller.helpEmail.value.isEmpty) {
-          return const Center(
-            child: CircularProgressIndicator(color: AppColor.primaryColor1),
+          return Center(
+            child: CircularProgressIndicator(
+              color: Theme.of(context).colorScheme.primary,
+            ),
           );
         }
 
         return RefreshIndicator(
-          color: AppColor.primaryColor1,
+          color: Theme.of(context).colorScheme.primary,
           onRefresh: controller.fetchHelpSupport,
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
@@ -66,21 +67,33 @@ class HelpView extends StatelessWidget {
                 // Title
                 Text(
                   controller.helpTitle.value,
-                  style: AppText.h2,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
                 ),
                 VS(12),
 
                 // Description
                 Text(
                   controller.helpDescription.value,
-                  style: AppText.caption,
+                  style: TextStyle(
+                    fontSize: 14,
+                    height: 1.5,
+                    color: Colors.grey[400],
+                  ),
                 ),
 
                 if (controller.helpSubDescription.value.isNotEmpty) ...[
                   VS(8),
                   Text(
                     controller.helpSubDescription.value,
-                    style: AppText.caption,
+                    style: TextStyle(
+                      fontSize: 13,
+                      height: 1.5,
+                      color: Colors.grey[500],
+                    ),
                   ),
                 ],
 
@@ -89,10 +102,11 @@ class HelpView extends StatelessWidget {
                 // Email Card
                 if (controller.helpEmail.value.isNotEmpty) ...[
                   _buildContactCard(
+                    context: context,
                     icon: Icons.email_outlined,
                     title: "Email Support",
                     subtitle: controller.helpEmail.value,
-                    color: AppColor.blue,
+                    color: const Color(0xFF4A90E2),
                     onTap: () => _launchEmail(controller.helpEmail.value),
                   ),
                   VS(14),
@@ -101,10 +115,11 @@ class HelpView extends StatelessWidget {
                 // Phone Card
                 if (controller.helpPhone.value.isNotEmpty) ...[
                   _buildContactCard(
+                    context: context,
                     icon: Icons.phone_outlined,
                     title: "Call Us",
                     subtitle: controller.helpPhone.value,
-                    color: AppColor.green,
+                    color: const Color(0xFF4CAF50),
                     onTap: () => _launchPhone(controller.helpPhone.value),
                   ),
                   VS(14),
@@ -113,6 +128,7 @@ class HelpView extends StatelessWidget {
                 // WhatsApp Card
                 if (controller.helpWhatsapp.value.isNotEmpty) ...[
                   _buildContactCard(
+                    context: context,
                     icon: Icons.chat_bubble_outline_rounded,
                     title: "WhatsApp Chat",
                     subtitle: controller.helpWhatsapp.value,
@@ -126,10 +142,11 @@ class HelpView extends StatelessWidget {
                 // Availability Card
                 if (controller.helpAvailability.value.isNotEmpty) ...[
                   _buildContactCard(
+                    context: context,
                     icon: Icons.access_time_rounded,
                     title: "Working Hours",
                     subtitle: controller.helpAvailability.value,
-                    color: AppColor.orange,
+                    color: const Color(0xFFFF9800),
                     onTap: () {},
                     isClickable: false,
                   ),
@@ -139,6 +156,7 @@ class HelpView extends StatelessWidget {
                 // Office Address Card
                 if (controller.helpAddress.value.isNotEmpty) ...[
                   _buildContactCard(
+                    context: context,
                     icon: Icons.location_on_outlined,
                     title: "Office Address",
                     subtitle: controller.helpAddress.value,
@@ -152,6 +170,7 @@ class HelpView extends StatelessWidget {
                 // Website Card
                 if (controller.helpWebsite.value.isNotEmpty) ...[
                   _buildContactCard(
+                    context: context,
                     icon: Icons.language_rounded,
                     title: "Official Website",
                     subtitle: controller.helpWebsite.value,
@@ -169,7 +188,10 @@ class HelpView extends StatelessWidget {
                     child: Text(
                       controller.helpFooterNote.value,
                       textAlign: TextAlign.center,
-                      style: AppText.captionSm,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[500],
+                      ),
                     ),
                   ),
                   VS(16),
@@ -183,6 +205,7 @@ class HelpView extends StatelessWidget {
   }
 
   Widget _buildContactCard({
+    required BuildContext context,
     required IconData icon,
     required String title,
     required String subtitle,
@@ -194,7 +217,11 @@ class HelpView extends StatelessWidget {
       onTap: isClickable ? onTap : null,
       child: Container(
         padding: const EdgeInsets.all(18),
-        decoration: AppDeco.card,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.white.withOpacity(0.08)),
+        ),
         child: Row(
           children: [
             Container(
@@ -211,17 +238,30 @@ class HelpView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: AppText.bodyMd),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
                   VS(4),
-                  Text(subtitle, style: AppText.captionSm),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Colors.grey[400],
+                    ),
+                  ),
                 ],
               ),
             ),
             if (isClickable)
-              const Icon(
+              Icon(
                 Icons.arrow_forward_ios,
                 size: 16,
-                color: AppColor.textGrey,
+                color: Colors.grey[500],
               ),
           ],
         ),
