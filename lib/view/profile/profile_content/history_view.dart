@@ -20,17 +20,32 @@ class _HistoryViewState extends State<HistoryView> {
           ? Get.find<HistoryController>()
           : Get.put(HistoryController());
 
-  final ScrollController _scrollController = ScrollController();
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.hasClients &&
+        _scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 50) {
+      historyController.loadMore();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent - 50) {
-        historyController.loadMore();
-      }
-    });
-
     return Scaffold(
       backgroundColor: AppColor.scaffold,
       appBar: const CustomAppBar(title: "Activity History"),

@@ -1,3 +1,4 @@
+import 'package:opinion_easy/core/api_contstant/api_constant.dart';
 import 'package:opinion_easy/data/model/history_model.dart';
 import 'package:opinion_easy/data/service/history_service.dart';
 import 'package:opinion_easy/data/service/internet_monitor.dart';
@@ -38,22 +39,16 @@ class HistoryController extends GetxController {
       }
 
       isLoading.value = true;
-      var result = await historyService.fetchHistory(page: currentPage.value);
+      var result = await historyService.fetchHistory(page: 1);
 
       List<HistoryModel> answers = result["answers"] as List<HistoryModel>;
       List<RedeemModel> redeem = result["redeem_requests"] as List<RedeemModel>;
 
-      if (answers.isEmpty && redeem.isEmpty) {
-        hasMoreData.value = false;
-      } else {
-        if (isRefresh) {
-          history.value = answers;
-          redeemHistory.value = redeem;
-        } else {
-          history.assignAll(answers);
-          redeemHistory.assignAll(redeem);
-        }
-      }
+      history.assignAll(answers);
+      redeemHistory.assignAll(redeem);
+
+      hasMoreData.value = answers.length >= ApiEndpoints.limitPagination;
+      currentPage.value = 1;
       isDataLoaded.value = true;
     } catch (e) {
       if (InternetMonitor.isNetworkError(e)) return;
@@ -72,18 +67,27 @@ class HistoryController extends GetxController {
 
     try {
       isMoreLoading.value = true;
-      currentPage.value += 1;
+      final nextPage = currentPage.value + 1;
 
-      var result = await historyService.fetchHistory(page: currentPage.value);
+      var result = await historyService.fetchHistory(page: nextPage);
 
       List<HistoryModel> answers = result["answers"] as List<HistoryModel>;
       List<RedeemModel> redeem = result["redeem_requests"] as List<RedeemModel>;
 
-      if (answers.isEmpty && redeem.isEmpty) {
+      if (answers.isEmpty) {
         hasMoreData.value = false;
       } else {
+        currentPage.value = nextPage;
         history.addAll(answers);
-        redeemHistory.addAll(redeem);
+        if (answers.length < ApiEndpoints.limitPagination) {
+          hasMoreData.value = false;
+        }
+      }
+
+      // Backend returns full unpaginated redeem_requests list.
+      // Update with assignAll so the count remains correct and never duplicates on scroll.
+      if (redeem.isNotEmpty) {
+        redeemHistory.assignAll(redeem);
       }
     } catch (e) {
       if (InternetMonitor.isNetworkError(e)) return;

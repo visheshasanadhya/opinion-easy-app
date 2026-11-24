@@ -11,7 +11,14 @@ import 'package:get/get.dart';
 import 'package:opinion_easy/data/model/history_model.dart';
 import '../../core/utils/widgets/spacing_widget.dart';
 
-class WalletView extends StatelessWidget {
+class WalletView extends StatefulWidget {
+  const WalletView({super.key});
+
+  @override
+  State<WalletView> createState() => _WalletViewState();
+}
+
+class _WalletViewState extends State<WalletView> {
   final HistoryController historyController = Get.put(HistoryController());
   final BottomNavController bottomNavController =
       Get.find<BottomNavController>();
@@ -20,20 +27,33 @@ class WalletView extends StatelessWidget {
           ? Get.find<ProfileController>()
           : Get.put(ProfileController());
 
-  WalletView({super.key});
-
-  final ScrollController _scrollController = ScrollController();
+  late final ScrollController _scrollController;
   static const int pointsToRupee = 100;
 
   @override
-  Widget build(BuildContext context) {
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent - 100) {
-        historyController.loadMore();
-      }
-    });
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+  }
 
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.hasClients &&
+        _scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 100) {
+      historyController.loadMore();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.scaffold,
       appBar: const CustomAppBar(
