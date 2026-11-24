@@ -1,53 +1,97 @@
+import 'package:flutter/foundation.dart';
+
+/// AdMob Ad Unit IDs and configuration.
+///
+/// In debug mode, Google's official test ad unit IDs are automatically
+/// served so that developer/QA testing does not trigger AdMob policy violations,
+/// invalid traffic flags, or drop account eCPM.
+///
+/// In release mode, live production IDs from your Google AdMob account are served.
 class AdUnits {
-  AdUnits._(); // prevent instantiation
+  AdUnits._();
 
-  // ── App ID ────────────────────────────────────────────────
-  static const String appId = "ca-app-pub-4639427395020302~XXXXXXXXXX";
+  // ══════════════════════════════════════════════════════════════════════════
+  // GOOGLE OFFICIAL TEST AD UNIT IDS (Android)
+  // ══════════════════════════════════════════════════════════════════════════
+  static const String _testBanner = 'ca-app-pub-3940256099942544/6300978111';
+  static const String _testNative = 'ca-app-pub-3940256099942544/2247696110';
+  static const String _testInterstitial =
+      'ca-app-pub-3940256099942544/1033173712';
+  static const String _testRewarded = 'ca-app-pub-3940256099942544/5224354917';
+  static const String _testRewardedInterstitial =
+      'ca-app-pub-3940256099942544/5354046379';
+  static const String _testAppOpen = 'ca-app-pub-3940256099942544/9257390321';
 
-  // ── Banner Ads ────────────────────────────────────────────
-  /// Standard adaptive banner shown at bottom of HomeView
-  static const String homeBanner = "ca-app-pub-2884539585662970/4075674748";
+  // ══════════════════════════════════════════════════════════════════════════
+  // PRODUCTION ADMOB IDs
+  // ══════════════════════════════════════════════════════════════════════════
+  static const String _prodAppId = 'ca-app-pub-2884539585662970~7479919514';
+  static const String _prodHomeBanner =
+      'ca-app-pub-2884539585662970/4075674748';
+  static const String _prodSubCategMiddleNative =
+      'ca-app-pub-2884539585662970/1222280693';
+  static const String _prodSubCategEndNative =
+      'ca-app-pub-2884539585662970/1222280693';
+  static const String _prodQuestionPageNative =
+      'ca-app-pub-2884539585662970/1222280693';
+  static const String _prodQuestionInterstitial =
+      'ca-app-pub-2884539585662970/5525651506';
+  static const String _prodAppOpen = 'ca-app-pub-2884539585662970/8071448435';
+
+  // Helper method: returns test ID in debug mode or if production ID is placeholder
+  static String _resolve(String prodId, String testId) {
+    if (kDebugMode || prodId.contains('XXXX')) {
+      return testId;
+    }
+    return prodId;
+  }
+
+  // ── App ID ──────────────────────────────────────────────────────────────
+  static String get appId => _prodAppId;
+
+  // ── Banner Ads ──────────────────────────────────────────────────────────
+  /// Adaptive banner shown on HomeView & Cricket/Stock views
+  static String get homeBanner => _resolve(_prodHomeBanner, _testBanner);
 
   /// Banner shown inside confirmation dialog (top slot)
-  static const String dialogTopBanner =
-      "ca-app-pub-2884539585662970/4075674748";
+  static String get dialogTopBanner =>
+      _resolve(_prodHomeBanner, _testBanner);
 
   /// Banner shown inside confirmation dialog (bottom slot)
-  static const String dialogBottomBanner =
-      "ca-app-pub-2884539585662970/4075674748";
+  static String get dialogBottomBanner =>
+      _resolve(_prodHomeBanner, _testBanner);
 
-  // ── Native Ads ────────────────────────────────────────────
+  // ── Native Ads ──────────────────────────────────────────────────────────
   /// Native ad shown in SubCategView (middle position)
-  static const String subCategMiddleNative =
-      "ca-app-pub-2884539585662970/1222280693";
+  static String get subCategMiddleNative =>
+      _resolve(_prodSubCategMiddleNative, _testNative);
 
-  /// Native ad shown in SubCategView (end / bottom position)
-  static const String subCategEndNative =
-      "ca-app-pub-2884539585662970/1222280693";
+  /// Native ad shown in SubCategView (bottom position)
+  static String get subCategEndNative =>
+      _resolve(_prodSubCategEndNative, _testNative);
 
-  /// Native ad shown per question page inside QuestionView
-  static const String questionPageNative =
-      "ca-app-pub-2884539585662970/1222280693";
+  /// Native ad shown per question card in QuestionView
+  static String get questionPageNative =>
+      _resolve(_prodQuestionPageNative, _testNative);
 
-  // ── Interstitial Ads ──────────────────────────────────────
-  /// Full-screen interstitial shown every 10 answered questions
-  static const String questionInterstitial =
-      "ca-app-pub-2884539585662970/5525651506";
+  // ── Interstitial Ads ────────────────────────────────────────────────────
+  /// Full-screen interstitial shown during question flow
+  static String get questionInterstitial =>
+      _resolve(_prodQuestionInterstitial, _testInterstitial);
 
-  // ── Rectangle (Medium Rectangle 300×250) Ads ─────────────
-  /// Medium rectangle shown on result / summary screens
-  static const String resultRectangle =
-      "ca-app-pub-4639427395020302/XXXXXXXXXX";
+  // ── Rectangle Ads ───────────────────────────────────────────────────────
+  /// Medium Rectangle (300×250)
+  static String get resultRectangle => _resolve(_prodHomeBanner, _testBanner);
 
-  // ── Rewarded Ads ──────────────────────────────────────────
-  /// Rewarded ad — user watches to earn bonus coins
-  static const String rewardedCoins = "ca-app-pub-4639427395020302/XXXXXXXXXX";
+  // ── Rewarded Ads ────────────────────────────────────────────────────────
+  /// Rewarded video ad for bonus coin rewards
+  static String get rewardedCoins => _resolve(_testRewarded, _testRewarded);
 
-  /// Rewarded interstitial — shown between question sets
-  static const String rewardedInterstitial =
-      "ca-app-pub-4639427395020302/XXXXXXXXXX";
+  /// Rewarded interstitial ad
+  static String get rewardedInterstitial =>
+      _resolve(_testRewardedInterstitial, _testRewardedInterstitial);
 
-  // ── App Open Ads ──────────────────────────────────────────
-  /// App open ad shown on cold / warm app launch
-  static const String appOpen = "ca-app-pub-2884539585662970/8071448435";
+  // ── App Open Ads ────────────────────────────────────────────────────────
+  /// App Open ad shown on app launch / resume
+  static String get appOpen => _resolve(_prodAppOpen, _testAppOpen);
 }

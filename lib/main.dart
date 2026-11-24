@@ -11,7 +11,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'core/theme/app_theme.dart';
-import 'package:device_preview/device_preview.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -37,15 +36,17 @@ Future<void> main() async {
     ),
   );
 
-  await Future.wait([
-    Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
-    if (!kIsWeb) MobileAds.instance.initialize(),
-  ]);
-
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FCMService.initializeLocalNotifications();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   if (!kIsWeb) {
+    await MobileAds.instance.initialize();
+    await MobileAds.instance.updateRequestConfiguration(
+      RequestConfiguration(
+        tagForChildDirectedTreatment: TagForChildDirectedTreatment.no,
+      ),
+    );
     Get.put<AdPreloadService>(AdPreloadService());
   }
 

@@ -1,44 +1,67 @@
-import 'package:opinion_easy/core/admob/ad_units.dart';
-import 'package:opinion_easy/core/admob/admob.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:opinion_easy/core/admob/ad_units.dart';
+import 'package:opinion_easy/core/admob/admob.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
+/// Enterprise Ad Preload Service managing foreground App Open Ads,
+/// high-value Native Ad pooling, and frequency capping.
 class AdPreloadService extends GetxService with WidgetsBindingObserver {
-  // ── Singleton controllers ──────────────────────────────────
+  // ── Singleton Controllers for Fixed Placements ───────────────
   final AdsController subCategMiddle = AdsController();
   final AdsController subCategEnd = AdsController();
   final AdsController appOpenController = AdsController();
 
+  // ── Question Native Ad Pool ──────────────────────────────────
   final List<AdsController> _questionPool = [];
-  static const int _poolSize = 3;
+  static const int _poolSize = 2; // Optimal size: prevents wasted ad requests
 
-  static const int _appOpenFrequencyCapMinutes = 5;
+  // ── App Open Frequency Capping ───────────────────────────────
+  static const int _appOpenFrequencyCapMinutes = 4;
   DateTime? _lastAdShowTime;
 
-  // ── Lifecycle ──────────────────────────────────────────────
+  /// Flag to suppress App Open Ads during sensitive workflows
+  /// (e.g. Google Sign-in, camera photo pick, or payment webviews)
+  bool isAppOpenSuppressed = false;
+
+  void setAppOpenSuppressed(bool suppressed) {
+    isAppOpenSuppressed = suppressed;
+    debugPrint('ℹ️ [AdPreloadService] App open suppression: $suppressed');
+  }
+
+  // ── Lifecycle ────────────────────────────────────────────────
 
   @override
   void onInit() {
     super.onInit();
     WidgetsBinding.instance.addObserver(this);
+
+    // Initial preload for launch
     appOpenController.loadAppOpenAd(adUnitId: AdUnits.appOpen);
     _fillPool();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
+    if (state == AppLifecycleState.resumed && !isAppOpenSuppressed) {
       showAppOpenAdIfAvailable();
     }
   }
 
-  // ── Public API ─────────────────────────────────────────────
+  // ── Public API ───────────────────────────────────────────────
 
-  /// Shows the App Open Ad with frequency cap and readiness checks.
+  /// Shows the App Open Ad with frequency cap, suppression, and readiness checks.
   void showAppOpenAdIfAvailable({VoidCallback? onAdDismissed}) {
-    if (!appOpenController.isAppOpenLoaded.value) {
-      debugPrint('ℹ️ App Open Ad not ready.');
+    if (isAppOpenSuppressed) {
+      debugPrint('ℹ️ [AdPreloadService] App Open Ad suppressed by active flow');
+      onAdDismissed?.call();
+      return;
+    }
+
+    if (!appOpenController.isAppOpenLoaded.value ||
+        appOpenController.appOpenAd == null) {
+      debugPrint('ℹ️ [AdPreloadService] App Open Ad not ready yet');
+      // Request preload for next time
+      appOpenController.loadAppOpenAd(adUnitId: AdUnits.appOpen);
       onAdDismissed?.call();
       return;
     }
@@ -46,7 +69,7 @@ class AdPreloadService extends GetxService with WidgetsBindingObserver {
     if (_lastAdShowTime != null &&
         DateTime.now().difference(_lastAdShowTime!).inMinutes <
             _appOpenFrequencyCapMinutes) {
-      debugPrint('ℹ️ App Open Ad skipped (frequency cap active).');
+      debugPrint('ℹ️ [AdPreloadService] App Open Ad skipped (frequency cap active)');
       onAdDismissed?.call();
       return;
     }
@@ -54,15 +77,14 @@ class AdPreloadService extends GetxService with WidgetsBindingObserver {
     appOpenController.showAppOpenAd(
       onAdDismissed: () {
         _lastAdShowTime = DateTime.now();
-        // Reload once for the next resume.
+        // Preload next ad ready for the next session
         appOpenController.loadAppOpenAd(adUnitId: AdUnits.appOpen);
         onAdDismissed?.call();
       },
     );
   }
 
-  /// Called every time SubCategView opens.
-  /// Disposes any previous ad and loads once — no retries.
+  /// Refreshes Native ads for Subcategory view
   void refreshSubCategAds() {
     subCategMiddle.disposeNative();
     subCategMiddle.loadNativeAd(adUnitId: AdUnits.subCategMiddleNative);
@@ -71,8 +93,8 @@ class AdPreloadService extends GetxService with WidgetsBindingObserver {
     subCategEnd.loadNativeAd(adUnitId: AdUnits.subCategEndNative);
   }
 
-  /// Returns a ready native-ad controller from the pool, or a fresh one if
-  /// none are ready yet.  Automatically refills the pool after consuming.
+  /// Returns a ready native-ad controller from the pool, or creates a fresh one.
+  /// Automatically refills the pool to maintain instant responsiveness.
   AdsController consumeFromPool() {
     for (int i = 0; i < _questionPool.length; i++) {
       final ctrl = _questionPool[i];
@@ -82,15 +104,16 @@ class AdPreloadService extends GetxService with WidgetsBindingObserver {
         return ctrl;
       }
     }
-    // No ready ad yet — return a loading controller outside the pool.
+
+    // No ready ad in pool yet: instantiate and load directly
     final fresh = AdsController();
     fresh.loadNativeAd(adUnitId: AdUnits.questionPageNative);
+    _fillPool();
     return fresh;
   }
 
-  // ── Private ────────────────────────────────────────────────
+  // ── Private Pool Management ──────────────────────────────────
 
-  /// Fills the question-ad pool up to [_poolSize], loading each slot once.
   void _fillPool() {
     while (_questionPool.length < _poolSize) {
       final ctrl = AdsController();
@@ -99,21 +122,16 @@ class AdPreloadService extends GetxService with WidgetsBindingObserver {
     }
   }
 
-  // ── Cleanup ────────────────────────────────────────────────
-
   @override
   void onClose() {
     WidgetsBinding.instance.removeObserver(this);
-
-    subCategMiddle.disposeNative();
-    subCategEnd.disposeNative();
-    appOpenController.disposeAppOpen();
-
+    subCategMiddle.dispose();
+    subCategEnd.dispose();
+    appOpenController.dispose();
     for (final ctrl in _questionPool) {
-      ctrl.disposeNative();
+      ctrl.dispose();
     }
     _questionPool.clear();
-
     super.onClose();
   }
 }
