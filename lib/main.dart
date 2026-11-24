@@ -70,6 +70,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Opinion Easy',
       debugShowCheckedModeBanner: false,
+      enableLog: false,
       theme: AppTheme.darkTheme(context),
       getPages: pagePath,
     );

@@ -70,11 +70,12 @@ class AdPreloadService extends GetxService with WidgetsBindingObserver {
 
   // ── Native Subcategory Placements ────────────────────────────
   void refreshSubCategAds() {
-    subCategMiddle.disposeNative();
-    subCategMiddle.loadNativeAd(adUnitId: AdUnits.subCategMiddleNative);
-
-    subCategEnd.disposeNative();
-    subCategEnd.loadNativeAd(adUnitId: AdUnits.subCategEndNative);
+    if (!subCategMiddle.isNativeLoaded.value && subCategMiddle.nativeAd == null) {
+      subCategMiddle.loadNativeAd(adUnitId: AdUnits.subCategMiddleNative);
+    }
+    if (!subCategEnd.isNativeLoaded.value && subCategEnd.nativeAd == null) {
+      subCategEnd.loadNativeAd(adUnitId: AdUnits.subCategEndNative);
+    }
   }
 
   // ── Native Question Pool ─────────────────────────────────────
