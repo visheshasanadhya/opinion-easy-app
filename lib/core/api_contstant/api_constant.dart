@@ -28,6 +28,8 @@ class ApiEndpoints {
   static String bankDetails = "$baseUrl/customer-bank-details";
   static String terms = "$baseUrl/terms";
   static String privacy = "$baseUrl/privacy";
+  static String aboutUs = "$baseUrl/about-us";
+  static String helpSupport = "$baseUrl/help-support";
 
   // ==================== PAGINATION CONSTANTS ==================== //
   static const int startPagination = 1;

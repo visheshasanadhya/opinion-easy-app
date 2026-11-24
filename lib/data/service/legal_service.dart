@@ -22,4 +22,24 @@ class LegalService {
     }
     throw Exception('Failed to load privacy policy');
   }
+
+  Future<Map<String, dynamic>> fetchAboutUs() async {
+    final url = Uri.parse(ApiEndpoints.aboutUs);
+    final response = await ApiClient.get(url);
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      return (json['data'] as Map<String, dynamic>?) ?? {};
+    }
+    throw Exception('Failed to load about us');
+  }
+
+  Future<Map<String, dynamic>> fetchHelpSupport() async {
+    final url = Uri.parse(ApiEndpoints.helpSupport);
+    final response = await ApiClient.get(url);
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      return (json['data'] as Map<String, dynamic>?) ?? {};
+    }
+    throw Exception('Failed to load help & support');
+  }
 }
